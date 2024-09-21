@@ -2,3 +2,8 @@ Style/RbsInline/InvalidComment:
   Description: "Checks the rbs-inline annotation comment is valid."
   Enabled: true
   VersionAdded: "1.0.0"
+
+Style/RbsInline/ParametersSeparator:
+  Description: "Checks the rbs-inline annotation comment uses a separator to parameters"
+  Enabled: true
+  VersionAdded: "1.0.0"
