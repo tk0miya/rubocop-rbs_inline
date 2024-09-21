@@ -1,3 +1,6 @@
+AllCops:
+  TargetRubyVersion: 2.7
+
 Naming/FileName:
- Exclude:
-   - lib/rubocop-rbs_inline.rb
+  Exclude:
+    - lib/rubocop-rbs_inline.rb
