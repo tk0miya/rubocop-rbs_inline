@@ -27,7 +27,7 @@ module RuboCop
           SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class]
+          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze
 
           def on_new_investigation
             processed_source.comments.each do |comment|

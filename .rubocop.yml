@@ -1,4 +1,5 @@
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 2.7
 
 Metrics/AbcSize:
@@ -11,3 +12,6 @@ Metrics/BlockLength:
 Naming/FileName:
   Exclude:
     - lib/rubocop-rbs_inline.rb
+
+Style/Documentation:
+  Enabled: false

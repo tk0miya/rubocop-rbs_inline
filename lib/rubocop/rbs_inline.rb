@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "rbs_inline/version"
+require_relative 'rbs_inline/version'
 
 module RuboCop
   module RbsInline
@@ -13,4 +13,3 @@ module RuboCop
     private_constant(:CONFIG_DEFAULT, :PROJECT_ROOT)
   end
 end
-
