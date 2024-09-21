@@ -1,0 +1,3 @@
+Naming/FileName:
+ Exclude:
+   - lib/rubocop-rbs_inline.rb
