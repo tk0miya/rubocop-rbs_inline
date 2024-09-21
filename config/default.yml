@@ -12,3 +12,8 @@ Style/RbsInline/ParametersSeparator:
   Description: "Checks the rbs-inline annotation comment uses a separator to parameters"
   Enabled: true
   VersionAdded: "1.0.0"
+
+Style/RbsInline/UnusedAnnotations:
+  Description: "Checks the rbs-inline annotation comment is surely used."
+  Enabled: true
+  VersionAdded: "1.0.0"
