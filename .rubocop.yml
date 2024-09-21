@@ -1,3 +1,7 @@
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
   TargetRubyVersion: 2.7
@@ -12,6 +16,9 @@ Metrics/BlockLength:
 Naming/FileName:
   Exclude:
     - lib/rubocop-rbs_inline.rb
+
+RSpec/ExampleLength:
+  Max: 20
 
 Style/Documentation:
   Enabled: false
