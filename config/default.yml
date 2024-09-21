@@ -1,1 +1,4 @@
-# Write it!
+Style/RbsInline/InvalidComment:
+  Description: "Checks the rbs-inline annotation comment is valid."
+  Enabled: true
+  VersionAdded: "1.0.0"

@@ -1,6 +1,13 @@
 AllCops:
   TargetRubyVersion: 2.7
 
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
 Naming/FileName:
   Exclude:
     - lib/rubocop-rbs_inline.rb
