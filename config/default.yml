@@ -3,6 +3,11 @@ Style/RbsInline/InvalidComment:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/InvalidTypes:
+  Description: "Checks the rbs-inline annotation comment uses valid types."
+  Enabled: true
+  VersionAdded: "1.0.0"
+
 Style/RbsInline/KeywordSeparator:
   Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
   Enabled: true
