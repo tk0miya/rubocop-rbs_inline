@@ -25,12 +25,11 @@ module RuboCop
           def on_def(node)
             arguments = arguments_for(node)
 
-            annotations = annotation_for(node).join("\n")
-            parsed = parse(annotations)
-            parsed.annotations.each do |annotation|
+            result = parse_comments
+            result.first.each_annotation do |annotation|
               case annotation
               when RBS::Inline::AST::Annotations::VarType
-                add_offense_for(annotations, annotation) unless arguments.include?(annotation.name.to_s)
+                add_offense_for(annotation) unless arguments.include?(annotation.name.to_s)
               end
             end
           end
@@ -65,28 +64,16 @@ module RuboCop
             end
           end
 
-          def annotation_for(node)
-            annotations = []
-            line = node.loc.line - 2
-            while (comment = processed_source.lines[line]) =~ /^\s*#/
-              annotations << comment
-              line -= 1
-            end
-            empty_lines = node.loc.line - 1 - annotations.size
-            ([''] * empty_lines) + annotations
+          def parse_comments
+            parsed_result = Prism.parse(processed_source.buffer.source)
+            RBS::Inline::AnnotationParser.parse(parsed_result.comments)
           end
 
-          def parse(buffer)
-            parse_result = Prism.parse(buffer)
-            annotations = RBS::Inline::AnnotationParser.parse(parse_result.comments)
-            annotations.first
-          end
-
-          def add_offense_for(buffer, annotation)
+          def add_offense_for(annotation) # rubocop:disable Metrics/AbcSize
             loc = annotation.source.comments.first.location
-            comment = buffer[loc.start_offset...loc.end_offset]
-            pos = comment.index(annotation.name.to_s)
-            range = range_between(loc.start_offset + pos, loc.start_offset + pos + annotation.name.size)
+            comment = processed_source.buffer.source[loc.start_offset...loc.end_offset]
+            start_offset = loc.start_offset + comment.index(annotation.name.to_s)
+            range = range_between(start_offset, start_offset + annotation.name.size)
             add_offense(range)
           end
         end
