@@ -3,5 +3,11 @@ module Parser
     class Comment
       attr_reader text: String
     end
+
+    class Range
+      attr_reader source_buffer: Buffer
+      attr_reader begin_pos: Integer
+      attr_reader end_pos: Integer
+    end
   end
 end

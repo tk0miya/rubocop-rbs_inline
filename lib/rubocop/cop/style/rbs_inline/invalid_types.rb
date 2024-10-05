@@ -26,11 +26,11 @@ module RuboCop
 
           MSG = 'Invalid annotation found.'
 
-          def on_new_investigation # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+          def on_new_investigation #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             results = parse_comments
             results.each do |result|
               result.each_annotation do |annotation|
-                location = annotation.source.comments.first.location
+                location = annotation.source.comments.first&.location or raise
                 range = range_between(character_offset(location.start_offset), character_offset(location.end_offset))
 
                 case annotation
@@ -51,12 +51,13 @@ module RuboCop
 
           private
 
-          def parse_comments
+          def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
             parsed_result = Prism.parse(processed_source.buffer.source)
             RBS::Inline::AnnotationParser.parse(parsed_result.comments)
           end
 
-          def character_offset(byte_offset)
+          # @rbs byte_offset: Integer
+          def character_offset(byte_offset) #: Integer
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
             text = source[...byte_offset] or raise
             text.force_encoding(processed_source.buffer.source.encoding).size

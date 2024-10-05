@@ -25,3 +25,10 @@ RSpec/ExampleLength:
 
 Style/Documentation:
   Enabled: false
+
+# for RBS::Inline
+Layout/LeadingCommentSpace:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false

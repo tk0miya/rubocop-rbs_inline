@@ -24,13 +24,14 @@ module RuboCop
 
           MSG: ::String
 
-          def on_new_investigation: () -> untyped
+          def on_new_investigation: () -> void
 
           private
 
-          def parse_comments: () -> untyped
+          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 
-          def character_offset: (untyped byte_offset) -> untyped
+          # @rbs byte_offset: Integer
+          def character_offset: (Integer byte_offset) -> Integer
         end
       end
     end

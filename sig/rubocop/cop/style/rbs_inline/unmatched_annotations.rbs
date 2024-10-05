@@ -19,25 +19,34 @@ module RuboCop
 
           MSG: ::String
 
-          attr_reader result: untyped
+          attr_reader result: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
-          def on_new_investigation: () -> untyped
+          def on_new_investigation: () -> void
 
-          def on_def: (untyped node) -> untyped
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
 
-          def on_investigation_end: () -> untyped
+          def on_investigation_end: () -> void
 
           private
 
-          def arguments_for: (untyped node) -> untyped
+          # @rbs node: Parser::AST::Node
+          def arguments_for: (Parser::AST::Node node) -> Array[String]
 
-          def parse_comments: () -> untyped
+          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 
-          def annotation_name: (untyped annotation) -> untyped
+          # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::ReturnType |
+          #                  RBS::Inline::AST::Annotations::VarType
+          def annotation_name: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> String
 
-          def add_offense_for: (untyped annotation) -> untyped
+          # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::ReturnType |
+          #                  RBS::Inline::AST::Annotations::VarType
+          def add_offense_for: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> void
 
-          def character_offset: (untyped byte_offset) -> untyped
+          # @rbs byte_offset: Integer
+          def character_offset: (Integer byte_offset) -> Integer
         end
       end
     end

@@ -20,9 +20,9 @@ module RuboCop
           MSG = 'Do not use `:` after the keyword.'
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze
+          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
 
-          def on_new_investigation
+          def on_new_investigation #: void
             processed_source.comments.each do |comment|
               if (matched = comment.text.match(/\A#\s+@rbs\s+(#{RBS_INLINE_KEYWORDS.join('|')}):/))
                 add_offense(invalid_location_for(comment, matched))
@@ -32,8 +32,11 @@ module RuboCop
 
           private
 
-          def invalid_location_for(comment, matched)
-            begin_pos = comment.source_range.begin_pos + matched[0].length - 1
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def invalid_location_for(comment, matched) #: Parser::Source::Range
+            captured = matched[0] or raise
+            begin_pos = comment.source_range.begin_pos + captured.length - 1
             range_between(begin_pos, begin_pos + 1)
           end
         end
