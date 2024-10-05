@@ -22,17 +22,41 @@ module RuboCop
 
           MSG = 'target parameter not found.'
 
+          attr_reader :result
+
+          def on_new_investigation
+            super
+            @result = parse_comments
+          end
+
           def on_def(node)
             arguments = arguments_for(node)
 
-            result = parse_comments
             comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
-            comment&.each_annotation do |annotation|
+            return unless comment
+
+            result.delete(comment)
+            comment.each_annotation do |annotation|
               case annotation
               when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
                 add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
               end
             end
+          end
+
+          def on_investigation_end
+            result.each do |comment|
+              comment.each_annotation do |annotation|
+                case annotation
+                when RBS::Inline::AST::Annotations::VarType
+                  add_offense_for(annotation) unless annotation.name.start_with?('@')
+                when RBS::Inline::AST::Annotations::BlockType, RBS::Inline::AST::Annotations::ReturnType
+                  add_offense_for(annotation)
+                end
+              end
+            end
+
+            super
           end
 
           private
@@ -74,6 +98,8 @@ module RuboCop
             case annotation
             when RBS::Inline::AST::Annotations::BlockType
               "&#{annotation.name}"
+            when RBS::Inline::AST::Annotations::ReturnType
+              'return'
             else
               annotation.name.to_s
             end

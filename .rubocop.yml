@@ -13,6 +13,9 @@ Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
 
+Metrics/MethodLength:
+  Max: 20
+
 Naming/FileName:
   Exclude:
     - lib/rubocop-rbs_inline.rb
