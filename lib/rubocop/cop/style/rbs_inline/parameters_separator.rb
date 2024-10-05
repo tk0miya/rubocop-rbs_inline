@@ -28,7 +28,7 @@ module RuboCop
               next unless matched
               next if RBS_INLINE_KEYWORDS.include?(matched[1])
 
-              add_offense(invalid_location_for(comment)) unless matched[1].include?(':')
+              add_offense(invalid_location_for(comment)) unless matched[1]&.include?(':')
             end
           end
 

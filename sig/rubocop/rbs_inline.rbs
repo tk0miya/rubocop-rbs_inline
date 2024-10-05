@@ -1,6 +1,15 @@
-module Rubocop
+# Generated from lib/rubocop/rbs_inline.rb with RBS::Inline
+
+module RuboCop
   module RbsInline
-    VERSION: String
-    # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+    class Error < StandardError
+    end
+
+    # Your code goes here...
+    PROJECT_ROOT: untyped
+
+    CONFIG_DEFAULT: untyped
+
+    CONFIG: untyped
   end
 end

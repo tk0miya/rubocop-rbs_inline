@@ -58,7 +58,8 @@ module RuboCop
 
           def character_offset(byte_offset)
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            source[...byte_offset].force_encoding(processed_source.buffer.source.encoding).size
+            text = source[...byte_offset] or raise
+            text.force_encoding(processed_source.buffer.source.encoding).size
           rescue StandardError
             byte_offset
           end

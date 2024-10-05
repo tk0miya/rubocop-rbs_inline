@@ -109,7 +109,8 @@ module RuboCop
             name = annotation_name(annotation)
             loc = annotation.source.comments.first.location
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            comment = source[loc.start_offset...loc.end_offset].force_encoding(processed_source.buffer.source.encoding)
+            text = source[loc.start_offset...loc.end_offset] or raise
+            comment = text.force_encoding(processed_source.buffer.source.encoding)
             start_offset = loc.start_offset + comment.index(name)
             range = range_between(character_offset(start_offset), character_offset(start_offset + name.size))
             add_offense(range)
@@ -117,7 +118,8 @@ module RuboCop
 
           def character_offset(byte_offset)
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            source[...byte_offset].force_encoding(processed_source.buffer.source.encoding).size
+            text = source[...byte_offset] or raise
+            text.force_encoding(processed_source.buffer.source.encoding).size
           rescue StandardError
             byte_offset
           end
