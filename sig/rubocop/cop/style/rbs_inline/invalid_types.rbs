@@ -1,0 +1,38 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/invalid_types.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # IRB::Inline expects the types of annotation comments are valid syntax.
+        # This cop checks for comments that do not match the expected pattern.
+        #
+        # @example
+        #   # bad
+        #   # @rbs arg: Hash[Symbol,
+        #   # @rbs &block: String
+        #   def method(arg); end
+        #
+        #   # good
+        #   # @rbs arg: Hash[Symbol, String]
+        #   # @rbs &block: () -> void
+        #   def method(arg); end
+        class InvalidTypes < Base
+          include RangeHelp
+
+          include RBS::Inline::AST::Annotations
+
+          MSG: ::String
+
+          def on_new_investigation: () -> untyped
+
+          private
+
+          def parse_comments: () -> untyped
+
+          def character_offset: (untyped byte_offset) -> untyped
+        end
+      end
+    end
+  end
+end

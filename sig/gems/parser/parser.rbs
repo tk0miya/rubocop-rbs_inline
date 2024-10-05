@@ -1,0 +1,7 @@
+module Parser
+  module Source
+    class Comment
+      attr_reader text: String
+    end
+  end
+end

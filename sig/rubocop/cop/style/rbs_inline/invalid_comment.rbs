@@ -1,0 +1,34 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/invalid_comment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # IRB::Inline expects annotations comments to start with `#:` or `# @rbs`.
+        # This cop checks for comments that do not match the expected pattern.
+        #
+        # @example
+        #   # bad
+        #   # () -> void
+        #   # : () -> void
+        #   # rbs param: String
+        #
+        #   # good
+        #   #: () -> void
+        #   # @rbs param: String
+        class InvalidComment < Base
+          MSG: ::String
+
+          ANNOTATION_KEYWORDS: untyped
+
+          SIGNATURE_PATTERN: ::String
+
+          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
+          RBS_INLINE_KEYWORDS: untyped
+
+          def on_new_investigation: () -> untyped
+        end
+      end
+    end
+  end
+end

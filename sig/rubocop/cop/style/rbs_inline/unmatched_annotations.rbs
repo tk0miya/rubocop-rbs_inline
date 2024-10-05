@@ -1,0 +1,45 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/unmatched_annotations.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # IRB::Inline annotations comments for parameters should be matched to the parameters.
+        #
+        # @example
+        #   # bad
+        #   # @rbs unknown: String
+        #   def method(arg); end
+        #
+        #   # good
+        #   # @rbs arg: String
+        #   def method(arg); end
+        class UnmatchedAnnotations < Base
+          include RangeHelp
+
+          MSG: ::String
+
+          attr_reader result: untyped
+
+          def on_new_investigation: () -> untyped
+
+          def on_def: (untyped node) -> untyped
+
+          def on_investigation_end: () -> untyped
+
+          private
+
+          def arguments_for: (untyped node) -> untyped
+
+          def parse_comments: () -> untyped
+
+          def annotation_name: (untyped annotation) -> untyped
+
+          def add_offense_for: (untyped annotation) -> untyped
+
+          def character_offset: (untyped byte_offset) -> untyped
+        end
+      end
+    end
+  end
+end

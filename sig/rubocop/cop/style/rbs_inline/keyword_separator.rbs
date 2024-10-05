@@ -1,0 +1,33 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/keyword_separator.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # IRB::Inline expects annotations comments for keywords are not separeted with `:`.
+        # This cop checks for comments that do not match the expected pattern.
+        #
+        # @example
+        #   # bad
+        #   # @rbs module-self: String
+        #
+        #   # good
+        #   # @rbs module-self String
+        class KeywordSeparator < Base
+          include RangeHelp
+
+          MSG: ::String
+
+          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
+          RBS_INLINE_KEYWORDS: untyped
+
+          def on_new_investigation: () -> untyped
+
+          private
+
+          def invalid_location_for: (untyped comment, untyped matched) -> untyped
+        end
+      end
+    end
+  end
+end
