@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnusedAnnotations, :config do
 
   it 'registers an offense when annotating to unknown argument' do
     expect_offense(<<~RUBY)
-      # unrelated comment
+      # Comments including multibyte characters: あいうえお
 
       # @rbs unknown: String
              ^^^^^^^ Style/RbsInline/UnusedAnnotations: target parameter not found.
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnusedAnnotations, :config do
 
   it 'does not register an offense when annotating to known arguments' do
     expect_no_offenses(<<~RUBY)
-      # unrelated comment
+      # Comments including multibyte characters: あいうえお
 
       # @rbs arg1: String
       # @rbs arg2: String
