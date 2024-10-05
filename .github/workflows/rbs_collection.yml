@@ -1,0 +1,30 @@
+name: RBS collection
+
+on:
+  schedule:
+    - cron: '00 8 * * MON'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3
+        bundler-cache: true
+    - name: Update rbs collection
+      run: bundle exec rbs collection update
+    - name: Create a pull request
+      uses: peter-evans/create-pull-request@v7
+      with:
+        add-paths: rbs_collection.lock.yaml
+        commit-message: 'rbs: Update RBS collection'
+        branch: bot/rbs-collection
+        title: 'rbs: Update RBS collection'
