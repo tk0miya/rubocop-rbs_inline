@@ -9,6 +9,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnusedAnnotations, :config do
 
       # @rbs unknown: String
              ^^^^^^^ Style/RbsInline/UnusedAnnotations: target parameter not found.
+      # @rbs &unknown: String
+             ^^^^^^^^ Style/RbsInline/UnusedAnnotations: target parameter not found.
       def method(arg1, arg2 = nil, *args, kwarg1:, kwarg2: nil, **kwargs, &block); end
     RUBY
   end
