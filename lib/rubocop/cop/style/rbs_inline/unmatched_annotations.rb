@@ -17,7 +17,7 @@ module RuboCop
         #   # @rbs arg: String
         #   def method(arg); end
         #
-        class UnmatchedAnnotations < Base
+        class UnmatchedAnnotations < Base # rubocop:disable Metrics/ClassLength
           include RangeHelp
 
           MSG = 'target parameter not found.'
