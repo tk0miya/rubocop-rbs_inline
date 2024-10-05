@@ -26,7 +26,7 @@ module RuboCop
 
           MSG = 'Invalid annotation found.'
 
-          def on_new_investigation # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+          def on_new_investigation # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
             results = parse_comments
             results.each do |result|
               result.each_annotation do |annotation|
