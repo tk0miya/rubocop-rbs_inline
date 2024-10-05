@@ -23,13 +23,13 @@ module RuboCop
           MSG = 'Invalid RBS annotation comment found.'
 
           ANNOTATION_KEYWORDS = %w[return inherits override use module-self generic in out
-                                   unchecked self skip yields module class].freeze
+                                   unchecked self skip yields module class].freeze #: Array[String]
           SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze
+          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
 
-          def on_new_investigation
+          def on_new_investigation #: void
             processed_source.comments.each do |comment|
               add_offense(comment) if comment.text =~ /\A#\s+#{SIGNATURE_PATTERN}/
               add_offense(comment) if comment.text =~ /\A#\s+:\s*#{SIGNATURE_PATTERN}/

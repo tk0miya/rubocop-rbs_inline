@@ -10,3 +10,20 @@ module RuboCop
     end
   end
 end
+
+module RuboCop
+  module Ext
+    module Comment
+      def source: () -> String
+      def source_range: () -> Parser::Source::Range
+    end
+  end
+end
+
+module Parser
+  module Source
+    class Comment
+      include RuboCop::Ext::Comment
+    end
+  end
+end

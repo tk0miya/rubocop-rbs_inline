@@ -19,14 +19,14 @@ module RuboCop
         class InvalidComment < Base
           MSG: ::String
 
-          ANNOTATION_KEYWORDS: untyped
+          ANNOTATION_KEYWORDS: Array[String]
 
           SIGNATURE_PATTERN: ::String
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS: untyped
+          RBS_INLINE_KEYWORDS: Array[String]
 
-          def on_new_investigation: () -> untyped
+          def on_new_investigation: () -> void
         end
       end
     end

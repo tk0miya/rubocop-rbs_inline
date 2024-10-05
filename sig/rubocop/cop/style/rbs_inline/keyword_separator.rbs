@@ -19,13 +19,15 @@ module RuboCop
           MSG: ::String
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS: untyped
+          RBS_INLINE_KEYWORDS: Array[String]
 
-          def on_new_investigation: () -> untyped
+          def on_new_investigation: () -> void
 
           private
 
-          def invalid_location_for: (untyped comment, untyped matched) -> untyped
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def invalid_location_for: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
         end
       end
     end
