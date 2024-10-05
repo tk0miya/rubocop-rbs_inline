@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubocop-rbs_inline (0.1.0)
+    rubocop-rbs_inline (1.0.0)
       rbs-inline
       rubocop
 
