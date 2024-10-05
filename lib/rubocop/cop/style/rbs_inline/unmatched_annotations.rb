@@ -31,18 +31,12 @@ module RuboCop
 
           # @rbs node: Parser::AST::Node
           def on_def(node) #: void
-            arguments = arguments_for(node)
+            process(node)
+          end
 
-            comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
-            return unless comment
-
-            result.delete(comment)
-            comment.each_annotation do |annotation|
-              case annotation
-              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
-                add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
-              end
-            end
+          # @rbs node: Parser::AST::Node
+          def on_defs(node) #: void
+            process(node)
           end
 
           def on_investigation_end #: void
@@ -63,8 +57,24 @@ module RuboCop
           private
 
           # @rbs node: Parser::AST::Node
+          def process(node) #: void
+            arguments = arguments_for(node)
+
+            comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
+            return unless comment
+
+            result.delete(comment)
+            comment.each_annotation do |annotation|
+              case annotation
+              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
+                add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
+              end
+            end
+          end
+
+          # @rbs node: Parser::AST::Node
           def arguments_for(node) #: Array[String] # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-            node.children[1].children.flat_map do |argument|
+            args_for(node).children.flat_map do |argument|
               name = argument.children[0]&.to_s
               case argument.type
               when :arg, :optarg, :kwarg, :kwoptarg
@@ -87,7 +97,19 @@ module RuboCop
                 else
                   ['&', '&block']
                 end
+              else
+                raise
               end
+            end
+          end
+
+          # @rbs node: Parser::AST::Node
+          def args_for(node) #: Parser::AST::Node
+            case node.type
+            when :defs
+              node.children[2]
+            else
+              node.children[1]
             end
           end
 

@@ -23,6 +23,9 @@ Naming/FileName:
 RSpec/ExampleLength:
   Max: 20
 
+RSpec/NestedGroups:
+  Max: 5
+
 Style/Documentation:
   Enabled: false
 
