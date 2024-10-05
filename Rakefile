@@ -5,7 +5,7 @@ require 'rubocop/rake_task'
 
 RuboCop::RakeTask.new
 
-task default: :rubocop
+task default: %i[rubocop rbs:check]
 
 require 'rspec/core/rake_task'
 
@@ -30,4 +30,11 @@ task :new_cop, [:cop] do |_task, args|
   generator.inject_config(config_file_path: 'config/default.yml')
 
   puts generator.todo
+end
+
+namespace :rbs do
+  desc 'Do type check using Steep'
+  task :check do
+    sh 'steep', 'check'
+  end
 end
