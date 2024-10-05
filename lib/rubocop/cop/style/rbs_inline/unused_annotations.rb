@@ -29,8 +29,8 @@ module RuboCop
             comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
             comment&.each_annotation do |annotation|
               case annotation
-              when RBS::Inline::AST::Annotations::VarType
-                add_offense_for(annotation) unless arguments.include?(annotation.name.to_s)
+              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
+                add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
               end
             end
           end
@@ -70,13 +70,25 @@ module RuboCop
             RBS::Inline::AnnotationParser.parse(parsed_result.comments)
           end
 
+          def annotation_name(annotation)
+            case annotation
+            when RBS::Inline::AST::Annotations::BlockType
+              "&#{annotation.name}"
+            else
+              annotation.name.to_s
+            end
+          end
+
           def add_offense_for(annotation) # rubocop:disable Metrics/AbcSize
+            name = annotation_name(annotation)
             loc = annotation.source.comments.first.location
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
             comment = source[loc.start_offset...loc.end_offset].force_encoding(processed_source.buffer.source.encoding)
-            start_offset = loc.start_offset + comment.index(annotation.name.to_s)
-            range = range_between(character_offset(start_offset), character_offset(start_offset + annotation.name.size))
+            start_offset = loc.start_offset + comment.index(name)
+            range = range_between(character_offset(start_offset), character_offset(start_offset + name.size))
             add_offense(range)
+          rescue StandardError => e
+            binding.irb
           end
 
           def character_offset(byte_offset)
