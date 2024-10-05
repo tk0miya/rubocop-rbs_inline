@@ -26,7 +26,8 @@ module RuboCop
             arguments = arguments_for(node)
 
             result = parse_comments
-            result.first.each_annotation do |annotation|
+            comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
+            comment&.each_annotation do |annotation|
               case annotation
               when RBS::Inline::AST::Annotations::VarType
                 add_offense_for(annotation) unless arguments.include?(annotation.name.to_s)
