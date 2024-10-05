@@ -31,7 +31,7 @@ module RuboCop
             results.each do |result|
               result.each_annotation do |annotation|
                 location = annotation.source.comments.first.location
-                range = range_between(location.start_offset, location.end_offset)
+                range = range_between(character_offset(location.start_offset), character_offset(location.end_offset))
 
                 case annotation
                 when Application
@@ -54,6 +54,13 @@ module RuboCop
           def parse_comments
             parsed_result = Prism.parse(processed_source.buffer.source)
             RBS::Inline::AnnotationParser.parse(parsed_result.comments)
+          end
+
+          def character_offset(byte_offset)
+            source = processed_source.buffer.source.dup.force_encoding('ASCII')
+            source[...byte_offset].force_encoding(processed_source.buffer.source.encoding).size
+          rescue StandardError
+            byte_offset
           end
         end
       end
