@@ -72,10 +72,18 @@ module RuboCop
 
           def add_offense_for(annotation) # rubocop:disable Metrics/AbcSize
             loc = annotation.source.comments.first.location
-            comment = processed_source.buffer.source[loc.start_offset...loc.end_offset]
+            source = processed_source.buffer.source.dup.force_encoding('ASCII')
+            comment = source[loc.start_offset...loc.end_offset].force_encoding(processed_source.buffer.source.encoding)
             start_offset = loc.start_offset + comment.index(annotation.name.to_s)
-            range = range_between(start_offset, start_offset + annotation.name.size)
+            range = range_between(character_offset(start_offset), character_offset(start_offset + annotation.name.size))
             add_offense(range)
+          end
+
+          def character_offset(byte_offset)
+            source = processed_source.buffer.source.dup.force_encoding('ASCII')
+            source[...byte_offset].force_encoding(processed_source.buffer.source.encoding).size
+          rescue StandardError
+            byte_offset
           end
         end
       end
