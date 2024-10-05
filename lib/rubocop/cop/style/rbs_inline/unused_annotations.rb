@@ -57,9 +57,9 @@ module RuboCop
                 end
               when :blockarg
                 if name
-                  ["&#{name}", '&']
+                  ['&', "&#{name}"]
                 else
-                  ['&']
+                  ['&', '&block']
                 end
               end
             end
