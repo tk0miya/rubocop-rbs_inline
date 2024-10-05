@@ -26,12 +26,21 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def on_def: (Parser::AST::Node node) -> void
 
+          # @rbs node: Parser::AST::Node
+          def on_defs: (Parser::AST::Node node) -> void
+
           def on_investigation_end: () -> void
 
           private
 
           # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
           def arguments_for: (Parser::AST::Node node) -> Array[String]
+
+          # @rbs node: Parser::AST::Node
+          def args_for: (Parser::AST::Node node) -> Parser::AST::Node
 
           def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 
