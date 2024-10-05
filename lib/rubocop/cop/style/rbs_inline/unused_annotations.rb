@@ -87,8 +87,6 @@ module RuboCop
             start_offset = loc.start_offset + comment.index(name)
             range = range_between(character_offset(start_offset), character_offset(start_offset + name.size))
             add_offense(range)
-          rescue StandardError => e
-            binding.irb
           end
 
           def character_offset(byte_offset)
