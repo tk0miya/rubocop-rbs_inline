@@ -17,7 +17,7 @@ module RuboCop
         #   # @rbs arg: String
         #   def method(arg); end
         #
-        class UnusedAnnotations < Base
+        class UnmatchedAnnotations < Base
           include RangeHelp
 
           MSG = 'target parameter not found.'
