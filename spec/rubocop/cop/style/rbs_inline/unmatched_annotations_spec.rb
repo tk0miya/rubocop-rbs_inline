@@ -39,6 +39,18 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
         RUBY
       end
     end
+
+    context 'when the comment annotates to the instance variable' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # Comments including multibyte characters: あいうえお
+
+          # @rbs @var1: String
+          # @rbs @var2: Integer
+          def method(arg1, arg2 = nil, *args, kwarg1:, kwarg2: nil, **kwargs, &block); end
+        RUBY
+      end
+    end
   end
 
   context 'when an annotation comment found above the singleton method definition' do
