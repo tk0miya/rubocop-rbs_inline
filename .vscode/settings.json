@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
         "strscan"
-    ]
+    ],
+    "rbs-helper.rbs-inline-on-save": true,
+    "rbs-helper.rbs-inline-signature-directory": "sig/"
 }
