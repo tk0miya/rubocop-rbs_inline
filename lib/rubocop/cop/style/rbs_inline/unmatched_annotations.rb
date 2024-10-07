@@ -43,9 +43,9 @@ module RuboCop
             result.each do |comment|
               comment.each_annotation do |annotation|
                 case annotation
-                when RBS::Inline::AST::Annotations::VarType
-                  add_offense_for(annotation) unless annotation.name.start_with?('@')
-                when RBS::Inline::AST::Annotations::BlockType, RBS::Inline::AST::Annotations::ReturnType
+                when RBS::Inline::AST::Annotations::BlockType,
+                     RBS::Inline::AST::Annotations::ReturnType,
+                     RBS::Inline::AST::Annotations::VarType
                   add_offense_for(annotation)
                 end
               end
@@ -57,7 +57,7 @@ module RuboCop
           private
 
           # @rbs node: Parser::AST::Node
-          def process(node) #: void
+          def process(node) #: void # rubocop:disable Metrics/CyclomaticComplexity
             arguments = arguments_for(node)
 
             comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
@@ -66,6 +66,8 @@ module RuboCop
             result.delete(comment)
             comment.each_annotation do |annotation|
               case annotation
+              when RBS::Inline::AST::Annotations::IvarType
+                add_offense_for(annotation)
               when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
                 add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
               end
@@ -119,6 +121,7 @@ module RuboCop
           end
 
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
           #                  RBS::Inline::AST::Annotations::VarType
           def annotation_name(annotation) #: String
@@ -133,6 +136,7 @@ module RuboCop
           end
 
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
           #                  RBS::Inline::AST::Annotations::VarType
           def add_offense_for(annotation) #: void # rubocop:disable Metrics/AbcSize

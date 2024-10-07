@@ -41,12 +41,14 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
     end
 
     context 'when the comment annotates to the instance variable' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
           # Comments including multibyte characters: あいうえお
 
           # @rbs @var1: String
+                 ^^^^^ Style/RbsInline/UnmatchedAnnotations: target parameter not found.
           # @rbs @var2: Integer
+                 ^^^^^ Style/RbsInline/UnmatchedAnnotations: target parameter not found.
           def method(arg1, arg2 = nil, *args, kwarg1:, kwarg2: nil, **kwargs, &block); end
         RUBY
       end
