@@ -45,14 +45,16 @@ module RuboCop
           def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
           #                  RBS::Inline::AST::Annotations::VarType
-          def annotation_name: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> String
+          def annotation_name: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::IvarType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> String
 
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
+          #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
           #                  RBS::Inline::AST::Annotations::VarType
-          def add_offense_for: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> void
+          def add_offense_for: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::IvarType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> void
 
           # @rbs byte_offset: Integer
           def character_offset: (Integer byte_offset) -> Integer
