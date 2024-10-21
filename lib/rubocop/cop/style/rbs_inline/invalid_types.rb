@@ -23,10 +23,11 @@ module RuboCop
         class InvalidTypes < Base
           include RangeHelp
           include RBS::Inline::AST::Annotations
+          include RBS::Inline::AST::Members
 
           MSG = 'Invalid annotation found.'
 
-          def on_new_investigation #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          def on_new_investigation #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
             results = parse_comments
             results.each do |result|
               result.each_annotation do |annotation|
@@ -44,6 +45,11 @@ module RuboCop
                   add_offense(range) if annotation.self_types.empty?
                 when SyntaxErrorAssertion
                   add_offense(range)
+                when Embedded
+                  comment = annotation.source.comments.fetch(0)
+                  parsing_result = RBS::Inline::AnnotationParser::ParsingResult.new(comment)
+                  embedded = RBSEmbedded.new(parsing_result, annotation)
+                  add_offense(range) if embedded.members.is_a?(RBS::ParsingError)
                 end
               end
             end
