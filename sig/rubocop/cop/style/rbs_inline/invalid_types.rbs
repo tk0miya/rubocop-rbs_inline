@@ -22,6 +22,8 @@ module RuboCop
 
           include RBS::Inline::AST::Annotations
 
+          include RBS::Inline::AST::Members
+
           MSG: ::String
 
           def on_new_investigation: () -> void

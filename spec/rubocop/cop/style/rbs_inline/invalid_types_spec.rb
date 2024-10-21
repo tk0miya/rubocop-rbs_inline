@@ -7,6 +7,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidTypes, :config do
     expect_offense(<<~RUBY)
       # Comments including multibyte characters: あいうえお
 
+      # @rbs! type t = Hash[Symbol,
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/InvalidTypes: Invalid annotation found.
+
       # @rbs generic t
       ^^^^^^^^^^^^^^^^ Style/RbsInline/InvalidTypes: Invalid annotation found.
       # @rbs module-self Hash[Symbol,
@@ -36,6 +39,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidTypes, :config do
   it 'does not register an offense when using `#good_method`' do
     expect_no_offenses(<<~RUBY)
       # Comments including multibyte characters: あいうえお
+
+      # @rbs! type t = Hash[Symbol, String]
 
       # @rbs generic T
       # @rbs module-self Hash[Symbol, String]
