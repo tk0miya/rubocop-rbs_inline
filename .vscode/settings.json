@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
+        "blockarg",
+        "Ivar",
+        "kwarg",
+        "kwoptarg",
+        "kwrestarg",
+        "optarg",
+        "restarg",
         "strscan"
     ],
     "rbs-helper.rbs-inline-on-save": true,
