@@ -8,4 +8,5 @@ target :lib do
   check 'lib'
 
   configure_code_diagnostics(D::Ruby.strict)
+  implicitly_returns_nil!
 end

@@ -141,7 +141,7 @@ module RuboCop
           #                  RBS::Inline::AST::Annotations::VarType
           def add_offense_for(annotation) #: void # rubocop:disable Metrics/AbcSize
             name = annotation_name(annotation)
-            loc = annotation.source.comments.first.location
+            loc = annotation.source.comments.first&.location or raise
             source = processed_source.buffer.source.dup.force_encoding('ASCII')
             text = source[loc.start_offset...loc.end_offset] or raise
             comment = text.force_encoding(processed_source.buffer.source.encoding)
