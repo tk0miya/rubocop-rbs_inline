@@ -79,6 +79,15 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
         # rbs
         # a comment not related to types
         # rbs comment starts with "rbs"
+
+        # "@rbs!" style comments are ignored.
+        # @rbs!
+        #   module MyModule
+        #     def folded_method:
+        #       (untyped, untyped) -> untyped
+        #
+        #     def method_after_blank_line: () -> void
+        #   end
       RUBY
     end
   end

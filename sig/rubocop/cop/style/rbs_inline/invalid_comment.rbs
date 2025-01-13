@@ -27,6 +27,10 @@ module RuboCop
           RBS_INLINE_KEYWORDS: Array[String]
 
           def on_new_investigation: () -> void
+
+          private
+
+          def consume_embedded_rbs: (untyped comments) -> untyped
         end
       end
     end
