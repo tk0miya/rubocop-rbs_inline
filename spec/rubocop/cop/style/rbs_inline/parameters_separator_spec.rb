@@ -26,6 +26,14 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
       # @rbs **: String
       # @rbs return: String
 
+      # @rbs %a{pure}
+      # @rbs %a[pure]
+      # @rbs %a(pure)
+      # @rbs %a{pure} %a{implicitly-returns-nil}
+      # @rbs %a{implicitly-returns-nil}
+      # @rbs %a(implicitly-returns-nil)
+      # @rbs %a[implicitly-returns-nil]
+
       # @rbs inherits String
       # @rbs override
       # @rbs use String
