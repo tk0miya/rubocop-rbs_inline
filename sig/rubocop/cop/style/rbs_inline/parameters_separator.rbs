@@ -11,6 +11,9 @@ module RuboCop
         #   # bad
         #   # @rbs param String
         #
+        #   # bad
+        #   # @rbs :param String
+        #
         #   # good
         #   # @rbs param: String
         #

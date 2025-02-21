@@ -11,6 +11,9 @@ module RuboCop
         #   # bad
         #   # @rbs param String
         #
+        #   # bad
+        #   # @rbs :param String
+        #
         #   # good
         #   # @rbs param: String
         #
@@ -43,7 +46,7 @@ module RuboCop
             return true if matched.nil?
             return true if RBS_INLINE_KEYWORDS.include?(matched)
             return true if RBS_INLINE_REGEXP_KEYWORDS.any? { |regexp| matched =~ regexp }
-            return true if matched.include?(':')
+            return true if matched.end_with?(':')
 
             false
           end
