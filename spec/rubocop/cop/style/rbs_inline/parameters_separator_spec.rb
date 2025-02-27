@@ -15,6 +15,10 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
              ^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
       # @rbs return String
              ^^^^^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
+      # @rbs :return String
+             ^^^^^^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
+      # @rbs :param String
+             ^^^^^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
     RUBY
   end
 
@@ -25,6 +29,14 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
       # @rbs *: String
       # @rbs **: String
       # @rbs return: String
+
+      # @rbs %a{pure}
+      # @rbs %a[pure]
+      # @rbs %a(pure)
+      # @rbs %a{pure} %a{implicitly-returns-nil}
+      # @rbs %a{implicitly-returns-nil}
+      # @rbs %a(implicitly-returns-nil)
+      # @rbs %a[implicitly-returns-nil]
 
       # @rbs inherits String
       # @rbs override

@@ -4,15 +4,21 @@ module RuboCop
   module Cop
     module Style
       module RbsInline
-        # IRB::Inline expects annotations comments for parameters are separeted with `:`.
+        # IRB::Inline expects annotations comments for parameters are separeted with `:`or allows annotation comments.
         # This cop checks for comments that do not match the expected pattern.
         #
         # @example
         #   # bad
         #   # @rbs param String
         #
+        #   # bad
+        #   # @rbs :param String
+        #
         #   # good
         #   # @rbs param: String
+        #
+        #   # good
+        #   # @rbs %a{pure}
         class ParametersSeparator < Base
           include RangeHelp
 
@@ -21,9 +27,14 @@ module RuboCop
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS: Array[String]
 
+          RBS_INLINE_REGEXP_KEYWORDS: Array[Regexp]
+
           def on_new_investigation: () -> void
 
           private
+
+          # @rbs matched: String?
+          def valid_rbs_inline_comment?: (String? matched) -> bool
 
           # @rbs comment: Parser::Source::Comment
           def invalid_location_for: (Parser::Source::Comment comment) -> Parser::Source::Range
