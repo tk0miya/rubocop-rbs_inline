@@ -76,7 +76,7 @@ module RuboCop
 
           # @rbs node: Parser::AST::Node
           def arguments_for(node) #: Array[String] # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-            args_for(node).children.flat_map do |argument|
+            args_for(node).children.flat_map do |argument| # rubocop:disable Metrics/BlockLength
               name = argument.children[0]&.to_s
               case argument.type
               when :arg, :optarg, :kwarg, :kwoptarg
@@ -99,6 +99,8 @@ module RuboCop
                 else
                   ['&', '&block']
                 end
+              when :forward_arg
+                ['...']
               else
                 raise
               end

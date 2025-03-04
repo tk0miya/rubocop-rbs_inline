@@ -36,6 +36,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
           # @rbs &: String
           # @rbs return: String
           def method(arg1, arg2 = nil, *args, kwarg1:, kwarg2: nil, **kwargs, &block); end
+
+          # @rbs skip
+          def method(...); end
         RUBY
       end
     end
