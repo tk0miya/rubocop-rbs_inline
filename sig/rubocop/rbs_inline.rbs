@@ -4,12 +4,5 @@ module RuboCop
   module RbsInline
     class Error < StandardError
     end
-
-    # Your code goes here...
-    PROJECT_ROOT: untyped
-
-    CONFIG_DEFAULT: untyped
-
-    CONFIG: untyped
   end
 end

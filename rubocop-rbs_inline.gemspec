@@ -29,7 +29,9 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'lint_roller', '~> 1.1'
   spec.add_dependency 'rbs-inline'
-  spec.add_dependency 'rubocop'
+  spec.add_dependency 'rubocop', '>= 1.72.1', '< 2.0'
   spec.metadata['rubygems_mfa_required'] = 'true'
+  spec.metadata['default_lint_roller_plugin'] = 'RuboCop::RbsInline::Plugin'
 end
