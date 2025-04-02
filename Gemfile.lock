@@ -2,8 +2,9 @@ PATH
   remote: .
   specs:
     rubocop-rbs_inline (1.3.1)
+      lint_roller (~> 1.1)
       rbs-inline
-      rubocop
+      rubocop (>= 1.72.1, < 2.0)
 
 GEM
   remote: https://rubygems.org/

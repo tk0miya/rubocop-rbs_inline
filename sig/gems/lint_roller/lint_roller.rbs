@@ -1,0 +1,16 @@
+module LintRoller
+  class About
+    def initialize: (?name: String, ?version: String, ?homepage: String, ?description: String) -> void
+  end
+
+  class Context
+    attr_accessor engine: Symbol
+  end
+
+  class Plugin
+  end
+
+  class Rules
+    def initialize: (?type: Symbol, ?config_format: Symbol, ?value: Pathname) -> void
+  end
+end
