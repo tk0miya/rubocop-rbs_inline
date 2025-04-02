@@ -129,9 +129,9 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec
   rubocop (~> 1.74)
-  rubocop-rake
+  rubocop-rake (~> 0.7)
   rubocop-rbs_inline!
-  rubocop-rspec
+  rubocop-rspec (~> 3.5)
   steep
 
 BUNDLED WITH
