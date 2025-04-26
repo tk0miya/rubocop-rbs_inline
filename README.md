@@ -19,7 +19,7 @@ gem install rubocop-rbs_inline
 Add the following to your `.rubocop.yml`:
 
 ```
-require:
+plugins:
   - rubocop-rbs_inline
 ```
 
