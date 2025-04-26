@@ -44,8 +44,8 @@ GEM
     logger (1.7.0)
     minitest (5.25.5)
     mutex_m (0.3.0)
-    parallel (1.26.3)
-    parser (3.3.7.4)
+    parallel (1.27.0)
+    parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
     prism (1.2.0)
@@ -85,12 +85,12 @@ GEM
       rubocop-ast (>= 1.38.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.39.0)
-      parser (>= 3.3.1.0)
+    rubocop-ast (1.42.0)
+      parser (>= 3.3.7.2)
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.5.0)
+    rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
     ruby-progressbar (1.13.0)
@@ -130,9 +130,9 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec
   rubocop (~> 1.74)
-  rubocop-rake
+  rubocop-rake (~> 0.7)
   rubocop-rbs_inline!
-  rubocop-rspec
+  rubocop-rspec (~> 3.5)
   steep
 
 BUNDLED WITH
