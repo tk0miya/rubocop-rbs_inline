@@ -1,13 +1,20 @@
 {
     "cSpell.words": [
+        "bindir",
         "blockarg",
         "Ivar",
+        "KOMIYA",
         "kwarg",
         "kwoptarg",
         "kwrestarg",
         "optarg",
+        "popen",
+        "readlines",
         "restarg",
-        "strscan"
+        "rubocop",
+        "rubygems",
+        "strscan",
+        "Takeshi"
     ],
     "rbs-helper.rbs-inline-on-save": true,
     "rbs-helper.rbs-inline-signature-directory": "sig/"
