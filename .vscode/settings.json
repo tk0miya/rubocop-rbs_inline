@@ -14,7 +14,8 @@
         "rubocop",
         "rubygems",
         "strscan",
-        "Takeshi"
+        "Takeshi",
+        "tk0miya"
     ],
     "rbs-helper.rbs-inline-on-save": true,
     "rbs-helper.rbs-inline-signature-directory": "sig/"
