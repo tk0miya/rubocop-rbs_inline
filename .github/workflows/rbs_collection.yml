@@ -15,7 +15,7 @@ jobs:
       with:
         app-id: ${{ vars.RBS_COLLECTION_UPDATER_APP_ID }}
         private-key: ${{ secrets.RBS_COLLECTION_UPDATER_PRIVATE_KEY }}
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
