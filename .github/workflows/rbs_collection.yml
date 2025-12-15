@@ -24,7 +24,7 @@ jobs:
     - name: Update rbs collection
       run: bundle exec rbs collection update
     - name: Create a pull request
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@v8
       with:
         add-paths: rbs_collection.lock.yaml
         commit-message: 'rbs: Update RBS collection'
