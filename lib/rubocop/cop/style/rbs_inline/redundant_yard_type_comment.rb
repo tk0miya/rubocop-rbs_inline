@@ -9,12 +9,17 @@ module RuboCop
         #
         # When migrating from YARD to RBS inline, having both type documentation
         # systems creates duplication. This cop detects such cases and can
-        # auto-correct by removing the YARD type comments.
+        # auto-correct by removing the YARD type comments, optionally merging
+        # descriptions into RBS annotations.
         #
         # @example
         #   # bad - YARD and RBS type comments coexist
         #   # @param name [String] the name
         #   # @rbs name: String
+        #   def greet(name); end
+        #
+        #   # good - autocorrected (description merged)
+        #   # @rbs name: String -- the name
         #   def greet(name); end
         #
         #   # bad - YARD @return with RBS return type
@@ -35,13 +40,22 @@ module RuboCop
           include RangeHelp
 
           MSG = 'Redundant YARD type comment. Use RBS inline annotation instead.'
+          MSG_WITH_MERGE = 'Redundant YARD type comment. Description merged into RBS annotation.'
 
-          # YARD type comment patterns
-          YARD_PARAM_PATTERN = /\A#\s*@param\s+\S+\s+\[.+\]/ #: Regexp
-          YARD_RETURN_PATTERN = /\A#\s*@return\s+\[.+\]/ #: Regexp
-          YARD_YIELD_PATTERN = /\A#\s*@yield\s+\[.+\]/ #: Regexp
-          YARD_YIELDPARAM_PATTERN = /\A#\s*@yieldparam\s+\S+\s+\[.+\]/ #: Regexp
-          YARD_YIELDRETURN_PATTERN = /\A#\s*@yieldreturn\s+\[.+\]/ #: Regexp
+          # YARD comment patterns with capture groups for name, type, and description
+          # @rbs!
+          #   type yard_kind = :param | :return | :yield | :yieldparam | :yieldreturn
+
+          YARD_PATTERNS = {
+            param: /\A#\s*@param\s+(\S+)\s+\[([^\]]+)\](?:\s+(.+))?\z/,
+            return: /\A#\s*@return\s+\[([^\]]+)\](?:\s+(.+))?\z/,
+            yield: /\A#\s*@yield\s+\[([^\]]+)\](?:\s+(.+))?\z/,
+            yieldparam: /\A#\s*@yieldparam\s+(\S+)\s+\[([^\]]+)\](?:\s+(.+))?\z/,
+            yieldreturn: /\A#\s*@yieldreturn\s+\[([^\]]+)\](?:\s+(.+))?\z/
+          }.freeze #: Hash[yard_kind, Regexp]
+
+          # RBS comment pattern: # @rbs name: Type -- description
+          RBS_PARAM_PATTERN = /\A#\s+@rbs\s+(\S+?):\s*(.+?)(?:\s+--\s+(.+))?\z/ #: Regexp
 
           # @rbs node: Parser::AST::Node
           def on_def(node) #: void
@@ -61,26 +75,92 @@ module RuboCop
             preceding_comments = find_preceding_comments(method_line)
             return if preceding_comments.empty?
 
-            yard_type_comments = preceding_comments.select { |c| yard_type_comment?(c) }
-            return if yard_type_comments.empty?
+            yard_comments = preceding_comments.filter_map { |c| parse_yard_comment(c) }
+            return if yard_comments.empty?
 
-            return unless has_rbs_annotation?(preceding_comments, method_line)
+            rbs_comments = preceding_comments.filter_map { |c| parse_rbs_comment(c) }
+            return if rbs_comments.empty? && !has_rbs_signature?(preceding_comments, method_line)
 
-            yard_type_comments.each do |comment|
-              add_offense(comment) do |corrector|
-                remove_comment_line(corrector, comment)
-              end
+            yard_comments.each do |yard_info|
+              rbs_info = find_matching_rbs(yard_info, rbs_comments)
+              process_yard_comment(yard_info, rbs_info)
             end
           end
 
           # @rbs comment: Parser::Source::Comment
-          def yard_type_comment?(comment) #: bool
+          # @rbs return: { comment: Parser::Source::Comment, kind: yard_kind, name: String?, type: String, description: String? }?
+          def parse_yard_comment(comment)
             text = comment.text
-            text.match?(YARD_PARAM_PATTERN) ||
-              text.match?(YARD_RETURN_PATTERN) ||
-              text.match?(YARD_YIELD_PATTERN) ||
-              text.match?(YARD_YIELDPARAM_PATTERN) ||
-              text.match?(YARD_YIELDRETURN_PATTERN)
+
+            YARD_PATTERNS.each do |kind, pattern|
+              match = text.match(pattern)
+              next unless match
+
+              case kind
+              when :param, :yieldparam
+                return { comment: comment, kind: kind, name: match[1], type: match[2], description: match[3] }
+              when :return, :yield, :yieldreturn
+                return { comment: comment, kind: kind, name: nil, type: match[1], description: match[2] }
+              end
+            end
+
+            nil
+          end
+
+          # @rbs comment: Parser::Source::Comment
+          # @rbs return: { comment: Parser::Source::Comment, name: String, type: String, description: String? }?
+          def parse_rbs_comment(comment)
+            match = comment.text.match(RBS_PARAM_PATTERN)
+            return nil unless match
+
+            { comment: comment, name: match[1], type: match[2], description: match[3] }
+          end
+
+          # @rbs yard_info: { comment: Parser::Source::Comment, kind: yard_kind, name: String?, type: String, description: String? }
+          # @rbs rbs_comments: Array[{ comment: Parser::Source::Comment, name: String, type: String, description: String? }]
+          # @rbs return: { comment: Parser::Source::Comment, name: String, type: String, description: String? }?
+          def find_matching_rbs(yard_info, rbs_comments)
+            target_name = case yard_info[:kind]
+                          when :param, :yieldparam
+                            yard_info[:name]
+                          when :return, :yieldreturn
+                            'return'
+                          when :yield
+                            # @yield could match &block or yields
+                            return rbs_comments.find { |r| r[:name].start_with?('&') || r[:name] == 'yields' }
+                          end
+
+            rbs_comments.find { |r| r[:name] == target_name }
+          end
+
+          # @rbs yard_info: { comment: Parser::Source::Comment, kind: yard_kind, name: String?, type: String, description: String? }
+          # @rbs rbs_info: { comment: Parser::Source::Comment, name: String, type: String, description: String? }?
+          def process_yard_comment(yard_info, rbs_info) #: void
+            yard_comment = yard_info[:comment]
+            yard_description = yard_info[:description]
+
+            # If no matching RBS found but we know RBS exists, just remove YARD
+            unless rbs_info
+              add_offense(yard_comment, message: MSG) do |corrector|
+                remove_comment_line(corrector, yard_comment)
+              end
+              return
+            end
+
+            rbs_comment = rbs_info[:comment]
+            rbs_description = rbs_info[:description]
+
+            if yard_description && !rbs_description
+              # YARD has description, RBS doesn't - merge description into RBS
+              add_offense(yard_comment, message: MSG_WITH_MERGE) do |corrector|
+                merge_description_into_rbs(corrector, yard_comment, rbs_comment, yard_description)
+              end
+            else
+              # Either both have descriptions or only RBS has one - just remove YARD
+              add_offense(yard_comment, message: MSG) do |corrector|
+                remove_comment_line(corrector, yard_comment)
+              end
+            end
           end
 
           # @rbs method_line: Integer
@@ -103,17 +183,23 @@ module RuboCop
 
           # @rbs preceding_comments: Array[Parser::Source::Comment]
           # @rbs method_line: Integer
-          def has_rbs_annotation?(preceding_comments, method_line) #: bool
-            # Check for #: style signature on the line immediately before the method
-            signature_comment = preceding_comments.find do |c|
+          def has_rbs_signature?(preceding_comments, method_line) #: bool
+            preceding_comments.any? do |c|
               c.loc.line == method_line - 1 && c.text.match?(/\A#:/)
             end
-            return true if signature_comment
+          end
 
-            # Check for @rbs style annotations in preceding comments
-            preceding_comments.any? do |comment|
-              comment.text.match?(/\A#\s+@rbs\s+/)
-            end
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs yard_comment: Parser::Source::Comment
+          # @rbs rbs_comment: Parser::Source::Comment
+          # @rbs description: String
+          def merge_description_into_rbs(corrector, yard_comment, rbs_comment, description) #: void
+            # Remove YARD comment
+            remove_comment_line(corrector, yard_comment)
+
+            # Add description to RBS comment
+            rbs_end_pos = rbs_comment.source_range.end_pos
+            corrector.insert_after(rbs_comment.source_range, " -- #{description}")
           end
 
           # @rbs corrector: RuboCop::Cop::Corrector

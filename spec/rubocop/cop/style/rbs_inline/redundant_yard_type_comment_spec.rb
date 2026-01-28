@@ -4,16 +4,58 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
   let(:config) { RuboCop::Config.new }
 
   context 'when YARD @param and RBS type comments coexist' do
-    it 'registers an offense for YARD @param with @rbs annotation' do
+    it 'registers an offense for YARD @param with @rbs annotation (no descriptions)' do
       expect_offense(<<~RUBY)
-        # @param name [String] the name
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @param name [String]
+        ^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
         # @rbs name: String
         def greet(name); end
       RUBY
 
       expect_correction(<<~RUBY)
         # @rbs name: String
+        def greet(name); end
+      RUBY
+    end
+
+    it 'merges YARD description into RBS when RBS has no description' do
+      expect_offense(<<~RUBY)
+        # @param name [String] the user name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
+        # @rbs name: String
+        def greet(name); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs name: String -- the user name
+        def greet(name); end
+      RUBY
+    end
+
+    it 'removes YARD when both have descriptions (RBS description preserved)' do
+      expect_offense(<<~RUBY)
+        # @param name [String] the YARD description
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @rbs name: String -- the RBS description
+        def greet(name); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs name: String -- the RBS description
+        def greet(name); end
+      RUBY
+    end
+
+    it 'removes YARD when only RBS has description' do
+      expect_offense(<<~RUBY)
+        # @param name [String]
+        ^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @rbs name: String -- already documented
+        def greet(name); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs name: String -- already documented
         def greet(name); end
       RUBY
     end
@@ -32,30 +74,44 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
       RUBY
     end
 
-    it 'registers an offense for multiple YARD @params' do
+    it 'handles multiple YARD @params with merge' do
       expect_offense(<<~RUBY)
         # @param first [String] first name
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
         # @param last [String] last name
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
         # @rbs first: String
         # @rbs last: String
         def greet(first, last); end
       RUBY
 
       expect_correction(<<~RUBY)
-        # @rbs first: String
-        # @rbs last: String
+        # @rbs first: String -- first name
+        # @rbs last: String -- last name
         def greet(first, last); end
       RUBY
     end
   end
 
   context 'when YARD @return and RBS type comments coexist' do
-    it 'registers an offense for YARD @return with @rbs return annotation' do
+    it 'merges YARD @return description into RBS' do
       expect_offense(<<~RUBY)
-        # @return [Integer] the count
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @return [Integer] the total count
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
+        # @rbs return: Integer
+        def count; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs return: Integer -- the total count
+        def count; end
+      RUBY
+    end
+
+    it 'removes YARD @return when no description' do
+      expect_offense(<<~RUBY)
+        # @return [Integer]
+        ^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
         # @rbs return: Integer
         def count; end
       RUBY
@@ -66,10 +122,10 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
       RUBY
     end
 
-    it 'registers an offense for YARD @return with #: signature' do
+    it 'removes YARD @return with #: signature' do
       expect_offense(<<~RUBY)
-        # @return [Integer]
-        ^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @return [Integer] the count
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
         #: () -> Integer
         def count; end
       RUBY
@@ -82,10 +138,10 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
   end
 
   context 'when YARD @yield and RBS type comments coexist' do
-    it 'registers an offense for YARD @yield with @rbs annotation' do
+    it 'removes YARD @yield with @rbs &block annotation (no description)' do
       expect_offense(<<~RUBY)
-        # @yield [Integer] yields the value
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @yield [Integer]
+        ^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
         # @rbs &block: (Integer) -> void
         def each(&block); end
       RUBY
@@ -96,7 +152,21 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
       RUBY
     end
 
-    it 'registers an offense for YARD @yieldparam with @rbs annotation' do
+    it 'merges YARD @yield description into @rbs &block' do
+      expect_offense(<<~RUBY)
+        # @yield [Integer] yields the value
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
+        # @rbs &block: (Integer) -> void
+        def each(&block); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs &block: (Integer) -> void -- yields the value
+        def each(&block); end
+      RUBY
+    end
+
+    it 'removes YARD @yieldparam with @rbs annotation' do
       expect_offense(<<~RUBY)
         # @yieldparam value [Integer] the value
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
@@ -110,7 +180,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
       RUBY
     end
 
-    it 'registers an offense for YARD @yieldreturn with @rbs annotation' do
+    it 'removes YARD @yieldreturn with @rbs annotation' do
       expect_offense(<<~RUBY)
         # @yieldreturn [Boolean] whether to continue
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
@@ -126,18 +196,20 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
   end
 
   context 'when both @param and @return are redundant' do
-    it 'registers offenses for both' do
+    it 'handles mixed merge and remove' do
       expect_offense(<<~RUBY)
-        # @param name [String]
-        ^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @param name [String] the input name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
         # @return [Integer]
         ^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
-        #: (String) -> Integer
+        # @rbs name: String
+        # @rbs return: Integer
         def count(name); end
       RUBY
 
       expect_correction(<<~RUBY)
-        #: (String) -> Integer
+        # @rbs name: String -- the input name
+        # @rbs return: Integer
         def count(name); end
       RUBY
     end
@@ -170,7 +242,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
   context 'when only RBS comments exist (no YARD)' do
     it 'does not register an offense for @rbs annotations' do
       expect_no_offenses(<<~RUBY)
-        # @rbs name: String
+        # @rbs name: String -- the name
         # @rbs return: String
         def greet(name); end
       RUBY
@@ -203,27 +275,27 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
   end
 
   context 'with singleton methods (defs)' do
-    it 'registers an offense for YARD with RBS on class method' do
+    it 'merges description for YARD with RBS on class method' do
       expect_offense(<<~RUBY)
-        # @param name [String]
-        ^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+        # @param name [String] the class method param
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
         # @rbs name: String
         def self.greet(name); end
       RUBY
 
       expect_correction(<<~RUBY)
-        # @rbs name: String
+        # @rbs name: String -- the class method param
         def self.greet(name); end
       RUBY
     end
   end
 
   context 'with indented code' do
-    it 'registers an offense and corrects properly' do
+    it 'registers an offense and merges properly' do
       expect_offense(<<~RUBY)
         class Foo
-          # @param name [String]
-          ^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Use RBS inline annotation instead.
+          # @param name [String] indented description
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
           # @rbs name: String
           def greet(name); end
         end
@@ -231,7 +303,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
 
       expect_correction(<<~RUBY)
         class Foo
-          # @rbs name: String
+          # @rbs name: String -- indented description
           def greet(name); end
         end
       RUBY
@@ -245,6 +317,36 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantYardTypeComment, :config
 
         # @rbs name: String
         def greet(name); end
+      RUBY
+    end
+  end
+
+  context 'with complex RBS types' do
+    it 'handles RBS with union types' do
+      expect_offense(<<~RUBY)
+        # @param value [String] the value
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
+        # @rbs value: String | Integer
+        def process(value); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs value: String | Integer -- the value
+        def process(value); end
+      RUBY
+    end
+
+    it 'handles RBS with generic types' do
+      expect_offense(<<~RUBY)
+        # @param items [Array] the items
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/RedundantYardTypeComment: Redundant YARD type comment. Description merged into RBS annotation.
+        # @rbs items: Array[String]
+        def process(items); end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs items: Array[String] -- the items
+        def process(items); end
       RUBY
     end
   end
