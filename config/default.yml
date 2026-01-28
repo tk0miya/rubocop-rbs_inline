@@ -18,6 +18,11 @@ Style/RbsInline/ParametersSeparator:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/RedundantYardTypeComment:
+  Description: "Checks for YARD type comments that are redundant with RBS inline annotations."
+  Enabled: true
+  VersionAdded: "1.5.0"
+
 Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true
