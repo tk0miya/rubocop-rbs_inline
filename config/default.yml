@@ -18,6 +18,15 @@ Style/RbsInline/ParametersSeparator:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/RedundantReturnType:
+  Description: "Checks for redundant return type annotations when both `@rbs return` and inline `#:` are used."
+  Enabled: true
+  VersionAdded: "1.5.0"
+  EnforcedStyle: inline_comment
+  SupportedStyles:
+    - inline_comment
+    - rbs_return_comment
+
 Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true

@@ -1,0 +1,67 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_return_type.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant return type annotations when both `# @rbs return`
+        # and inline `#:` comments are used on the same method definition.
+        #
+        # @example EnforcedStyle: inline_comment (default)
+        #   # bad
+        #   # @rbs return: String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # good
+        #   def method(arg) #: String
+        #   end
+        #
+        # @example EnforcedStyle: rbs_return_comment
+        #   # bad
+        #   # @rbs return: String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # good
+        #   # @rbs return: String
+        #   def method(arg)
+        #   end
+        class RedundantReturnType < Base
+          include ConfigurableEnforcedStyle
+          include RangeHelp
+
+          MSG_RBS_RETURN: ::String
+
+          MSG_INLINE: ::String
+
+          attr_reader result: Array[RBS::Inline::AnnotationParser::ParsingResult]
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_defs: (Parser::AST::Node node) -> void
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs def_line: Integer
+          def find_inline_comment: (Integer def_line) -> Parser::Source::Comment?
+
+          # @rbs def_line: Integer
+          def find_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
+
+          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
+
+          # @rbs byte_offset: Integer
+          def character_offset: (Integer byte_offset) -> Integer
+        end
+      end
+    end
+  end
+end
