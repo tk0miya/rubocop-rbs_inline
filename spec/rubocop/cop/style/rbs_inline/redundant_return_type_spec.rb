@@ -19,6 +19,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
                           ^^^^^^^^^ Redundant inline return type annotation.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #: () -> String
+          def method(arg)
+          end
+        RUBY
       end
     end
 
@@ -28,6 +34,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           #: () -> String
           def self.method(arg) #: String
                                ^^^^^^^^^ Redundant inline return type annotation.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #: () -> String
+          def self.method(arg)
           end
         RUBY
       end
@@ -42,6 +54,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg)
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #: () -> String
+          def method(arg)
+          end
+        RUBY
       end
     end
 
@@ -50,6 +68,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
         expect_offense(<<~RUBY)
           # @rbs return: String
           ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+          #: () -> String
+          def self.method(arg)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
           #: () -> String
           def self.method(arg)
           end
@@ -67,6 +91,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
                           ^^^^^^^^^ Redundant inline return type annotation.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #: () -> String
+          def method(arg)
+          end
+        RUBY
       end
     end
 
@@ -76,6 +106,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           # @rbs arg: Integer
           # @rbs return: String
           ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+          #: (Integer) -> String
+          def method(arg)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @rbs arg: Integer
           #: (Integer) -> String
           def method(arg)
           end
@@ -131,6 +168,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
                           ^^^^^^^^^ Redundant inline return type annotation.
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -141,6 +180,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           #:   -> String
           def method(arg) #: String
                           ^^^^^^^^^ Redundant inline return type annotation.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #: (Integer)
+          #:   -> String
+          def method(arg)
           end
         RUBY
       end
@@ -165,6 +211,11 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg) #: String
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def method(arg) #: String
+          end
+        RUBY
       end
     end
 
@@ -173,6 +224,11 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
         expect_offense(<<~RUBY)
           # @rbs return: String
           ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+          def self.method(arg) #: String
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
           def self.method(arg) #: String
           end
         RUBY
@@ -188,6 +244,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg) #: String
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          # @rbs arg: Integer
+          def method(arg) #: String
+          end
+        RUBY
       end
     end
 
@@ -199,6 +261,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg) #: String
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -210,6 +274,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def self.method(arg) #: String
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -220,6 +286,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
           #: () -> String
           ^^^^^^^^^^^^^^^ Redundant annotation comment.
+          def method(arg) #: String
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #: () -> String
           def method(arg) #: String
           end
         RUBY
@@ -234,6 +306,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg) #: String
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -286,6 +360,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg)
           end
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -308,6 +384,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
                           ^^^^^^^^^ Redundant inline return type annotation.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          # @rbs return: String
+          def method(arg)
+          end
+        RUBY
       end
     end
 
@@ -317,6 +399,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           # @rbs return: String
           def self.method(arg) #: String
                                ^^^^^^^^^ Redundant inline return type annotation.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @rbs return: String
+          def self.method(arg)
           end
         RUBY
       end
@@ -331,6 +419,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def method(arg)
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -343,6 +433,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           def self.method(arg)
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -354,6 +446,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
           ^^^^^^^^^^^^^^^ Redundant annotation comment.
           def method(arg) #: String
                           ^^^^^^^^^ Redundant inline return type annotation.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @rbs return: String
+          #: () -> String
+          def method(arg)
           end
         RUBY
       end
@@ -397,6 +496,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
                           ^^^^^^^^^ Redundant inline return type annotation.
           end
         RUBY
+
+        expect_no_corrections
       end
     end
   end
