@@ -146,14 +146,16 @@ module RuboCop
 
           # @rbs def_line: Integer
           def find_annotation_comments(def_line) #: Array[Parser::Source::Comment]?
-            comments = [] #: Array[Parser::Source::Comment]
-            line = def_line - 1
-            while line.positive?
-              comment = processed_source.comments.find { |c| c.loc.expression.line == line }
-              break if comment.nil? || !standalone_comment?(comment)
+            leading_annotation = find_leading_annotation(def_line)
+            return unless leading_annotation
 
-              comments.unshift(comment) if comment.text.match?(/\A#:/)
-              line -= 1
+            annotation_lines = leading_annotation.comments
+                                                 .select { |c| c.location.slice.start_with?('#:') }
+                                                 .map { |c| c.location.start_line }
+            return if annotation_lines.empty?
+
+            comments = processed_source.comments.select do |c|
+              annotation_lines.include?(c.loc.expression.line)
             end
             comments.empty? ? nil : comments
           end
@@ -167,36 +169,22 @@ module RuboCop
 
           # @rbs def_line: Integer
           def find_return_annotation(def_line) #: RBS::Inline::AST::Annotations::ReturnType?
-            comment_lines = contiguous_comment_lines_above(def_line)
-            parsing_result = result.find do |r|
-              r.comments.map(&:location).map(&:start_line).intersect?(comment_lines)
-            end
-            return unless parsing_result
+            leading_annotation = find_leading_annotation(def_line)
+            return unless leading_annotation
 
             ret = nil #: RBS::Inline::AST::Annotations::ReturnType?
-            parsing_result.each_annotation do |annotation|
+            leading_annotation.each_annotation do |annotation|
               ret = annotation if annotation.is_a?(RBS::Inline::AST::Annotations::ReturnType)
             end
             ret
           end
 
-          # @rbs comment: Parser::Source::Comment
-          def standalone_comment?(comment) #: bool
-            line_text = processed_source.lines[comment.loc.expression.line - 1]
-            line_text.strip.start_with?('#')
-          end
-
           # @rbs def_line: Integer
-          def contiguous_comment_lines_above(def_line) #: Array[Integer]
-            lines = [] #: Array[Integer]
-            line = def_line - 1
-            while line.positive?
-              break unless processed_source.comments.any? { |c| c.loc.expression.line == line }
-
-              lines << line
-              line -= 1
+          def find_leading_annotation(def_line) #: RBS::Inline::AnnotationParser::ParsingResult?
+            result.find do |r|
+              last_comment = r.comments.last or next
+              last_comment.location.start_line + 1 == def_line
             end
-            lines
           end
 
           def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
