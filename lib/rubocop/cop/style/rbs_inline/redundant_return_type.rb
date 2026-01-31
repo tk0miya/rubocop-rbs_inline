@@ -64,6 +64,7 @@ module RuboCop
         #   end
         #
         class RedundantReturnType < Base # rubocop:disable Metrics/ClassLength
+          extend AutoCorrector
           include ConfigurableEnforcedStyle
           include RangeHelp
 
@@ -100,21 +101,23 @@ module RuboCop
               return
             end
 
+            correctable = sources.key?(style)
             sources.each do |type, value|
-              add_offense_for(type, value) unless type == style
+              add_offense_for(type, value, correctable:) unless type == style
             end
           end
 
           # @rbs type: Symbol
           # @rbs value: Object
-          def add_offense_for(type, value) #: void
+          # @rbs correctable: bool
+          def add_offense_for(type, value, correctable:) #: void
             case type
             when :annotation_comment
               add_offense_for_annotation(value)
             when :inline_comment
-              add_offense_for_inline(value)
+              add_offense_for_inline(value, correctable:)
             when :rbs_return_comment
-              add_offense_for_rbs_return(value)
+              add_offense_for_rbs_return(value, correctable:)
             end
           end
 
@@ -129,18 +132,27 @@ module RuboCop
           end
 
           # @rbs comment: Parser::Source::Comment
-          def add_offense_for_inline(comment) #: void
-            add_offense(comment, message: MSG_INLINE) do
+          # @rbs correctable: bool
+          def add_offense_for_inline(comment, correctable:) #: void
+            add_offense(comment, message: MSG_INLINE) do |corrector|
               unexpected_style_detected(:inline_comment)
+              next unless correctable
+
+              removal_range = range_with_surrounding_space(range: comment.loc.expression, side: :left, newlines: false)
+              corrector.remove(removal_range)
             end
           end
 
           # @rbs annotation: RBS::Inline::AST::Annotations::ReturnType
-          def add_offense_for_rbs_return(annotation) #: void
+          # @rbs correctable: bool
+          def add_offense_for_rbs_return(annotation, correctable:) #: void
             loc = annotation.source.comments.first&.location or return
             range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
-            add_offense(range, message: MSG_RBS_RETURN) do
+            add_offense(range, message: MSG_RBS_RETURN) do |corrector|
               unexpected_style_detected(:rbs_return_comment)
+              next unless correctable
+
+              corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
           end
 

@@ -32,6 +32,9 @@ RSpec/NestedGroups:
 Style/Documentation:
   Enabled: false
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always
+
 # for RBS::Inline
 Layout/LeadingCommentSpace:
   Enabled: false
