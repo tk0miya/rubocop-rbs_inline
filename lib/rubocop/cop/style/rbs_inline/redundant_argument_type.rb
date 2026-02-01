@@ -14,7 +14,7 @@ module RuboCop
         # - `annotation_comment`: Prefers `#:` annotation comments with parameter types
         # - `rbs_param_comment`: Prefers `# @rbs param:` annotations for parameter types
         #
-        # @example EnforcedStyle: annotation_comment (default)
+        # @example EnforcedStyle: annotation_comment
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
@@ -31,7 +31,7 @@ module RuboCop
         #   def method(a) #: void
         #   end
         #
-        # @example EnforcedStyle: rbs_param_comment
+        # @example EnforcedStyle: rbs_param_comment (default)
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
