@@ -1,0 +1,38 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/comment_parser.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Utility module for parsing RBS inline comments
+        # @rbs module-self RuboCop::Cop::Base
+        module CommentParser : RuboCop::Cop::Base
+          attr_reader parsed_comments: Array[RBS::Inline::AnnotationParser::ParsingResult]
+
+          # Parse comments from the source code
+          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
+
+          # Convert byte offset to character offset
+          # @rbs byte_offset: Integer
+          def character_offset: (Integer byte_offset) -> Integer
+
+          # Find the leading annotation comment before the given line
+          # @rbs def_line: Integer
+          def find_leading_annotation: (Integer def_line) -> RBS::Inline::AnnotationParser::ParsingResult?
+
+          # Find annotation comments (#:) before a method definition
+          # @rbs def_line: Integer
+          def find_annotation_comments: (Integer def_line) -> Array[Parser::Source::Comment]?
+
+          # Find inline comment on the same line as the method definition
+          # @rbs def_line: Integer
+          def find_inline_comment: (Integer def_line) -> Parser::Source::Comment?
+
+          # Find @rbs return annotation before a method definition
+          # @rbs def_line: Integer
+          def find_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
+        end
+      end
+    end
+  end
+end

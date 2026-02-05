@@ -18,15 +18,14 @@ module RuboCop
         #   def method(arg); end
         #
         class UnmatchedAnnotations < Base # rubocop:disable Metrics/ClassLength
+          include CommentParser
           include RangeHelp
 
           MSG = 'target parameter not found.'
 
-          attr_reader :result #: Array[RBS::Inline::AnnotationParser::ParsingResult]
-
           def on_new_investigation #: void
             super
-            @result = parse_comments
+            parse_comments
           end
 
           # @rbs node: Parser::AST::Node
@@ -40,7 +39,7 @@ module RuboCop
           end
 
           def on_investigation_end #: void
-            result.each do |comment|
+            parsed_comments.each do |comment|
               comment.each_annotation do |annotation|
                 case annotation
                 when RBS::Inline::AST::Annotations::BlockType,
@@ -60,10 +59,12 @@ module RuboCop
           def process(node) #: void # rubocop:disable Metrics/CyclomaticComplexity
             arguments = arguments_for(node)
 
-            comment = result.find { |r| r.comments.map(&:location).map(&:start_line).include? node.location.line - 1 }
+            comment = parsed_comments.find do |r|
+              r.comments.map(&:location).map(&:start_line).include?(node.location.line - 1)
+            end
             return unless comment
 
-            result.delete(comment)
+            parsed_comments.delete(comment)
             comment.each_annotation do |annotation|
               case annotation
               when RBS::Inline::AST::Annotations::IvarType
@@ -117,11 +118,6 @@ module RuboCop
             end
           end
 
-          def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
-            parsed_result = Prism.parse(processed_source.buffer.source)
-            RBS::Inline::AnnotationParser.parse(parsed_result.comments)
-          end
-
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
           #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
@@ -150,15 +146,6 @@ module RuboCop
             start_offset = loc.start_offset + (comment.index(name) || 0)
             range = range_between(character_offset(start_offset), character_offset(start_offset + name.size))
             add_offense(range)
-          end
-
-          # @rbs byte_offset: Integer
-          def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            text = source[...byte_offset] or raise
-            text.force_encoding(processed_source.buffer.source.encoding).size
-          rescue StandardError
-            byte_offset
           end
         end
       end
