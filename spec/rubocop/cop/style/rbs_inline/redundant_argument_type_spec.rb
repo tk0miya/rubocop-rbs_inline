@@ -146,9 +146,16 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
     end
 
     context 'when #: has empty params and # @rbs param: is present' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense on the # @rbs param: annotation' do
+        expect_offense(<<~RUBY)
           # @rbs a: Integer
+          ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+          #: () -> void
+          def method(a)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
           #: () -> void
           def method(a)
           end
@@ -157,9 +164,16 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
     end
 
     context 'when #: has no parens and # @rbs param: is present' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense on the # @rbs param: annotation' do
+        expect_offense(<<~RUBY)
           # @rbs a: Integer
+          ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+          #: -> void
+          def method(a)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
           #: -> void
           def method(a)
           end
@@ -266,13 +280,16 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
     end
 
     context 'when #: has empty params and # @rbs param: is present' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense on the #: annotation' do
+        expect_offense(<<~RUBY)
           # @rbs a: Integer
           #: () -> void
+          ^^^^^^^^^^^^^ Redundant annotation comment.
           def method(a)
           end
         RUBY
+
+        expect_no_corrections
       end
     end
 

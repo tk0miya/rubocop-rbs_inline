@@ -82,16 +82,9 @@ module RuboCop
               return
             end
 
-            redundant = find_redundant_annotations(annotation_comments, param_annotations)
-
-            if redundant.empty?
-              correct_style_detected
-              return
-            end
-
             case style
             when :annotation_comment
-              redundant.each { |a| add_offense_for_rbs_param(a) }
+              param_annotations.each { |a| add_offense_for_rbs_param(a) }
             when :rbs_param_comment
               add_offense_for_annotation(annotation_comments)
             end
@@ -116,25 +109,6 @@ module RuboCop
               next unless style == :annotation_comment
 
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
-            end
-          end
-
-          # @rbs annotation_comments: Array[Parser::Source::Comment]
-          # @rbs param_annotations: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]
-          def find_redundant_annotations(annotation_comments, param_annotations) #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]
-            text = annotation_comments.map { |c| c.text.sub(/\A#:\s?/, '') }.join(' ').strip
-            has_positional_params = text.match?(/\A\(\s*[^)\s]/)
-            has_block_type = text.include?('{')
-
-            param_annotations.select do |a|
-              case a
-              when RBS::Inline::AST::Annotations::VarType
-                has_positional_params
-              when RBS::Inline::AST::Annotations::BlockType
-                has_block_type
-              else
-                false
-              end
             end
           end
 
