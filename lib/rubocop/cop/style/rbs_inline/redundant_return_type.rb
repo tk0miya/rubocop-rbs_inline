@@ -63,8 +63,9 @@ module RuboCop
         #   def method(arg)
         #   end
         #
-        class RedundantReturnType < Base # rubocop:disable Metrics/ClassLength
+        class RedundantReturnType < Base
           extend AutoCorrector
+          include CommentParser
           include ConfigurableEnforcedStyle
           include RangeHelp
 
@@ -72,11 +73,9 @@ module RuboCop
           MSG_INLINE = 'Redundant inline return type annotation.'
           MSG_ANNOTATION = 'Redundant annotation comment.'
 
-          attr_reader :result #: Array[RBS::Inline::AnnotationParser::ParsingResult]
-
           def on_new_investigation #: void
             super
-            @result = parse_comments
+            parse_comments
           end
 
           # @rbs node: Parser::AST::Node
@@ -154,63 +153,6 @@ module RuboCop
 
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
-          end
-
-          # @rbs def_line: Integer
-          def find_annotation_comments(def_line) #: Array[Parser::Source::Comment]?
-            leading_annotation = find_leading_annotation(def_line)
-            return unless leading_annotation
-
-            annotation_lines = leading_annotation.comments
-                                                 .select { |c| c.location.slice.start_with?('#:') }
-                                                 .map { |c| c.location.start_line }
-            return if annotation_lines.empty?
-
-            comments = processed_source.comments.select do |c|
-              annotation_lines.include?(c.loc.expression.line)
-            end
-            comments.empty? ? nil : comments
-          end
-
-          # @rbs def_line: Integer
-          def find_inline_comment(def_line) #: Parser::Source::Comment?
-            processed_source.comments.find do |c|
-              c.loc.expression.line == def_line && c.text.match?(/\A#:/)
-            end
-          end
-
-          # @rbs def_line: Integer
-          def find_return_annotation(def_line) #: RBS::Inline::AST::Annotations::ReturnType?
-            leading_annotation = find_leading_annotation(def_line)
-            return unless leading_annotation
-
-            ret = nil #: RBS::Inline::AST::Annotations::ReturnType?
-            leading_annotation.each_annotation do |annotation|
-              ret = annotation if annotation.is_a?(RBS::Inline::AST::Annotations::ReturnType)
-            end
-            ret
-          end
-
-          # @rbs def_line: Integer
-          def find_leading_annotation(def_line) #: RBS::Inline::AnnotationParser::ParsingResult?
-            result.find do |r|
-              last_comment = r.comments.last or next
-              last_comment.location.start_line + 1 == def_line
-            end
-          end
-
-          def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
-            parsed_result = Prism.parse(processed_source.buffer.source)
-            RBS::Inline::AnnotationParser.parse(parsed_result.comments)
-          end
-
-          # @rbs byte_offset: Integer
-          def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            text = source[...byte_offset] or raise
-            text.force_encoding(processed_source.buffer.source.encoding).size
-          rescue StandardError
-            byte_offset
           end
         end
       end

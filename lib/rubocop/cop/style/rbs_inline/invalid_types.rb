@@ -21,6 +21,7 @@ module RuboCop
         #   def method(arg); end
         #
         class InvalidTypes < Base
+          include CommentParser
           include RangeHelp
           include RBS::Inline::AST::Annotations
           include RBS::Inline::AST::Members
@@ -53,22 +54,6 @@ module RuboCop
                 end
               end
             end
-          end
-
-          private
-
-          def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
-            parsed_result = Prism.parse(processed_source.buffer.source)
-            RBS::Inline::AnnotationParser.parse(parsed_result.comments)
-          end
-
-          # @rbs byte_offset: Integer
-          def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            text = source[...byte_offset] or raise
-            text.force_encoding(processed_source.buffer.source.encoding).size
-          rescue StandardError
-            byte_offset
           end
         end
       end
