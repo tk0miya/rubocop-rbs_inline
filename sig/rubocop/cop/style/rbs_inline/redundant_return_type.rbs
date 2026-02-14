@@ -4,12 +4,39 @@ module RuboCop
   module Cop
     module Style
       module RbsInline
-        # Checks for redundant return type annotations when both `# @rbs return`
-        # and inline `#:` comments are used on the same method definition.
+        # Checks for redundant return type annotations when multiple
+        # return type specifications exist on the same method definition.
+        #
+        # Supports three styles:
+        # - `annotation_comment`: Prefers `#:` annotation comments before the method
+        # - `inline_comment`: Prefers inline `#:` return type on the def line
+        # - `rbs_return_comment`: Prefers `# @rbs return` annotations
+        #
+        # @example EnforcedStyle: annotation_comment
+        #   # bad
+        #   #: () -> String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # bad
+        #   # @rbs return: String
+        #   #: () -> String
+        #   def method(arg)
+        #   end
+        #
+        #   # good
+        #   #: () -> String
+        #   def method(arg)
+        #   end
         #
         # @example EnforcedStyle: inline_comment (default)
         #   # bad
         #   # @rbs return: String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # bad
+        #   #: () -> String
         #   def method(arg) #: String
         #   end
         #
@@ -23,43 +50,58 @@ module RuboCop
         #   def method(arg) #: String
         #   end
         #
+        #   # bad
+        #   # @rbs return: String
+        #   #: () -> String
+        #   def method(arg)
+        #   end
+        #
         #   # good
         #   # @rbs return: String
         #   def method(arg)
         #   end
         class RedundantReturnType < Base
+          extend AutoCorrector
+
+          include CommentParser
+
           include ConfigurableEnforcedStyle
+
           include RangeHelp
 
           MSG_RBS_RETURN: ::String
 
           MSG_INLINE: ::String
 
-          attr_reader result: Array[RBS::Inline::AnnotationParser::ParsingResult]
+          MSG_ANNOTATION: ::String
 
           def on_new_investigation: () -> void
 
           # @rbs node: Parser::AST::Node
           def on_def: (Parser::AST::Node node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_defs: (Parser::AST::Node node) -> void
+          alias on_defs on_def
 
           private
 
           # @rbs node: Parser::AST::Node
           def process: (Parser::AST::Node node) -> void
 
-          # @rbs def_line: Integer
-          def find_inline_comment: (Integer def_line) -> Parser::Source::Comment?
+          # @rbs type: Symbol
+          # @rbs value: Object
+          # @rbs correctable: bool
+          def add_offense_for: (Symbol type, Object value, correctable: bool) -> void
 
-          # @rbs def_line: Integer
-          def find_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
+          # @rbs comments: Array[Parser::Source::Comment]
+          def add_offense_for_annotation: (Array[Parser::Source::Comment] comments) -> void
 
-          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
+          # @rbs comment: Parser::Source::Comment
+          # @rbs correctable: bool
+          def add_offense_for_inline: (Parser::Source::Comment comment, correctable: bool) -> void
 
-          # @rbs byte_offset: Integer
-          def character_offset: (Integer byte_offset) -> Integer
+          # @rbs annotation: RBS::Inline::AST::Annotations::ReturnType
+          # @rbs correctable: bool
+          def add_offense_for_rbs_return: (RBS::Inline::AST::Annotations::ReturnType annotation, correctable: bool) -> void
         end
       end
     end
