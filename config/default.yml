@@ -18,6 +18,15 @@ Style/RbsInline/ParametersSeparator:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/RedundantArgumentType:
+  Description: "Checks for redundant argument type annotations when both annotation comments and @rbs parameter comments exist."
+  Enabled: true
+  VersionAdded: "1.5.0"
+  EnforcedStyle: rbs_param_comment
+  SupportedStyles:
+    - annotation_comment
+    - rbs_param_comment
+
 Style/RbsInline/RedundantReturnType:
   Description: "Checks for redundant return type annotations when multiple return type specifications exist."
   Enabled: true

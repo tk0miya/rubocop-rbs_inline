@@ -15,11 +15,11 @@ module RuboCop
         #   # @rbs arg: String
         #   def method(arg); end
         class UnmatchedAnnotations < Base
+          include CommentParser
+
           include RangeHelp
 
           MSG: ::String
-
-          attr_reader result: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
           def on_new_investigation: () -> void
 
@@ -42,8 +42,6 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def args_for: (Parser::AST::Node node) -> Parser::AST::Node
 
-          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
-
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
           #                  RBS::Inline::AST::Annotations::IvarType |
           #                  RBS::Inline::AST::Annotations::ReturnType |
@@ -55,9 +53,6 @@ module RuboCop
           #                  RBS::Inline::AST::Annotations::ReturnType |
           #                  RBS::Inline::AST::Annotations::VarType
           def add_offense_for: (RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::IvarType | RBS::Inline::AST::Annotations::ReturnType | RBS::Inline::AST::Annotations::VarType annotation) -> void
-
-          # @rbs byte_offset: Integer
-          def character_offset: (Integer byte_offset) -> Integer
         end
       end
     end

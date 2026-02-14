@@ -1,0 +1,85 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_argument_type.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant argument type annotations when both
+        # annotation comments (`#:`) and `@rbs` parameter comments
+        # specify argument types for the same method.
+        #
+        # Supports two styles:
+        # - `annotation_comment`: Prefers `#:` annotation comments with parameter types
+        # - `rbs_param_comment`: Prefers `# @rbs param:` annotations for parameter types
+        #
+        # @example EnforcedStyle: annotation_comment
+        #   # bad
+        #   # @rbs a: Integer
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # good
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # good
+        #   # @rbs a: Integer
+        #   def method(a) #: void
+        #   end
+        #
+        # @example EnforcedStyle: rbs_param_comment (default)
+        #   # bad
+        #   # @rbs a: Integer
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # good
+        #   # @rbs a: Integer
+        #   def method(a) #: void
+        #   end
+        #
+        #   # good
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        class RedundantArgumentType < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include ConfigurableEnforcedStyle
+
+          include RangeHelp
+
+          MSG_RBS_PARAM: ::String
+
+          MSG_ANNOTATION: ::String
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs comments: Array[Parser::Source::Comment]
+          def add_offense_for_annotation: (Array[Parser::Source::Comment] comments) -> void
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          def add_offense_for_rbs_param: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType annotation) -> void
+
+          # @rbs def_line: Integer
+          def find_param_annotations: (Integer def_line) -> Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]?
+        end
+      end
+    end
+  end
+end

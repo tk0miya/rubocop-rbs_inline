@@ -18,6 +18,8 @@ module RuboCop
         #   # @rbs &block: () -> void
         #   def method(arg); end
         class InvalidTypes < Base
+          include CommentParser
+
           include RangeHelp
 
           include RBS::Inline::AST::Annotations
@@ -27,13 +29,6 @@ module RuboCop
           MSG: ::String
 
           def on_new_investigation: () -> void
-
-          private
-
-          def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
-
-          # @rbs byte_offset: Integer
-          def character_offset: (Integer byte_offset) -> Integer
         end
       end
     end
