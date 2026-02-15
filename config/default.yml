@@ -17,7 +17,7 @@ Style/RbsInline/MissingTypeAnnotation:
     - method_type_signature
     - doc_style
     - doc_style_and_return_annotation
-  Visibility: public
+  Visibility: all
 
 Style/RbsInline/KeywordSeparator:
   Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."

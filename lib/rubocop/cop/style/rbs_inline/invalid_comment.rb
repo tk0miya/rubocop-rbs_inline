@@ -44,7 +44,8 @@ module RuboCop
 
           private
 
-          def consume_embedded_rbs(comments) # rubocop:disable Metrics/MethodLength
+          # @rbs comments: Array[Parser::Source::Comment]
+          def consume_embedded_rbs(comments) #: Array[Parser::Source::Comment] # rubocop:disable Metrics/MethodLength
             in_embedded = false
             indent = 1
             line = 0

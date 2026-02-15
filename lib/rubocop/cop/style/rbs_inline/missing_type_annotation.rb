@@ -17,8 +17,8 @@ module RuboCop
         #
         # The `Visibility` option determines which methods to check:
         #
-        # - `public`: Only checks public methods and `attr_*` declarations (default)
-        # - `all`: Checks all methods regardless of visibility
+        # - `all`: Checks all methods regardless of visibility (default)
+        # - `public`: Only checks public methods and `attr_*` declarations
         #
         # Methods annotated with `# @rbs skip` are always excluded from inspection.
         #
