@@ -6,7 +6,7 @@ module RuboCop
   module RbsInline
     # A plugin that integrates RuboCop RBS Inline with RuboCop's plugin system.
     class Plugin < LintRoller::Plugin
-      def about
+      def about #: LintRoller::About
         LintRoller::About.new(
           name: 'rubocop-rbs_inline',
           version: RuboCop::RbsInline::VERSION,
@@ -16,11 +16,13 @@ module RuboCop
         )
       end
 
-      def supported?(context)
+      # @rbs context: untyped
+      def supported?(context) #: bool
         context.engine == :rubocop
       end
 
-      def rules(_context)
+      # @rbs _context: untyped
+      def rules(_context) #: LintRoller::Rules
         project_root = Pathname.new(__dir__).join('../../../') # steep:ignore
 
         LintRoller::Rules.new(type: :path, config_format: :rubocop, value: project_root.join('config', 'default.yml'))

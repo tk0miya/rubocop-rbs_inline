@@ -1,6 +1,7 @@
 plugins:
   - rubocop-rake
   - rubocop-rspec
+  - rubocop-rbs_inline
 
 AllCops:
   NewCops: enable
@@ -44,3 +45,10 @@ Layout/LeadingCommentSpace:
 
 Style/CommentedKeyword:
   Enabled: false
+
+# rubocop-rbs_inline configuration
+Style/RbsInline/MissingTypeAnnotation:
+  EnforcedStyle: doc_style_and_return_annotation
+
+Style/RbsInline/RedundantArgumentType:
+  EnforcedStyle: doc_style
