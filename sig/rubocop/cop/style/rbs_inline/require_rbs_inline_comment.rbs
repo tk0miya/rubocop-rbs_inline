@@ -1,0 +1,77 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/require_rbs_inline_comment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for the presence or absence of `# rbs_inline:` magic comment.
+        #
+        # RBS::Inline supports two modes: opt-in (requires `# rbs_inline: enabled`) and
+        # opt-out (processes all files by default). This cop enforces consistency in which
+        # mode your codebase uses.
+        #
+        # @example EnforcedStyle: always (default)
+        #   # bad
+        #   # (no rbs_inline comment)
+        #   class Foo
+        #   end
+        #
+        #   # good
+        #   # rbs_inline: enabled
+        #   class Foo
+        #   end
+        #
+        #   # good
+        #   # rbs_inline: disabled
+        #   class Foo
+        #   end
+        #
+        # @example EnforcedStyle: never
+        #   # bad
+        #   # rbs_inline: enabled
+        #   class Foo
+        #   end
+        #
+        #   # good
+        #   # rbs_inline: disabled
+        #   class Foo
+        #   end
+        #
+        #   # good
+        #   # (no rbs_inline comment)
+        #   class Foo
+        #   end
+        class RequireRbsInlineComment < Base
+          include RangeHelp
+
+          extend AutoCorrector
+
+          MSG_MISSING: ::String
+
+          MSG_FORBIDDEN: ::String
+
+          def on_new_investigation: () -> void
+
+          private
+
+          def find_rbs_inline_magic_comment: () -> Parser::Source::Comment?
+
+          # @rbs magic_comment: Parser::Source::Comment?
+          def disabled?: (Parser::Source::Comment? magic_comment) -> bool
+
+          # @rbs magic_comment: Parser::Source::Comment?
+          def check_always_style: (Parser::Source::Comment? magic_comment) -> void
+
+          # @rbs magic_comment: Parser::Source::Comment?
+          def check_never_style: (Parser::Source::Comment? magic_comment) -> void
+
+          def find_insert_position: () -> Integer
+
+          def find_last_comment_in_first_block: () -> Parser::Source::Comment
+
+          def style: () -> Symbol
+        end
+      end
+    end
+  end
+end
