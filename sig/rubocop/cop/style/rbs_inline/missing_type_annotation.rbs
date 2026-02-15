@@ -111,7 +111,7 @@ module RuboCop
 
           attr_reader visibility_stack: Array[visibility]
 
-          attr_reader pending_nodes_stack: Array[Array[MethodEntry]]
+          attr_reader unannotated_methods_stack: Array[Array[MethodEntry]]
 
           def on_new_investigation: () -> void
 
@@ -140,6 +140,9 @@ module RuboCop
           def on_send: (Parser::AST::Node node) -> void
 
           private
+
+          # Returns the method entries for the current scope (class/module)
+          def current_method_entries: () -> Array[MethodEntry]
 
           # @rbs node: Parser::AST::Node
           def on_visibility_modifier: (Parser::AST::Node node) -> void
