@@ -4,11 +4,13 @@ module RuboCop
   module RbsInline
     # A plugin that integrates RuboCop RBS Inline with RuboCop's plugin system.
     class Plugin < LintRoller::Plugin
-      def about: () -> untyped
+      def about: () -> LintRoller::About
 
-      def supported?: (untyped context) -> untyped
+      # @rbs context: untyped
+      def supported?: (untyped context) -> bool
 
-      def rules: (untyped _context) -> untyped
+      # @rbs _context: untyped
+      def rules: (untyped _context) -> LintRoller::Rules
     end
   end
 end
