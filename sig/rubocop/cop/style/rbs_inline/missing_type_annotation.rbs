@@ -9,9 +9,9 @@ module RuboCop
         #
         # The `EnforcedStyle` option determines which annotation format is required:
         #
-        # - `annotation_comment`: Requires `#:` annotation comments only
-        # - `yard_style_comment`: Requires `# @rbs` annotations
-        # - `yard_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+        # - `method_type_signature`: Requires `#:` annotation comments only
+        # - `doc_style`: Requires `# @rbs` annotations
+        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -20,7 +20,7 @@ module RuboCop
         #
         # Methods annotated with `# @rbs skip` are always excluded from inspection.
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   def greet(name)
         #     "Hello, #{name}"
@@ -39,7 +39,7 @@ module RuboCop
         #   #: String
         #   attr_reader :name
         #
-        # @example EnforcedStyle: yard_style_comment
+        # @example EnforcedStyle: doc_style
         #   # bad
         #   def greet(name)
         #     "Hello, #{name}"
@@ -59,7 +59,7 @@ module RuboCop
         #   # @rbs name: String
         #   attr_reader :name
         #
-        # @example EnforcedStyle: yard_and_return_annotation
+        # @example EnforcedStyle: doc_style_and_return_annotation
         #   # bad - no annotation
         #   def greet(name)
         #     "Hello, #{name}"

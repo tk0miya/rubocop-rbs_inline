@@ -10,11 +10,11 @@ module RuboCop
         # return type specifications exist on the same method definition.
         #
         # Supports three styles:
-        # - `annotation_comment`: Prefers `#:` annotation comments before the method
-        # - `inline_comment`: Prefers inline `#:` return type on the def line
-        # - `rbs_return_comment`: Prefers `# @rbs return` annotations
+        # - `method_type_signature`: Prefers `#:` annotation comments before the method
+        # - `return_type_annotation`: Prefers inline `#:` return type on the def line
+        # - `doc_style_return`: Prefers `# @rbs return` annotations
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   #: () -> String
         #   def method(arg) #: String
@@ -31,7 +31,7 @@ module RuboCop
         #   def method(arg)
         #   end
         #
-        # @example EnforcedStyle: inline_comment (default)
+        # @example EnforcedStyle: return_type_annotation (default)
         #   # bad
         #   # @rbs return: String
         #   def method(arg) #: String
@@ -46,7 +46,7 @@ module RuboCop
         #   def method(arg) #: String
         #   end
         #
-        # @example EnforcedStyle: rbs_return_comment
+        # @example EnforcedStyle: doc_style_return
         #   # bad
         #   # @rbs return: String
         #   def method(arg) #: String
@@ -90,9 +90,9 @@ module RuboCop
           def process(node) #: void
             def_line = node.location.line
             sources = {
-              annotation_comment: find_annotation_comments(def_line),
-              inline_comment: find_inline_comment(def_line),
-              rbs_return_comment: find_return_annotation(def_line)
+              method_type_signature: find_annotation_comments(def_line),
+              return_type_annotation: find_inline_comment(def_line),
+              doc_style_return: find_return_annotation(def_line)
             }.compact
 
             unless sources.size >= 2
@@ -111,11 +111,11 @@ module RuboCop
           # @rbs correctable: bool
           def add_offense_for(type, value, correctable:) #: void
             case type
-            when :annotation_comment
+            when :method_type_signature
               add_offense_for_annotation(value)
-            when :inline_comment
+            when :return_type_annotation
               add_offense_for_inline(value, correctable:)
-            when :rbs_return_comment
+            when :doc_style_return
               add_offense_for_rbs_return(value, correctable:)
             end
           end
@@ -126,7 +126,7 @@ module RuboCop
             last = comments.last or return
             range = first.loc.expression.join(last.loc.expression)
             add_offense(range, message: MSG_ANNOTATION) do
-              unexpected_style_detected(:annotation_comment)
+              unexpected_style_detected(:method_type_signature)
             end
           end
 
@@ -134,7 +134,7 @@ module RuboCop
           # @rbs correctable: bool
           def add_offense_for_inline(comment, correctable:) #: void
             add_offense(comment, message: MSG_INLINE) do |corrector|
-              unexpected_style_detected(:inline_comment)
+              unexpected_style_detected(:return_type_annotation)
               next unless correctable
 
               removal_range = range_with_surrounding_space(range: comment.loc.expression, side: :left, newlines: false)
@@ -148,7 +148,7 @@ module RuboCop
             loc = annotation.source.comments.first&.location or return
             range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
             add_offense(range, message: MSG_RBS_RETURN) do |corrector|
-              unexpected_style_detected(:rbs_return_comment)
+              unexpected_style_detected(:doc_style_return)
               next unless correctable
 
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))

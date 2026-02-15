@@ -8,11 +8,11 @@ module RuboCop
         # return type specifications exist on the same method definition.
         #
         # Supports three styles:
-        # - `annotation_comment`: Prefers `#:` annotation comments before the method
-        # - `inline_comment`: Prefers inline `#:` return type on the def line
-        # - `rbs_return_comment`: Prefers `# @rbs return` annotations
+        # - `method_type_signature`: Prefers `#:` annotation comments before the method
+        # - `return_type_annotation`: Prefers inline `#:` return type on the def line
+        # - `doc_style_return`: Prefers `# @rbs return` annotations
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   #: () -> String
         #   def method(arg) #: String
@@ -29,7 +29,7 @@ module RuboCop
         #   def method(arg)
         #   end
         #
-        # @example EnforcedStyle: inline_comment (default)
+        # @example EnforcedStyle: return_type_annotation (default)
         #   # bad
         #   # @rbs return: String
         #   def method(arg) #: String
@@ -44,7 +44,7 @@ module RuboCop
         #   def method(arg) #: String
         #   end
         #
-        # @example EnforcedStyle: rbs_return_comment
+        # @example EnforcedStyle: doc_style_return
         #   # bad
         #   # @rbs return: String
         #   def method(arg) #: String

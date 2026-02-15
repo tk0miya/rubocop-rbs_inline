@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
-  context 'when EnforcedStyle is annotation_comment' do
+  context 'when EnforcedStyle is method_type_signature' do
     let(:config) do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantArgumentType' => {
-          'EnforcedStyle' => 'annotation_comment',
-          'SupportedStyles' => %w[annotation_comment rbs_param_comment]
+          'EnforcedStyle' => 'method_type_signature',
+          'SupportedStyles' => %w[method_type_signature doc_style_params]
         }
       )
     end
@@ -155,12 +155,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
     end
   end
 
-  context 'when EnforcedStyle is rbs_param_comment' do
+  context 'when EnforcedStyle is doc_style_params' do
     let(:config) do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantArgumentType' => {
-          'EnforcedStyle' => 'rbs_param_comment',
-          'SupportedStyles' => %w[annotation_comment rbs_param_comment]
+          'EnforcedStyle' => 'doc_style_params',
+          'SupportedStyles' => %w[method_type_signature doc_style_params]
         }
       )
     end

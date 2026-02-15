@@ -12,11 +12,11 @@ Style/RbsInline/MissingTypeAnnotation:
   Description: "Checks that method definitions and attr_* declarations have RBS inline type annotations."
   Enabled: true
   VersionAdded: "1.5.0"
-  EnforcedStyle: yard_style_comment
+  EnforcedStyle: doc_style
   SupportedStyles:
-    - annotation_comment
-    - yard_style_comment
-    - yard_and_return_annotation
+    - method_type_signature
+    - doc_style
+    - doc_style_and_return_annotation
   Visibility: public
 
 Style/RbsInline/KeywordSeparator:
@@ -33,20 +33,20 @@ Style/RbsInline/RedundantArgumentType:
   Description: "Checks for redundant argument type annotations when both annotation comments and @rbs parameter comments exist."
   Enabled: true
   VersionAdded: "1.5.0"
-  EnforcedStyle: rbs_param_comment
+  EnforcedStyle: doc_style_params
   SupportedStyles:
-    - annotation_comment
-    - rbs_param_comment
+    - method_type_signature
+    - doc_style_params
 
 Style/RbsInline/RedundantReturnType:
   Description: "Checks for redundant return type annotations when multiple return type specifications exist."
   Enabled: true
   VersionAdded: "1.5.0"
-  EnforcedStyle: inline_comment
+  EnforcedStyle: return_type_annotation
   SupportedStyles:
-    - annotation_comment
-    - inline_comment
-    - rbs_return_comment
+    - method_type_signature
+    - return_type_annotation
+    - doc_style_return
 
 Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
