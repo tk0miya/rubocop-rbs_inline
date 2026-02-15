@@ -1,0 +1,176 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/missing_type_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that method definitions and `attr_*` declarations have
+        # RBS inline type annotations.
+        #
+        # The `EnforcedStyle` option determines which annotation format is required:
+        #
+        # - `annotation_comment`: Requires `#:` annotation comments only
+        # - `yard_style_comment`: Requires `# @rbs` annotations
+        # - `yard_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+        #
+        # The `Visibility` option determines which methods to check:
+        #
+        # - `public`: Only checks public methods and `attr_*` declarations (default)
+        # - `all`: Checks all methods regardless of visibility
+        #
+        # Methods annotated with `# @rbs skip` are always excluded from inspection.
+        #
+        # @example EnforcedStyle: annotation_comment
+        #   # bad
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad
+        #   attr_reader :name
+        #
+        #   # good
+        #   #: (String) -> String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good
+        #   #: String
+        #   attr_reader :name
+        #
+        # @example EnforcedStyle: yard_style_comment
+        #   # bad
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad
+        #   attr_reader :name
+        #
+        #   # good
+        #   # @rbs name: String
+        #   # @rbs return: String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good
+        #   # @rbs name: String
+        #   attr_reader :name
+        #
+        # @example EnforcedStyle: yard_and_return_annotation
+        #   # bad - no annotation
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad - missing inline return type
+        #   # @rbs name: String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - @rbs parameters + inline return type
+        #   # @rbs name: String
+        #   def greet(name) #: String
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - attr with inline type
+        #   attr_reader :name #: String
+        class MissingTypeAnnotation < Base
+          include CommentParser
+
+          include ConfigurableEnforcedStyle
+
+          include RangeHelp
+
+          MESSAGES: untyped
+
+          ATTR_METHODS: untyped
+
+          VISIBILITY_MODIFIERS: untyped
+
+          type visibility = :public | :protected | :private
+
+          class MethodEntry < Data
+            attr_reader name(): Symbol
+
+            attr_reader node(): Parser::AST::Node
+
+            attr_reader visibility(): visibility
+
+            def self.new: (Symbol name, Parser::AST::Node node, visibility visibility) -> instance
+                        | (name: Symbol, node: Parser::AST::Node, visibility: visibility) -> instance
+
+            def self.members: () -> [ :name, :node, :visibility ]
+
+            def members: () -> [ :name, :node, :visibility ]
+          end
+
+          attr_reader visibility_stack: Array[visibility]
+
+          attr_reader pending_nodes_stack: Array[Array[MethodEntry]]
+
+          def on_new_investigation: () -> void
+
+          def on_investigation_end: () -> void
+
+          # @rbs _node: Parser::AST::Node
+          def on_class: (untyped _node) -> void
+
+          alias on_module on_class
+
+          alias on_sclass on_class
+
+          # @rbs _node: Parser::AST::Node
+          def after_class: (untyped _node) -> void
+
+          alias after_module after_class
+
+          alias after_sclass after_class
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          # @rbs node: Parser::AST::Node
+          def on_send: (Parser::AST::Node node) -> void
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def on_visibility_modifier: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_attribute_method: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def current_visibility: (Parser::AST::Node node) -> visibility
+
+          # @rbs visibility: visibility
+          def target_node?: (visibility visibility) -> bool
+
+          def report_offenses: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def annotated_def?: (Parser::AST::Node node) -> boolish
+
+          # @rbs line: Integer
+          def annotated_attr?: (Integer line) -> boolish
+
+          # @rbs line: Integer
+          def rbs_annotations?: (Integer line) -> bool
+
+          # @rbs line: Integer
+          def skip_annotation?: (Integer line) -> bool
+
+          # @rbs node: Parser::AST::Node
+          def offense_range_for_def: (Parser::AST::Node node) -> Parser::Source::Range
+        end
+      end
+    end
+  end
+end
