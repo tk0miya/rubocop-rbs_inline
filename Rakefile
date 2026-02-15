@@ -5,7 +5,7 @@ require 'rubocop/rake_task'
 
 RuboCop::RakeTask.new
 
-task default: %i[rubocop rbs:check]
+task default: %i[spec rubocop rbs:check]
 
 require 'rspec/core/rake_task'
 
@@ -35,6 +35,6 @@ end
 namespace :rbs do
   desc 'Do type check using Steep'
   task :check do
-    sh 'steep', 'check'
+    sh 'bin/steep', 'check'
   end
 end
