@@ -22,7 +22,7 @@ bin/rake rubocop:autocorrect_all   # all autocorrect
 # Type check
 bin/rake rbs:check                 # runs steep check
 
-# Default rake task (rubocop + type check, does NOT run specs)
+# Default rake task (runs specs, rubocop, and type check)
 bin/rake
 
 # Generate a new cop
