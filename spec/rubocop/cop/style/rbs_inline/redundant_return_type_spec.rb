@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantReturnType' => {
           'EnforcedStyle' => 'method_type_signature',
-          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style_return]
+          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style]
         }
       )
     end
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantReturnType' => {
           'EnforcedStyle' => 'return_type_annotation',
-          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style_return]
+          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style]
         }
       )
     end
@@ -366,12 +366,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantReturnType, :config do
     end
   end
 
-  context 'when EnforcedStyle is doc_style_return' do
+  context 'when EnforcedStyle is doc_style' do
     let(:config) do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantReturnType' => {
-          'EnforcedStyle' => 'doc_style_return',
-          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style_return]
+          'EnforcedStyle' => 'doc_style',
+          'SupportedStyles' => %w[method_type_signature return_type_annotation doc_style]
         }
       )
     end

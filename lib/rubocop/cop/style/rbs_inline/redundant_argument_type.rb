@@ -12,7 +12,7 @@ module RuboCop
         #
         # Supports two styles:
         # - `method_type_signature`: Prefers `#:` annotation comments with parameter types
-        # - `doc_style_params`: Prefers `# @rbs param:` annotations for parameter types
+        # - `doc_style`: Prefers `# @rbs param:` annotations for parameter types
         #
         # @example EnforcedStyle: method_type_signature
         #   # bad
@@ -31,7 +31,7 @@ module RuboCop
         #   def method(a) #: void
         #   end
         #
-        # @example EnforcedStyle: doc_style_params (default)
+        # @example EnforcedStyle: doc_style (default)
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
@@ -84,7 +84,7 @@ module RuboCop
             case style
             when :method_type_signature
               param_annotations.each { add_offense_for_rbs_param(_1) }
-            when :doc_style_params
+            when :doc_style
               add_offense_for_annotation(annotation_comments)
             end
           end
@@ -104,7 +104,7 @@ module RuboCop
             loc = annotation.source.comments.first&.location or return
             range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
             add_offense(range, message: MSG_RBS_PARAM) do |corrector|
-              unexpected_style_detected(:doc_style_params)
+              unexpected_style_detected(:doc_style)
               next unless style == :method_type_signature
 
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))

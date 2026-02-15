@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantArgumentType' => {
           'EnforcedStyle' => 'method_type_signature',
-          'SupportedStyles' => %w[method_type_signature doc_style_params]
+          'SupportedStyles' => %w[method_type_signature doc_style]
         }
       )
     end
@@ -155,12 +155,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantArgumentType, :config do
     end
   end
 
-  context 'when EnforcedStyle is doc_style_params' do
+  context 'when EnforcedStyle is doc_style' do
     let(:config) do
       RuboCop::Config.new(
         'Style/RbsInline/RedundantArgumentType' => {
-          'EnforcedStyle' => 'doc_style_params',
-          'SupportedStyles' => %w[method_type_signature doc_style_params]
+          'EnforcedStyle' => 'doc_style',
+          'SupportedStyles' => %w[method_type_signature doc_style]
         }
       )
     end

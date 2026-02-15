@@ -10,7 +10,7 @@ module RuboCop
         # Supports three styles:
         # - `method_type_signature`: Prefers `#:` annotation comments before the method
         # - `return_type_annotation`: Prefers inline `#:` return type on the def line
-        # - `doc_style_return`: Prefers `# @rbs return` annotations
+        # - `doc_style`: Prefers `# @rbs return` annotations
         #
         # @example EnforcedStyle: method_type_signature
         #   # bad
@@ -44,7 +44,7 @@ module RuboCop
         #   def method(arg) #: String
         #   end
         #
-        # @example EnforcedStyle: doc_style_return
+        # @example EnforcedStyle: doc_style
         #   # bad
         #   # @rbs return: String
         #   def method(arg) #: String

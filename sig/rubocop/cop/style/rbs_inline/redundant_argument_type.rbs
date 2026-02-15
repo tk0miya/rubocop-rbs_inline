@@ -10,7 +10,7 @@ module RuboCop
         #
         # Supports two styles:
         # - `method_type_signature`: Prefers `#:` annotation comments with parameter types
-        # - `doc_style_params`: Prefers `# @rbs param:` annotations for parameter types
+        # - `doc_style`: Prefers `# @rbs param:` annotations for parameter types
         #
         # @example EnforcedStyle: method_type_signature
         #   # bad
@@ -29,7 +29,7 @@ module RuboCop
         #   def method(a) #: void
         #   end
         #
-        # @example EnforcedStyle: doc_style_params (default)
+        # @example EnforcedStyle: doc_style (default)
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
