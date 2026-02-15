@@ -11,10 +11,10 @@ module RuboCop
         # specify argument types for the same method.
         #
         # Supports two styles:
-        # - `annotation_comment`: Prefers `#:` annotation comments with parameter types
-        # - `rbs_param_comment`: Prefers `# @rbs param:` annotations for parameter types
+        # - `method_type_signature`: Prefers `#:` annotation comments with parameter types
+        # - `doc_style`: Prefers `# @rbs param:` annotations for parameter types
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
@@ -31,7 +31,7 @@ module RuboCop
         #   def method(a) #: void
         #   end
         #
-        # @example EnforcedStyle: rbs_param_comment (default)
+        # @example EnforcedStyle: doc_style (default)
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
@@ -82,9 +82,9 @@ module RuboCop
             end
 
             case style
-            when :annotation_comment
+            when :method_type_signature
               param_annotations.each { add_offense_for_rbs_param(_1) }
-            when :rbs_param_comment
+            when :doc_style
               add_offense_for_annotation(annotation_comments)
             end
           end
@@ -95,7 +95,7 @@ module RuboCop
             last = comments.last or return
             range = first.loc.expression.join(last.loc.expression)
             add_offense(range, message: MSG_ANNOTATION) do
-              unexpected_style_detected(:annotation_comment)
+              unexpected_style_detected(:method_type_signature)
             end
           end
 
@@ -104,8 +104,8 @@ module RuboCop
             loc = annotation.source.comments.first&.location or return
             range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
             add_offense(range, message: MSG_RBS_PARAM) do |corrector|
-              unexpected_style_detected(:rbs_param_comment)
-              next unless style == :annotation_comment
+              unexpected_style_detected(:doc_style)
+              next unless style == :method_type_signature
 
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end

@@ -11,9 +11,9 @@ module RuboCop
         #
         # The `EnforcedStyle` option determines which annotation format is required:
         #
-        # - `annotation_comment`: Requires `#:` annotation comments only
-        # - `yard_style_comment`: Requires `# @rbs` annotations
-        # - `yard_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+        # - `method_type_signature`: Requires `#:` annotation comments only
+        # - `doc_style`: Requires `# @rbs` annotations
+        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -22,7 +22,7 @@ module RuboCop
         #
         # Methods annotated with `# @rbs skip` are always excluded from inspection.
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   def greet(name)
         #     "Hello, #{name}"
@@ -41,7 +41,7 @@ module RuboCop
         #   #: String
         #   attr_reader :name
         #
-        # @example EnforcedStyle: yard_style_comment
+        # @example EnforcedStyle: doc_style
         #   # bad
         #   def greet(name)
         #     "Hello, #{name}"
@@ -61,7 +61,7 @@ module RuboCop
         #   # @rbs name: String
         #   attr_reader :name
         #
-        # @example EnforcedStyle: yard_and_return_annotation
+        # @example EnforcedStyle: doc_style_and_return_annotation
         #   # bad - no annotation
         #   def greet(name)
         #     "Hello, #{name}"
@@ -88,9 +88,9 @@ module RuboCop
           include RangeHelp
 
           MESSAGES = {
-            annotation_comment: 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).',
-            yard_style_comment: 'Missing `@rbs` annotation.',
-            yard_and_return_annotation: 'Missing `@rbs` params and inline return type.'
+            method_type_signature: 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).',
+            doc_style: 'Missing `@rbs` annotation.',
+            doc_style_and_return_annotation: 'Missing `@rbs` params and inline return type.'
           }.freeze
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
@@ -229,11 +229,11 @@ module RuboCop
             return true if skip_annotation?(line)
 
             case style
-            when :annotation_comment
+            when :method_type_signature
               find_annotation_comments(line)
-            when :yard_style_comment
+            when :doc_style
               rbs_annotations?(line)
-            when :yard_and_return_annotation
+            when :doc_style_and_return_annotation
               # Inline comment is always required for return type
               find_inline_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
             end

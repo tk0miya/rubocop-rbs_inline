@@ -9,10 +9,10 @@ module RuboCop
         # specify argument types for the same method.
         #
         # Supports two styles:
-        # - `annotation_comment`: Prefers `#:` annotation comments with parameter types
-        # - `rbs_param_comment`: Prefers `# @rbs param:` annotations for parameter types
+        # - `method_type_signature`: Prefers `#:` annotation comments with parameter types
+        # - `doc_style`: Prefers `# @rbs param:` annotations for parameter types
         #
-        # @example EnforcedStyle: annotation_comment
+        # @example EnforcedStyle: method_type_signature
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
@@ -29,7 +29,7 @@ module RuboCop
         #   def method(a) #: void
         #   end
         #
-        # @example EnforcedStyle: rbs_param_comment (default)
+        # @example EnforcedStyle: doc_style (default)
         #   # bad
         #   # @rbs a: Integer
         #   #: (Integer) -> void
