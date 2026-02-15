@@ -5,6 +5,9 @@ plugins:
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.3
+  Exclude:
+    - bin/**/*
+    - vendor/**/*
 
 Layout/LineLength:
   Max: 120
