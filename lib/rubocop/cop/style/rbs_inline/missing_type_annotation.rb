@@ -105,13 +105,13 @@ module RuboCop
           )
 
           attr_reader :visibility_stack #: Array[visibility]
-          attr_reader :pending_nodes_stack #: Array[Array[MethodEntry]]
+          attr_reader :unannotated_methods_stack #: Array[Array[MethodEntry]]
 
           def on_new_investigation #: void
             super
             parse_comments
             @visibility_stack = [:public]
-            @pending_nodes_stack = [[]]
+            @unannotated_methods_stack = [[]]
           end
 
           def on_investigation_end #: void
@@ -122,7 +122,7 @@ module RuboCop
           # @rbs _node: Parser::AST::Node
           def on_class(_node) #: void
             visibility_stack.push(:public)
-            pending_nodes_stack.push([])
+            unannotated_methods_stack.push([])
           end
 
           alias on_module on_class
@@ -132,7 +132,7 @@ module RuboCop
           def after_class(_node) #: void
             report_offenses
             visibility_stack.pop
-            pending_nodes_stack.pop
+            unannotated_methods_stack.pop
           end
 
           alias after_module after_class
@@ -142,7 +142,7 @@ module RuboCop
           def on_def(node) #: void
             return if annotated_def?(node)
 
-            pending_nodes_stack.last << MethodEntry.new(
+            current_method_entries << MethodEntry.new(
               name: node.method_name, node:, visibility: current_visibility(node)
             )
           end
@@ -163,13 +163,18 @@ module RuboCop
 
           private
 
+          # Returns the method entries for the current scope (class/module)
+          def current_method_entries #: Array[MethodEntry]
+            unannotated_methods_stack.last
+          end
+
           # @rbs node: Parser::AST::Node
           def on_visibility_modifier(node) #: void
             if node.arguments.empty?
               visibility_stack[-1] = node.method_name
             else
               names = node.arguments.filter_map { |arg| arg.value.to_sym if arg.sym_type? || arg.str_type? }
-              pending_nodes_stack.last.map! do |entry|
+              current_method_entries.map! do |entry|
                 names.include?(entry.name) ? entry.with(visibility: node.method_name) : entry
               end
             end
@@ -182,7 +187,7 @@ module RuboCop
             node.arguments.each do |arg|
               next unless arg.sym_type? || arg.str_type?
 
-              pending_nodes_stack.last << MethodEntry.new(
+              current_method_entries << MethodEntry.new(
                 name: arg.value.to_sym, node:, visibility: current_visibility(node)
               )
             end
@@ -207,7 +212,7 @@ module RuboCop
 
           def report_offenses #: void
             msg = MESSAGES[style]
-            pending_nodes_stack.last.each do |entry|
+            current_method_entries.each do |entry|
               next unless target_node?(entry.visibility)
 
               if entry.node.def_type? || entry.node.defs_type?
