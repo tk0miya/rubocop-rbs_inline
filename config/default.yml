@@ -8,6 +8,17 @@ Style/RbsInline/InvalidTypes:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/MissingTypeAnnotation:
+  Description: "Checks that method definitions and attr_* declarations have RBS inline type annotations."
+  Enabled: true
+  VersionAdded: "1.5.0"
+  EnforcedStyle: yard_style_comment
+  SupportedStyles:
+    - annotation_comment
+    - yard_style_comment
+    - yard_and_return_annotation
+  Visibility: public
+
 Style/RbsInline/KeywordSeparator:
   Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
   Enabled: true
