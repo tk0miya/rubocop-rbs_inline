@@ -30,7 +30,8 @@ module RuboCop
 
           private
 
-          def consume_embedded_rbs: (untyped comments) -> untyped
+          # @rbs comments: Array[Parser::Source::Comment]
+          def consume_embedded_rbs: (Array[Parser::Source::Comment] comments) -> Array[Parser::Source::Comment]
         end
       end
     end
