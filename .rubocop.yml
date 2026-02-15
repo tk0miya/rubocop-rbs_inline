@@ -52,3 +52,6 @@ Style/RbsInline/MissingTypeAnnotation:
 
 Style/RbsInline/RedundantArgumentType:
   EnforcedStyle: doc_style
+
+Style/RbsInline/RequireRbsInlineComment:
+  EnforcedStyle: never
