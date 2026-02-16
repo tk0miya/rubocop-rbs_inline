@@ -91,6 +91,64 @@ Ensures RBS keywords (`module-self`, `inherits`, `override`, etc.) are not follo
 # @rbs module-self String
 ```
 
+### Style/RbsInline/MissingTypeAnnotation
+
+Enforces that method definitions and `attr_*` declarations have RBS inline type annotations.
+
+**Configuration:**
+- `EnforcedStyle` (default: `doc_style`)
+  - `method_type_signature`: Requires `#:` annotation comments
+  - `doc_style`: Requires `# @rbs` annotations
+  - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+- `Visibility` (default: `all`)
+  - `all`: Checks all methods regardless of visibility
+  - `public`: Only checks public methods and `attr_*` declarations
+
+Methods annotated with `# @rbs skip` are always excluded.
+
+**Examples (EnforcedStyle: doc_style):**
+```ruby
+# bad - no annotation
+def greet(name)
+  "Hello, #{name}"
+end
+
+# good
+# @rbs name: String
+# @rbs return: String
+def greet(name)
+  "Hello, #{name}"
+end
+```
+
+**Examples (EnforcedStyle: method_type_signature):**
+```ruby
+# bad - no annotation
+def greet(name)
+  "Hello, #{name}"
+end
+
+# good
+#: (String) -> String
+def greet(name)
+  "Hello, #{name}"
+end
+```
+
+**Examples (EnforcedStyle: doc_style_and_return_annotation):**
+```ruby
+# bad - no annotation
+def greet(name)
+  "Hello, #{name}"
+end
+
+# good
+# @rbs name: String
+def greet(name) #: String
+  "Hello, #{name}"
+end
+```
+
 ### Style/RbsInline/ParametersSeparator
 
 Checks that parameter annotations use `:` as a separator between parameter name and type.
@@ -104,21 +162,6 @@ Checks that parameter annotations use `:` as a separator between parameter name 
 # good
 # @rbs param: String
 # @rbs %a{pure}
-```
-
-### Style/RbsInline/UnmatchedAnnotations
-
-Verifies that annotation parameters match the actual method parameters.
-
-**Examples:**
-```ruby
-# bad
-# @rbs unknown: String
-def method(arg); end
-
-# good
-# @rbs arg: String
-def method(arg); end
 ```
 
 ### Style/RbsInline/RedundantArgumentType
@@ -204,64 +247,6 @@ def method(arg)
 end
 ```
 
-### Style/RbsInline/MissingTypeAnnotation
-
-Enforces that method definitions and `attr_*` declarations have RBS inline type annotations.
-
-**Configuration:**
-- `EnforcedStyle` (default: `doc_style`)
-  - `method_type_signature`: Requires `#:` annotation comments
-  - `doc_style`: Requires `# @rbs` annotations
-  - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
-- `Visibility` (default: `all`)
-  - `all`: Checks all methods regardless of visibility
-  - `public`: Only checks public methods and `attr_*` declarations
-
-Methods annotated with `# @rbs skip` are always excluded.
-
-**Examples (EnforcedStyle: doc_style):**
-```ruby
-# bad - no annotation
-def greet(name)
-  "Hello, #{name}"
-end
-
-# good
-# @rbs name: String
-# @rbs return: String
-def greet(name)
-  "Hello, #{name}"
-end
-```
-
-**Examples (EnforcedStyle: method_type_signature):**
-```ruby
-# bad - no annotation
-def greet(name)
-  "Hello, #{name}"
-end
-
-# good
-#: (String) -> String
-def greet(name)
-  "Hello, #{name}"
-end
-```
-
-**Examples (EnforcedStyle: doc_style_and_return_annotation):**
-```ruby
-# bad - no annotation
-def greet(name)
-  "Hello, #{name}"
-end
-
-# good
-# @rbs name: String
-def greet(name) #: String
-  "Hello, #{name}"
-end
-```
-
 ### Style/RbsInline/RequireRbsInlineComment
 
 Enforces presence or absence of `# rbs_inline:` magic comment for consistency.
@@ -280,6 +265,21 @@ end
 # rbs_inline: enabled
 class Foo
 end
+```
+
+### Style/RbsInline/UnmatchedAnnotations
+
+Verifies that annotation parameters match the actual method parameters.
+
+**Examples:**
+```ruby
+# bad
+# @rbs unknown: String
+def method(arg); end
+
+# good
+# @rbs arg: String
+def method(arg); end
 ```
 
 ## Configuration
