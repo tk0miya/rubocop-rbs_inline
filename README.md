@@ -27,6 +27,26 @@ plugins:
 
 rubocop-rbs_inline provides the following cops to validate [RBS::Inline](https://github.com/soutaro/rbs-inline) annotations:
 
+### Style/RbsInline/EmbeddedRbsSpacing
+
+Checks that `@rbs!` comments (embedded RBS) are followed by a blank line.
+
+RBS::Inline requires `@rbs!` comments to be standalone comments, meaning they should not have any code immediately following them. A blank line after the `@rbs!` block ensures proper separation.
+
+**Examples:**
+```ruby
+# bad
+# @rbs! type foo = Integer
+def method
+end
+
+# good
+# @rbs! type foo = Integer
+
+def method
+end
+```
+
 ### Style/RbsInline/InvalidComment
 
 Checks that annotation comments start with `#:` or `# @rbs` (not `# :` or `# rbs`).
