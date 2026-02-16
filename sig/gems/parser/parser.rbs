@@ -1,5 +1,9 @@
 module Parser
   module Source
+    class Buffer
+      def line_range: (Integer line) -> Range
+    end
+
     class Comment
       attr_reader text: String
     end

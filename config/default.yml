@@ -1,3 +1,8 @@
+Style/RbsInline/EmbeddedRbsSpacing:
+  Description: 'Checks that `@rbs!` comments (embedded RBS) are followed by a blank line.'
+  Enabled: true
+  VersionAdded: '1.5.0'
+
 Style/RbsInline/InvalidComment:
   Description: "Checks the rbs-inline annotation comment is valid."
   Enabled: true
