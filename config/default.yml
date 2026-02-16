@@ -58,3 +58,8 @@ Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true
   VersionAdded: "1.0.0"
+
+Style/RbsInline/VariableCommentSpacing:
+  Description: 'Checks that `@rbs` variable comments are followed by a blank line.'
+  Enabled: true
+  VersionAdded: '1.5.0'

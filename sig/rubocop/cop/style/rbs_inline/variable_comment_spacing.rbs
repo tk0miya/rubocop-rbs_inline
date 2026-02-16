@@ -1,0 +1,58 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/variable_comment_spacing.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that `@rbs` variable comments are followed by a blank line.
+        #
+        # RBS::Inline requires `@rbs` comments for instance variables, class variables,
+        # and class instance variables to be standalone comments, meaning they should
+        # not have any code immediately following them. A blank line after the variable
+        # comment ensures proper separation.
+        #
+        # @example
+        #   # bad
+        #   # @rbs @ivar: Integer
+        #   # @rbs @@cvar: Float
+        #   # @rbs self.@civar: String
+        #   def method
+        #   end
+        #
+        #   # good
+        #   # @rbs @ivar: Integer
+        #   # @rbs @@cvar: Float
+        #   # @rbs self.@civar: String
+        #
+        #   def method
+        #   end
+        class VariableCommentSpacing < Base
+          extend AutoCorrector
+
+          MSG: ::String
+
+          VARIABLE_COMMENT_PATTERN: ::Regexp
+
+          def on_new_investigation: () -> void
+
+          private
+
+          def check_variable_comment_spacing: () -> void
+
+          # @rbs comment: Parser::Source::Comment
+          def check_variable_comment: (Parser::Source::Comment comment) -> void
+
+          # @rbs line_number: Integer
+          def blank_line?: (Integer line_number) -> bool
+
+          # Find the last comment line in a variable comment block
+          # @rbs start_comment: Parser::Source::Comment
+          def find_last_variable_comment_line: (Parser::Source::Comment start_comment) -> Parser::Source::Comment
+
+          # @rbs line_number: Integer
+          def line_range: (Integer line_number) -> Parser::Source::Range
+        end
+      end
+    end
+  end
+end
