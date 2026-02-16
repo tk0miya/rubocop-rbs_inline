@@ -70,6 +70,8 @@ module RuboCop
           def find_last_comment_in_first_block: () -> Parser::Source::Comment
 
           def style: () -> Symbol
+
+          def first_line_range: () -> Parser::Source::Range
         end
       end
     end

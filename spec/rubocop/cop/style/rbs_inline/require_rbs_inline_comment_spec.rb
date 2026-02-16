@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
     it 'registers an offense when rbs_inline comment is missing' do
       expect_offense(<<~RUBY)
         class Foo
-        ^{} Missing `# rbs_inline:` magic comment.
+        ^^^^^^^^^ Missing `# rbs_inline:` magic comment.
         end
       RUBY
 
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
     it 'inserts magic comment at the beginning when code comes before comments' do
       expect_offense(<<~RUBY)
         puts "hello"
-        ^{} Missing `# rbs_inline:` magic comment.
+        ^^^^^^^^^^^^ Missing `# rbs_inline:` magic comment.
 
         # blah blah blah
         # blah blah blah
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
         # frozen_string_literal: true
         # encoding: utf-8
         class Foo
-        ^{} Missing `# rbs_inline:` magic comment.
+        ^^^^^^^^^ Missing `# rbs_inline:` magic comment.
         end
       RUBY
 
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
       expect_offense(<<~RUBY)
         #  rbs_inline:  enabled
         class Foo
-        ^{} Missing `# rbs_inline:` magic comment.
+        ^^^^^^^^^ Missing `# rbs_inline:` magic comment.
         end
       RUBY
 
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
       expect_offense(<<~RUBY)
         #rbs_inline:enabled
         class Foo
-        ^{} Missing `# rbs_inline:` magic comment.
+        ^^^^^^^^^ Missing `# rbs_inline:` magic comment.
         end
       RUBY
 
