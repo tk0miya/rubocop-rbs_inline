@@ -83,9 +83,9 @@ module RuboCop
 
             # Insert after the first comment block or at the beginning of the file
             insert_position = find_insert_position
-            range = Parser::Source::Range.new(processed_source.buffer, insert_position, insert_position)
-            add_offense(range, message: MSG_MISSING) do |corrector|
-              corrector.insert_before(range, "# rbs_inline: enabled\n")
+            add_offense(first_line_range, message: MSG_MISSING) do |corrector|
+              insert_range = Parser::Source::Range.new(processed_source.buffer, insert_position, insert_position)
+              corrector.insert_before(insert_range, "# rbs_inline: enabled\n")
             end
           end
 
@@ -128,6 +128,13 @@ module RuboCop
 
           def style #: Symbol
             cop_config['EnforcedStyle']&.to_sym || :always
+          end
+
+          def first_line_range #: Parser::Source::Range
+            # Find the first line of actual code (not comment-only lines)
+            # If there's no AST (e.g., file with only comments), use the first line
+            first_line = processed_source.ast&.source_range&.first_line || 1
+            processed_source.buffer.line_range(first_line)
           end
         end
       end
