@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
             "Hello, \#{name}"
           end
         RUBY
@@ -284,7 +284,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
             "Hello, \#{name}"
           end
         RUBY
@@ -295,7 +295,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense when method has arguments' do
         expect_offense(<<~RUBY)
           def greet(name) #: String
-          ^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
             "Hello, \#{name}"
           end
         RUBY
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           #: (String) -> String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
             "Hello, \#{name}"
           end
         RUBY
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and trailing return type.
         RUBY
       end
     end
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and inline return type.
+          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and trailing return type.
         RUBY
       end
     end

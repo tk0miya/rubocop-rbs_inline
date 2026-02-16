@@ -13,7 +13,7 @@ module RuboCop
         #
         # - `method_type_signature`: Requires `#:` annotation comments only
         # - `doc_style`: Requires `# @rbs` annotations
-        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and trailing `#:` return type
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -67,19 +67,19 @@ module RuboCop
         #     "Hello, #{name}"
         #   end
         #
-        #   # bad - missing inline return type
+        #   # bad - missing trailing return type
         #   # @rbs name: String
         #   def greet(name)
         #     "Hello, #{name}"
         #   end
         #
-        #   # good - @rbs parameters + inline return type
+        #   # good - @rbs parameters + trailing return type
         #   # @rbs name: String
         #   def greet(name) #: String
         #     "Hello, #{name}"
         #   end
         #
-        #   # good - attr with inline type
+        #   # good - attr with trailing type
         #   attr_reader :name #: String
         #
         class MissingTypeAnnotation < Base # rubocop:disable Metrics/ClassLength
@@ -90,7 +90,7 @@ module RuboCop
           MESSAGES = {
             method_type_signature: 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).',
             doc_style: 'Missing `@rbs` annotation.',
-            doc_style_and_return_annotation: 'Missing `@rbs` params and inline return type.'
+            doc_style_and_return_annotation: 'Missing `@rbs` params and trailing return type.'
           }.freeze
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
@@ -230,19 +230,19 @@ module RuboCop
 
             case style
             when :method_type_signature
-              find_annotation_comments(line)
+              find_method_type_signature_comments(line)
             when :doc_style
               rbs_annotations?(line)
             when :doc_style_and_return_annotation
               # Inline comment is always required for return type
-              find_inline_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
+              find_trailing_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
             end
           end
 
           # @rbs line: Integer
           def annotated_attr?(line) #: boolish
             # attr_* always requires inline comment regardless of style
-            find_inline_comment(line)
+            find_trailing_comment(line)
           end
 
           # @rbs line: Integer

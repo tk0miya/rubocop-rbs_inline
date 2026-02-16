@@ -50,8 +50,8 @@ Style/CommentedKeyword:
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
 
-Style/RbsInline/RedundantArgumentType:
-  EnforcedStyle: doc_style
+Style/RbsInline/RedundantTypeAnnotation:
+  EnforcedStyle: doc_style_and_return_annotation
 
 Style/RbsInline/RequireRbsInlineComment:
   EnforcedStyle: never

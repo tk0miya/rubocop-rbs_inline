@@ -11,7 +11,7 @@ module RuboCop
         #
         # - `method_type_signature`: Requires `#:` annotation comments only
         # - `doc_style`: Requires `# @rbs` annotations
-        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+        # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and trailing `#:` return type
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -65,19 +65,19 @@ module RuboCop
         #     "Hello, #{name}"
         #   end
         #
-        #   # bad - missing inline return type
+        #   # bad - missing trailing return type
         #   # @rbs name: String
         #   def greet(name)
         #     "Hello, #{name}"
         #   end
         #
-        #   # good - @rbs parameters + inline return type
+        #   # good - @rbs parameters + trailing return type
         #   # @rbs name: String
         #   def greet(name) #: String
         #     "Hello, #{name}"
         #   end
         #
-        #   # good - attr with inline type
+        #   # good - attr with trailing type
         #   attr_reader :name #: String
         class MissingTypeAnnotation < Base
           include CommentParser

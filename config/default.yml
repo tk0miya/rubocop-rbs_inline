@@ -29,24 +29,16 @@ Style/RbsInline/ParametersSeparator:
   Enabled: true
   VersionAdded: "1.0.0"
 
-Style/RbsInline/RedundantArgumentType:
-  Description: "Checks for redundant argument type annotations when both annotation comments and @rbs parameter comments exist."
+Style/RbsInline/RedundantTypeAnnotation:
+  Description: "Checks for redundant type annotations when multiple type specifications exist for the same method definition."
   Enabled: true
   VersionAdded: "1.5.0"
+  SafeAutoCorrect: false
   EnforcedStyle: doc_style
   SupportedStyles:
     - method_type_signature
     - doc_style
-
-Style/RbsInline/RedundantReturnType:
-  Description: "Checks for redundant return type annotations when multiple return type specifications exist."
-  Enabled: true
-  VersionAdded: "1.5.0"
-  EnforcedStyle: return_type_annotation
-  SupportedStyles:
-    - method_type_signature
-    - return_type_annotation
-    - doc_style
+    - doc_style_and_return_annotation
 
 Style/RbsInline/RequireRbsInlineComment:
   Description: "Checks the presence or absence of `# rbs_inline: enabled` magic comment."
