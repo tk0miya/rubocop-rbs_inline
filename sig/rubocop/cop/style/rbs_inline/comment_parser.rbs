@@ -20,17 +20,21 @@ module RuboCop
           # @rbs def_line: Integer
           def find_leading_annotation: (Integer def_line) -> RBS::Inline::AnnotationParser::ParsingResult?
 
-          # Find annotation comments (#:) before a method definition
+          # Find method type signature comments (#:) before a method definition
           # @rbs def_line: Integer
-          def find_annotation_comments: (Integer def_line) -> Array[Parser::Source::Comment]?
+          def find_method_type_signature_comments: (Integer def_line) -> Array[Parser::Source::Comment]?
 
-          # Find inline comment on the same line as the method definition
+          # Find trailing comment on the same line as the method definition
           # @rbs def_line: Integer
-          def find_inline_comment: (Integer def_line) -> Parser::Source::Comment?
+          def find_trailing_comment: (Integer def_line) -> Parser::Source::Comment?
+
+          # Find @rbs parameter annotations before a method definition
+          # @rbs def_line: Integer
+          def find_doc_style_param_annotations: (Integer def_line) -> Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]?
 
           # Find @rbs return annotation before a method definition
           # @rbs def_line: Integer
-          def find_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
+          def find_doc_style_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
         end
       end
     end

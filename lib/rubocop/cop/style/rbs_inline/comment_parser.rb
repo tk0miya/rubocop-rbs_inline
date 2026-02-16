@@ -36,9 +36,9 @@ module RuboCop
             end
           end
 
-          # Find annotation comments (#:) before a method definition
+          # Find method type signature comments (#:) before a method definition
           # @rbs def_line: Integer
-          def find_annotation_comments(def_line) #: Array[Parser::Source::Comment]?
+          def find_method_type_signature_comments(def_line) #: Array[Parser::Source::Comment]?
             leading_annotation = find_leading_annotation(def_line)
             return unless leading_annotation
 
@@ -53,17 +53,33 @@ module RuboCop
             comments.empty? ? nil : comments
           end
 
-          # Find inline comment on the same line as the method definition
+          # Find trailing comment on the same line as the method definition
           # @rbs def_line: Integer
-          def find_inline_comment(def_line) #: Parser::Source::Comment?
+          def find_trailing_comment(def_line) #: Parser::Source::Comment?
             processed_source.comments.find do |c|
               c.loc.expression.line == def_line && c.text.match?(/\A#:/)
             end
           end
 
+          # Find @rbs parameter annotations before a method definition
+          # @rbs def_line: Integer
+          def find_doc_style_param_annotations(def_line) #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]?
+            leading_annotation = find_leading_annotation(def_line)
+            return unless leading_annotation
+
+            annotations = [] #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]
+            leading_annotation.each_annotation do |annotation|
+              case annotation
+              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
+                annotations << annotation
+              end
+            end
+            annotations.empty? ? nil : annotations
+          end
+
           # Find @rbs return annotation before a method definition
           # @rbs def_line: Integer
-          def find_return_annotation(def_line) #: RBS::Inline::AST::Annotations::ReturnType?
+          def find_doc_style_return_annotation(def_line) #: RBS::Inline::AST::Annotations::ReturnType?
             leading_annotation = find_leading_annotation(def_line)
             return unless leading_annotation
 

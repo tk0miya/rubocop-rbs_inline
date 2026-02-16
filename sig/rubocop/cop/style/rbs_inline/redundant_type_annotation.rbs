@@ -1,0 +1,133 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_type_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant type annotations when multiple type specifications
+        # exist for the same method definition.
+        #
+        # Supports three styles that align with `MissingTypeAnnotation`:
+        # - `method_type_signature`: Prefers `#:` annotation comments with full method signature
+        # - `doc_style`: Prefers `# @rbs` annotations for both parameters and return types
+        # - `doc_style_and_return_annotation`: Prefers `# @rbs` params with trailing `#:` return type
+        #
+        # @safety
+        #   Autocorrection is unsafe because it removes redundant annotations even when
+        #   the preferred style annotation is not present. In such cases, the autocorrection
+        #   will remove type information, and `MissingTypeAnnotation` will report the missing
+        #   annotation that should be added in the preferred style
+        #
+        # @example EnforcedStyle: method_type_signature
+        #   # bad - redundant @rbs parameter annotations
+        #   # @rbs a: Integer
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant trailing return type
+        #   #: () -> String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # bad - redundant @rbs return annotation
+        #   # @rbs return: String
+        #   #: () -> String
+        #   def method(arg)
+        #   end
+        #
+        #   # good
+        #   #: (Integer) -> String
+        #   def method(a)
+        #   end
+        #
+        # @example EnforcedStyle: doc_style
+        #   # bad - redundant annotation comment with parameters
+        #   # @rbs a: Integer
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant trailing return type
+        #   # @rbs return: String
+        #   def method(arg) #: String
+        #   end
+        #
+        #   # good
+        #   # @rbs a: Integer
+        #   # @rbs return: String
+        #   def method(a)
+        #   end
+        #
+        # @example EnforcedStyle: doc_style_and_return_annotation (default)
+        #   # bad - redundant annotation comment with parameters
+        #   # @rbs a: Integer
+        #   #: (Integer) -> String
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant @rbs return annotation
+        #   # @rbs a: Integer
+        #   # @rbs return: String
+        #   def method(a) #: String
+        #   end
+        #
+        #   # good
+        #   # @rbs a: Integer
+        #   def method(a) #: String
+        #   end
+        class RedundantTypeAnnotation < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include ConfigurableEnforcedStyle
+
+          include RangeHelp
+
+          MSG_DOC_STYLE_PARAM: ::String
+
+          MSG_DOC_STYLE_RETURN: ::String
+
+          MSG_TRAILING_RETURN: ::String
+
+          MSG_METHOD_TYPE_SIGNATURE: ::String
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs def_line: Integer
+          def check_parameter_redundancy: (Integer def_line) -> void
+
+          # @rbs def_line: Integer
+          def check_return_type_redundancy: (Integer def_line) -> void
+
+          # @rbs comments: Array[Parser::Source::Comment]
+          def add_offense_for_method_type_signature: (Array[Parser::Source::Comment] comments) -> void
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          def add_offense_for_doc_style_param: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType annotation) -> void
+
+          # @rbs type: Symbol
+          # @rbs value: Object
+          def add_offense_for_return: (Symbol type, Object value) -> void
+
+          # @rbs comment: Parser::Source::Comment
+          def add_offense_for_trailing_return: (Parser::Source::Comment comment) -> void
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::ReturnType
+          def add_offense_for_doc_style_return: (RBS::Inline::AST::Annotations::ReturnType annotation) -> void
+        end
+      end
+    end
+  end
+end
