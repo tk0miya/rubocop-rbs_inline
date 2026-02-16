@@ -1,0 +1,98 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_yard_comment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant YARD type comments when RBS inline annotations exist.
+        #
+        # When both YARD documentation (`@param`, `@return`) and RBS::Inline annotations
+        # are present for the same method, the YARD type information is considered redundant
+        # since RBS provides the canonical type specification.
+        #
+        # @safety
+        #   Autocorrection is unsafe because YARD comments may contain additional
+        #   documentation beyond just type information (parameter descriptions, examples, notes).
+        #   Removing YARD comments will lose this additional documentation.
+        #
+        # @example
+        #   # bad - YARD @param when RBS annotation exists
+        #   # @param name [String] the name
+        #   #: (String) -> void
+        #   def greet(name)
+        #   end
+        #
+        #   # bad - YARD @return when RBS annotation exists
+        #   # @return [String] the greeting
+        #   #: () -> String
+        #   def greet
+        #   end
+        #
+        #   # bad - both YARD @param and @return with RBS
+        #   # @param name [String] the name
+        #   # @return [String] the greeting
+        #   #: (String) -> String
+        #   def greet(name)
+        #   end
+        #
+        #   # good - only RBS annotations
+        #   #: (String) -> String
+        #   def greet(name)
+        #   end
+        #
+        #   # good - only YARD comments (no RBS)
+        #   # @param name [String] the name
+        #   # @return [String] the greeting
+        #   def greet(name)
+        #   end
+        class RedundantYardComment < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include RangeHelp
+
+          MSG_YARD_PARAM: ::String
+
+          MSG_YARD_RETURN: ::String
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs def_line: Integer
+          def check_parameter_redundancy: (Integer def_line) -> void
+
+          # @rbs def_line: Integer
+          def check_return_type_redundancy: (Integer def_line) -> void
+
+          # Find consecutive leading comments before a method definition
+          # @rbs def_line: Integer
+          def find_leading_comments: (Integer def_line) -> Array[Parser::Source::Comment]
+
+          # Find YARD @param comments before a method definition
+          # @rbs def_line: Integer
+          def find_yard_param_comments: (Integer def_line) -> Array[Parser::Source::Comment]
+
+          # Find YARD @return comment before a method definition
+          # @rbs def_line: Integer
+          def find_yard_return_comment: (Integer def_line) -> Parser::Source::Comment?
+
+          # @rbs comment: Parser::Source::Comment
+          def add_offense_for_yard_param: (Parser::Source::Comment comment) -> void
+
+          # @rbs comment: Parser::Source::Comment
+          def add_offense_for_yard_return: (Parser::Source::Comment comment) -> void
+        end
+      end
+    end
+  end
+end
