@@ -33,19 +33,15 @@ module RuboCop
           def check_embedded_rbs_spacing: () -> void
 
           # @rbs comment: Parser::Source::Comment
-          # @rbs comments: Array[Parser::Source::Comment]
-          # @rbs source_lines: Array[String?]
-          def check_embedded_rbs_comment: (Parser::Source::Comment comment, Array[Parser::Source::Comment] comments, Array[String?] source_lines) -> void
+          def check_embedded_rbs_comment: (Parser::Source::Comment comment) -> void
 
           # @rbs line_number: Integer
-          # @rbs source_lines: Array[String?]
-          def blank_line?: (Integer line_number, Array[String?] source_lines) -> bool
+          def blank_line?: (Integer line_number) -> bool
 
           # Find the last comment line in an embedded RBS block
           # @rbs start_comment: Parser::Source::Comment
-          # @rbs comments: Array[Parser::Source::Comment]
           # @rbs indent: Integer
-          def find_last_embedded_comment_line: (Parser::Source::Comment start_comment, Array[Parser::Source::Comment] comments, Integer indent) -> Parser::Source::Comment
+          def find_last_embedded_comment_line: (Parser::Source::Comment start_comment, Integer indent) -> Parser::Source::Comment
 
           # @rbs line_number: Integer
           def line_range: (Integer line_number) -> Parser::Source::Range

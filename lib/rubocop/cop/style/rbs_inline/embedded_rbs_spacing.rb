@@ -34,26 +34,21 @@ module RuboCop
           private
 
           def check_embedded_rbs_spacing #: void
-            comments = processed_source.comments
-            source_lines = processed_source.buffer.source.lines
-
-            comments.each do |comment|
-              check_embedded_rbs_comment(comment, comments, source_lines)
+            processed_source.comments.each do |comment|
+              check_embedded_rbs_comment(comment)
             end
           end
 
           # @rbs comment: Parser::Source::Comment
-          # @rbs comments: Array[Parser::Source::Comment]
-          # @rbs source_lines: Array[String?]
-          def check_embedded_rbs_comment(comment, comments, source_lines) #: void
+          def check_embedded_rbs_comment(comment) #: void
             match = comment.text.match(/\A#(\s+)@rbs!(?:\s+|\Z)/)
             return unless match
 
             indent = match[1].size
-            last_comment_line = find_last_embedded_comment_line(comment, comments, indent)
+            last_comment_line = find_last_embedded_comment_line(comment, indent)
             next_line_number = last_comment_line.loc.line + 1
 
-            return if blank_line?(next_line_number, source_lines)
+            return if blank_line?(next_line_number)
 
             add_offense(line_range(next_line_number)) do |corrector|
               corrector.insert_before(line_range(next_line_number), "\n")
@@ -61,24 +56,22 @@ module RuboCop
           end
 
           # @rbs line_number: Integer
-          # @rbs source_lines: Array[String?]
-          def blank_line?(line_number, source_lines) #: bool
-            line = source_lines[line_number - 1]
+          def blank_line?(line_number) #: bool
+            line = processed_source.buffer.source.lines[line_number - 1]
             line.nil? || line.strip.empty?
           end
 
           # Find the last comment line in an embedded RBS block
           # @rbs start_comment: Parser::Source::Comment
-          # @rbs comments: Array[Parser::Source::Comment]
           # @rbs indent: Integer
-          def find_last_embedded_comment_line(start_comment, comments, indent) #: Parser::Source::Comment
-            start_index = comments.index(start_comment)
+          def find_last_embedded_comment_line(start_comment, indent) #: Parser::Source::Comment
+            start_index = processed_source.comments.index(start_comment)
             return start_comment unless start_index
 
             last_comment = start_comment
             current_line = start_comment.loc.line
 
-            comments.drop(start_index + 1).each do |comment|
+            processed_source.comments.drop(start_index + 1).each do |comment|
               # Must be consecutive lines
               break if comment.loc.line != current_line + 1
 
