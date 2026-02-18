@@ -81,6 +81,9 @@ module RuboCop
           # @rbs blank_line_number: Integer
           def register_blank_line_offense: (Integer blank_line_number) -> void
 
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def skip_only_annotation?: (RBS::Inline::AnnotationParser::ParsingResult comment) -> bool
+
           # @rbs line_number: Integer
           def blank_line?: (Integer line_number) -> bool
 
