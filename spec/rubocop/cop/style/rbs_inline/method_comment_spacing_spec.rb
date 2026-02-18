@@ -252,10 +252,32 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MethodCommentSpacing, :config do
   end
 
   it 'registers an offense for @rbs skip annotation not followed by method' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs skip
+      x = 1
+    RUBY
+  end
+
+  it 'does not register an offense for @rbs skip annotation before class definition' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs skip
+      class Foo; end
+    RUBY
+  end
+
+  it 'does not register an offense for @rbs skip annotation before module definition' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs skip
+      module Foo; end
+    RUBY
+  end
+
+  it 'registers an offense when @rbs skip annotation has blank line before class definition' do
     expect_offense(<<~RUBY)
       # @rbs skip
       ^^^^^^^^^^^ Method-related `@rbs` annotation must be immediately before a method definition.
-      x = 1
+
+      class Foo; end
     RUBY
   end
 

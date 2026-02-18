@@ -122,7 +122,7 @@ module RuboCop
 
             if blank_line?(next_line_number)
               check_blank_line_case(last_comment, next_line_number)
-            elsif !method_definition_line?(next_line_number)
+            elsif !method_definition_line?(next_line_number) && !skip_only_annotation?(comment)
               range = comment_range(last_comment)
               add_offense(range, message: MSG)
             end
@@ -146,6 +146,13 @@ module RuboCop
             add_offense(range, message: MSG_WITH_BLANK_LINE) do |corrector|
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
+          end
+
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def skip_only_annotation?(comment) #: bool
+            annotations = []
+            comment.each_annotation { |a| annotations << a }
+            annotations.any? && annotations.all? { |a| a.is_a?(RBS::Inline::AST::Annotations::Skip) }
           end
 
           # @rbs line_number: Integer
