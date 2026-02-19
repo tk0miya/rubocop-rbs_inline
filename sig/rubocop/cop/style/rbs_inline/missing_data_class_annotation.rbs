@@ -52,11 +52,10 @@ module RuboCop
           def add_offenses_for_folded_data_class: (RuboCop::AST::SendNode node) -> void
 
           # @rbs node: RuboCop::AST::SendNode
-          def build_multiline_replacement: (RuboCop::AST::SendNode node) -> String
+          def longest_argname: (RuboCop::AST::SendNode node) -> String
 
           # @rbs node: RuboCop::AST::SendNode
-          # @rbs base_indent: String
-          def build_arg_prefixes: (RuboCop::AST::SendNode node, String base_indent) -> Array[String]
+          def build_multiline_replacement: (RuboCop::AST::SendNode node) -> String
 
           # @rbs node: RuboCop::AST::SendNode
           def check_multiline_data_class: (RuboCop::AST::SendNode node) -> void

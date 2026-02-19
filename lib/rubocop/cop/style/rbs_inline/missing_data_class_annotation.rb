@@ -87,25 +87,26 @@ module RuboCop
           end
 
           # @rbs node: RuboCop::AST::SendNode
-          def build_multiline_replacement(node) #: String
-            base_indent = processed_source.lines[node.location.line - 1][/\A\s*/] # steep:ignore
-            prefixes = build_arg_prefixes(node, base_indent)
-            padded_width = prefixes.map(&:length).max + 2 # steep:ignore
-
-            args_source = prefixes.zip(node.arguments).map do |prefix, arg|
-              data_attribute?(arg) ? "#{prefix.ljust(padded_width)}#: untyped" : prefix
-            end.join("\n")
-
-            "(\n#{args_source}\n#{base_indent})"
+          def longest_argname(node) #: String
+            last_index = node.arguments.size - 1
+            args = node.arguments.each_with_index.map { |a, i| i < last_index ? "#{a.source}," : a.source }
+            args.max_by(&:length) || ''
           end
 
           # @rbs node: RuboCop::AST::SendNode
-          # @rbs base_indent: String
-          def build_arg_prefixes(node, base_indent) #: Array[String]
-            node.arguments.each_with_index.map do |arg, i|
-              comma = i < node.arguments.size - 1 ? ',' : ''
-              "#{base_indent}  #{arg.source}#{comma}"
-            end
+          def build_multiline_replacement(node) #: String # rubocop:disable Metrics/AbcSize
+            base_indent = source_code_at(node.location.line)[/\A\s*/]
+            last_index = node.arguments.size - 1
+            longest = longest_argname(node)
+
+            args_source = node.arguments.each_with_index.map do |arg, i|
+              comma = i < last_index ? ',' : ''
+              prefix = "#{base_indent}  #{arg.source}#{comma}"
+              padding = ' ' * (longest.length - arg.source.length - comma.length + 2)
+              data_attribute?(arg) ? "#{prefix}#{padding}#: untyped" : prefix
+            end.join("\n")
+
+            "(\n#{args_source}\n#{base_indent})"
           end
 
           # @rbs node: RuboCop::AST::SendNode
@@ -136,7 +137,7 @@ module RuboCop
           # @rbs arg: RuboCop::AST::Node
           def insert_annotation(corrector, node, arg) #: void
             line = arg.location.line
-            line_source = processed_source.lines[line - 1] # steep:ignore
+            line_source = source_code_at(line)
             content_end_col = line_source.rstrip.length
             padding = [annotation_column(node) - content_end_col, 1].max
             line_begin = processed_source.buffer.line_range(line).begin_pos
