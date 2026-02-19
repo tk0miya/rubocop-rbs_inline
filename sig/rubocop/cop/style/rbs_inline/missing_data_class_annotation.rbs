@@ -1,0 +1,39 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/missing_data_class_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that `Data.define` attributes have inline type annotations.
+        #
+        # Each attribute passed to `Data.define` should have a trailing `#:` type
+        # annotation comment on the same line.
+        #
+        # @example
+        #   # bad
+        #   MethodEntry = Data.define(:name, :node, :visibility)
+        #
+        #   # good
+        #   MethodEntry = Data.define(
+        #     :name,       #: Symbol
+        #     :node,       #: Parser::AST::Node
+        #     :visibility  #: Symbol
+        #   )
+        class MissingDataClassAnnotation < Base
+          MSG: ::String
+
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def data_define?: (RuboCop::AST::SendNode node) -> bool
+
+          # @rbs line: Integer
+          def inline_type_annotation?: (Integer line) -> bool
+        end
+      end
+    end
+  end
+end
