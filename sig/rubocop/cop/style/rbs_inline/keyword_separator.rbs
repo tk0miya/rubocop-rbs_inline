@@ -14,6 +14,8 @@ module RuboCop
         #   # good
         #   # @rbs module-self String
         class KeywordSeparator < Base
+          extend AutoCorrector
+
           include RangeHelp
 
           MSG: ::String
