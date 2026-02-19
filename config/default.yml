@@ -42,7 +42,7 @@ Style/RbsInline/RedundantTypeAnnotation:
 
 Style/RbsInline/RedundantYardComment:
   Description: "Checks for redundant YARD type comments when RBS annotations exist."
-  Enabled: true
+  Enabled: false
   VersionAdded: "1.5.0"
   SafeAutoCorrect: false
 
