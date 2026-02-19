@@ -8,9 +8,10 @@ module RuboCop
       module RbsInline
         # Checks for redundant YARD type comments when RBS inline annotations exist.
         #
-        # When both YARD documentation (`@param`, `@return`) and RBS::Inline annotations
-        # are present for the same method, the YARD type information is considered redundant
-        # since RBS provides the canonical type specification.
+        # When both YARD documentation (`@param`, `@return`, `@option`, `@yield`,
+        # `@yieldparam`, `@yieldreturn`) and RBS::Inline annotations are present for the
+        # same method, the YARD type information is considered redundant since RBS provides
+        # the canonical type specification.
         #
         # @safety
         #   Autocorrection is unsafe because YARD comments may contain additional
@@ -30,11 +31,16 @@ module RuboCop
         #   def greet
         #   end
         #
-        #   # bad - both YARD @param and @return with RBS
-        #   # @param name [String] the name
-        #   # @return [String] the greeting
-        #   #: (String) -> String
-        #   def greet(name)
+        #   # bad - YARD @option when RBS annotation exists
+        #   # @option opts [String] :name the name
+        #   #: (Hash[Symbol, untyped]) -> void
+        #   def greet(opts)
+        #   end
+        #
+        #   # bad - YARD @yieldparam when RBS block annotation exists
+        #   # @yieldparam item [String] the item
+        #   #: () { (String) -> void } -> void
+        #   def each(&block)
         #   end
         #
         #   # good - only RBS annotations
@@ -55,6 +61,25 @@ module RuboCop
 
           MSG_YARD_PARAM = 'Redundant YARD `@param` comment. Use RBS inline annotations instead.'
           MSG_YARD_RETURN = 'Redundant YARD `@return` comment. Use RBS inline annotations instead.'
+          MSG_YARD_OPTION = 'Redundant YARD `@option` comment. Use RBS inline annotations instead.'
+          MSG_YARD_YIELD = 'Redundant YARD `@yield` comment. Use RBS inline annotations instead.'
+          MSG_YARD_YIELDPARAM = 'Redundant YARD `@yieldparam` comment. Use RBS inline annotations instead.'
+          MSG_YARD_YIELDRETURN = 'Redundant YARD `@yieldreturn` comment. Use RBS inline annotations instead.'
+
+          # @rbs YARD_TAGS_FOR_PARAMS: Regexp
+          YARD_TAGS_FOR_PARAMS = /\A#\s+@(?:param|option)\b/
+          # @rbs YARD_TAGS_FOR_BLOCK: Regexp
+          YARD_TAGS_FOR_BLOCK = /\A#\s+@(?:yield|yieldparam|yieldreturn)\b/
+
+          # @rbs MSG_MAP: Hash[String, String]
+          MSG_MAP = {
+            '@param' => MSG_YARD_PARAM,
+            '@return' => MSG_YARD_RETURN,
+            '@option' => MSG_YARD_OPTION,
+            '@yield' => MSG_YARD_YIELD,
+            '@yieldparam' => MSG_YARD_YIELDPARAM,
+            '@yieldreturn' => MSG_YARD_YIELDRETURN
+          }.freeze
 
           def on_new_investigation #: void
             super
@@ -74,21 +99,19 @@ module RuboCop
             def_line = node.location.line
             check_parameter_redundancy(def_line)
             check_return_type_redundancy(def_line)
+            check_block_redundancy(def_line)
           end
 
           # @rbs def_line: Integer
           def check_parameter_redundancy(def_line) #: void
-            yard_params = find_yard_param_comments(def_line)
-            return if yard_params.empty?
+            yard_comments = find_yard_comments_by_pattern(def_line, YARD_TAGS_FOR_PARAMS)
+            return if yard_comments.empty?
 
-            # Check if ANY RBS parameter annotations exist
             has_rbs_params = find_method_type_signature_comments(def_line) ||
                              find_doc_style_param_annotations(def_line)
-
             return unless has_rbs_params
 
-            # Both exist - register offense on each YARD param
-            yard_params.each { |comment| add_offense_for_yard_param(comment) }
+            yard_comments.each { |comment| add_offense_for_yard(comment) }
           end
 
           # @rbs def_line: Integer
@@ -96,15 +119,24 @@ module RuboCop
             yard_return = find_yard_return_comment(def_line)
             return unless yard_return
 
-            # Check if ANY RBS return annotation exists
             has_rbs_return = find_method_type_signature_comments(def_line) ||
                              find_doc_style_return_annotation(def_line) ||
                              find_trailing_comment(def_line)
-
             return unless has_rbs_return
 
-            # Both exist - register offense
-            add_offense_for_yard_return(yard_return)
+            add_offense_for_yard(yard_return)
+          end
+
+          # @rbs def_line: Integer
+          def check_block_redundancy(def_line) #: void
+            yard_comments = find_yard_comments_by_pattern(def_line, YARD_TAGS_FOR_BLOCK)
+            return if yard_comments.empty?
+
+            has_rbs_block = find_method_type_signature_comments(def_line) ||
+                            find_doc_style_block_annotation(def_line)
+            return unless has_rbs_block
+
+            yard_comments.each { |comment| add_offense_for_yard(comment) }
           end
 
           # Find consecutive leading comments before a method definition
@@ -113,7 +145,6 @@ module RuboCop
             comments = [] #: Array[Parser::Source::Comment]
             line = def_line - 1
 
-            # Walk backwards collecting consecutive comment lines
             while line.positive?
               comment = processed_source.comments.find { |c| c.loc.expression.line == line }
               break unless comment
@@ -125,31 +156,39 @@ module RuboCop
             comments
           end
 
-          # Find YARD @param comments before a method definition
+          # Find YARD comments matching a pattern before a method definition
           # @rbs def_line: Integer
-          def find_yard_param_comments(def_line) #: Array[Parser::Source::Comment]
-            leading_comments = find_leading_comments(def_line)
-            leading_comments.select { |c| c.text.match?(/\A#\s+@param\b/) }
+          # @rbs pattern: Regexp
+          def find_yard_comments_by_pattern(def_line, pattern) #: Array[Parser::Source::Comment]
+            find_leading_comments(def_line).select { |c| c.text.match?(pattern) }
           end
 
           # Find YARD @return comment before a method definition
           # @rbs def_line: Integer
           def find_yard_return_comment(def_line) #: Parser::Source::Comment?
-            leading_comments = find_leading_comments(def_line)
-            leading_comments.find { |c| c.text.match?(/\A#\s+@return\b/) }
+            find_leading_comments(def_line).find { |c| c.text.match?(/\A#\s+@return\b/) }
           end
 
-          # @rbs comment: Parser::Source::Comment
-          def add_offense_for_yard_param(comment) #: void
-            add_offense(comment.loc.expression, message: MSG_YARD_PARAM) do |corrector|
-              corrector.remove(range_by_whole_lines(comment.loc.expression,
-                                                    include_final_newline: true))
+          # Find @rbs block annotation before a method definition
+          # @rbs def_line: Integer
+          def find_doc_style_block_annotation(def_line) #: RBS::Inline::AST::Annotations::BlockType?
+            leading_annotation = find_leading_annotation(def_line)
+            return unless leading_annotation
+
+            ret = nil #: RBS::Inline::AST::Annotations::BlockType?
+            leading_annotation.each_annotation do |annotation|
+              ret = annotation if annotation.is_a?(RBS::Inline::AST::Annotations::BlockType)
             end
+            ret
           end
 
+          # Detect the YARD tag name from a comment and register an offense
           # @rbs comment: Parser::Source::Comment
-          def add_offense_for_yard_return(comment) #: void
-            add_offense(comment.loc.expression, message: MSG_YARD_RETURN) do |corrector|
+          def add_offense_for_yard(comment) #: void
+            tag = comment.text[/@(\w+)/, 1] or return
+            message = MSG_MAP["@#{tag}"] or return
+
+            add_offense(comment.loc.expression, message:) do |corrector|
               corrector.remove(range_by_whole_lines(comment.loc.expression,
                                                     include_final_newline: true))
             end
