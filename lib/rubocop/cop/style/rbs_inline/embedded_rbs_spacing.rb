@@ -39,21 +39,19 @@ module RuboCop
           private
 
           def check_embedded_rbs_spacing #: void
-            processed_source.comments.each do |comment|
-              check_embedded_rbs_comment(comment)
+            parse_comments.each do |result|
+              result.each_annotation do |annotation|
+                next unless annotation.is_a?(RBS::Inline::AST::Annotations::Embedded)
+
+                check_embedded_annotation(annotation)
+              end
             end
           end
 
-          # @rbs comment: Parser::Source::Comment
-          def check_embedded_rbs_comment(comment) #: void
-            match = comment.text.match(/\A#(\s+)@rbs!(?:\s+|\Z)/)
-            return unless match
-
-            indent = match[1].size
-            last_comment_line = find_last_consecutive_comment(comment) do |c|
-              c.text.match?(/\A#(\s{#{indent + 1},}.*|\s*)\Z/)
-            end
-            next_line_number = last_comment_line.loc.line + 1
+          # @rbs annotation: RBS::Inline::AST::Annotations::Embedded
+          def check_embedded_annotation(annotation) #: void
+            last_comment = annotation.source.comments.last or return
+            next_line_number = last_comment.location.start_line + 1
 
             return if blank_line?(next_line_number)
 
