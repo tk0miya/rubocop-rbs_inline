@@ -15,6 +15,7 @@ module RuboCop
         #   # @rbs module-self String
         #
         class KeywordSeparator < Base
+          extend AutoCorrector
           include RangeHelp
 
           MSG = 'Do not use `:` after the keyword.'
@@ -24,8 +25,12 @@ module RuboCop
 
           def on_new_investigation #: void
             processed_source.comments.each do |comment|
-              if (matched = comment.text.match(/\A#\s+@rbs\s+(#{RBS_INLINE_KEYWORDS.join('|')}):/))
-                add_offense(invalid_location_for(comment, matched))
+              matched = comment.text.match(/\A#\s+@rbs\s+(#{RBS_INLINE_KEYWORDS.join('|')}):/)
+              next unless matched
+
+              range = invalid_location_for(comment, matched)
+              add_offense(range) do |corrector|
+                corrector.remove(range)
               end
             end
           end
