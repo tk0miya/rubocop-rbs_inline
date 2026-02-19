@@ -159,4 +159,27 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingDataClassAnnotation, :conf
       Foo = Struct.new(:name, :node)
     RUBY
   end
+
+  it 'handles splat argument in Data.define' do
+    expect_offense(<<~RUBY)
+      Data.define(
+        :foo,
+        ^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+        :bar,
+        ^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+        :baz,
+        ^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+        *QUX_QUUX
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Data.define(
+        :foo,      #: untyped
+        :bar,      #: untyped
+        :baz,      #: untyped
+        *QUX_QUUX
+      )
+    RUBY
+  end
 end
