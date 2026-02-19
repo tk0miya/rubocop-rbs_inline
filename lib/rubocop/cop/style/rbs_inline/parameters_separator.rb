@@ -20,6 +20,7 @@ module RuboCop
         #   # good
         #   # @rbs %a{pure}
         class ParametersSeparator < Base
+          extend AutoCorrector
           include RangeHelp
 
           MSG = 'Use `:` as a separator between parameter name and type.'
@@ -30,12 +31,14 @@ module RuboCop
 
           def on_new_investigation #: void
             processed_source.comments.each do |comment|
-              matched = comment.text.match(/\A#\s+@rbs\s+(\S+)/)
+              matched = comment.text.match(/\A(?<prefix>#\s+@rbs\s+)(?<keyword>\S+)/)
 
               next unless matched
-              next if valid_rbs_inline_comment?(matched[1])
+              next if valid_rbs_inline_comment?(matched[:keyword])
 
-              add_offense(invalid_location_for(comment))
+              add_offense(invalid_location_for(comment, matched)) do |corrector|
+                corrector.replace(keyword_range(comment, matched), corrected_keyword(matched[:keyword]))
+              end
             end
           end
 
@@ -52,10 +55,23 @@ module RuboCop
           end
 
           # @rbs comment: Parser::Source::Comment
-          def invalid_location_for(comment) #: Parser::Source::Range
+          # @rbs matched: MatchData
+          def invalid_location_for(comment, matched) #: Parser::Source::Range
             range = comment.source_range
-            matched = comment.text.match(/\A#\s+@rbs\s+/) or raise
-            range_between(range.begin_pos + matched[0].to_s.length, range.end_pos)
+            range_between(range.begin_pos + matched[:prefix].length, range.end_pos)
+          end
+
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def keyword_range(comment, matched) #: Parser::Source::Range
+            range = comment.source_range
+            keyword_begin = range.begin_pos + matched[:prefix].length
+            range_between(keyword_begin, keyword_begin + matched[:keyword].length)
+          end
+
+          # @rbs keyword: String
+          def corrected_keyword(keyword) #: String
+            "#{keyword.delete_prefix(':')}:"
           end
         end
       end

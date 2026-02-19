@@ -20,6 +20,8 @@ module RuboCop
         #   # good
         #   # @rbs %a{pure}
         class ParametersSeparator < Base
+          extend AutoCorrector
+
           include RangeHelp
 
           MSG: ::String
@@ -37,7 +39,15 @@ module RuboCop
           def valid_rbs_inline_comment?: (String? matched) -> bool
 
           # @rbs comment: Parser::Source::Comment
-          def invalid_location_for: (Parser::Source::Comment comment) -> Parser::Source::Range
+          # @rbs matched: MatchData
+          def invalid_location_for: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
+
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def keyword_range: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
+
+          # @rbs keyword: String
+          def corrected_keyword: (String keyword) -> String
         end
       end
     end
