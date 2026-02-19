@@ -149,7 +149,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def annotation_column(node) #: Integer
             last_arg = node.arguments.last
-            max_end_col = data_attributes(node).map do |arg|
+            max_end_col = node.arguments.map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
               arg.location.column + arg.source.length + comma_length
             end.max || 0 # steep:ignore
