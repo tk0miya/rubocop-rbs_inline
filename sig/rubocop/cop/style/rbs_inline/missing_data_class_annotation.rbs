@@ -20,6 +20,12 @@ module RuboCop
         #     :visibility  #: Symbol
         #   )
         class MissingDataClassAnnotation < Base
+          include RangeHelp
+
+          include SourceCodeHelper
+
+          extend AutoCorrector
+
           MSG: ::String
 
           # @rbs node: RuboCop::AST::SendNode
@@ -30,8 +36,46 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def data_define?: (RuboCop::AST::SendNode node) -> bool
 
+          # @rbs arg: RuboCop::AST::Node
+          def data_attribute?: (RuboCop::AST::Node arg) -> bool
+
+          # @rbs node: RuboCop::AST::SendNode
+          def data_attributes: (RuboCop::AST::SendNode node) -> Array[RuboCop::AST::Node]
+
           # @rbs line: Integer
-          def inline_type_annotation?: (Integer line) -> bool
+          def inline_type_annotation?: (Integer line) -> boolish
+
+          # @rbs node: RuboCop::AST::SendNode
+          def one_liner?: (RuboCop::AST::SendNode node) -> bool
+
+          # @rbs node: RuboCop::AST::SendNode
+          def add_one_liner_offenses: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs node: RuboCop::AST::SendNode
+          def build_multiline_replacement: (RuboCop::AST::SendNode node) -> String
+
+          # @rbs node: RuboCop::AST::SendNode
+          # @rbs base_indent: String
+          def build_arg_prefixes: (RuboCop::AST::SendNode node, String base_indent) -> Array[String]
+
+          # @rbs node: RuboCop::AST::SendNode
+          def check_multiline_data_class: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs node: RuboCop::AST::SendNode
+          # @rbs arg: RuboCop::AST::Node
+          def correct_multiline: (RuboCop::Cop::Corrector corrector, RuboCop::AST::SendNode node, RuboCop::AST::Node arg) -> void
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs node: RuboCop::AST::SendNode
+          # @rbs arg: RuboCop::AST::Node
+          def insert_annotation: (RuboCop::Cop::Corrector corrector, RuboCop::AST::SendNode node, RuboCop::AST::Node arg) -> void
+
+          # @rbs node: RuboCop::AST::SendNode
+          def annotation_column: (RuboCop::AST::SendNode node) -> Integer
+
+          # @rbs line: Integer
+          def find_regular_comment: (Integer line) -> Parser::Source::Comment?
         end
       end
     end
