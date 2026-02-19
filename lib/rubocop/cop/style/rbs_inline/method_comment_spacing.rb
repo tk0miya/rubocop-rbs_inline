@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'source_code_helper'
 require_relative 'comment_parser'
 
 module RuboCop
@@ -47,6 +48,7 @@ module RuboCop
         class MethodCommentSpacing < Base
           extend AutoCorrector
           include RangeHelp
+          include SourceCodeHelper
           include CommentParser
 
           MSG = 'Method-related `@rbs` annotation must be immediately before a method definition.'
@@ -156,33 +158,9 @@ module RuboCop
           end
 
           # @rbs line_number: Integer
-          def blank_line?(line_number) #: bool
-            line = processed_source.lines[line_number - 1]
-            line.nil? || line.strip.empty?
-          end
-
-          # @rbs line_number: Integer
           def method_definition_line?(line_number) #: bool
             line = processed_source.lines[line_number - 1]
             line&.strip&.start_with?('def ') || false
-          end
-
-          # @rbs line_number: Integer
-          def line_range(line_number) #: Parser::Source::Range
-            processed_source.buffer.line_range(line_number)
-          end
-
-          # Convert Prism::Comment to Parser::Source::Range
-          # @rbs comment: Prism::Comment
-          def comment_range(comment) #: Parser::Source::Range
-            start_offset = character_offset(comment.location.start_offset)
-            end_offset = character_offset(comment.location.end_offset)
-
-            Parser::Source::Range.new(
-              processed_source.buffer,
-              start_offset,
-              end_offset
-            )
           end
         end
       end

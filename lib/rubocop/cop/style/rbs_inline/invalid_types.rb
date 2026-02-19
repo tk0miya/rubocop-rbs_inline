@@ -23,6 +23,7 @@ module RuboCop
         class InvalidTypes < Base
           include CommentParser
           include RangeHelp
+          include SourceCodeHelper
           include RBS::Inline::AST::Annotations
           include RBS::Inline::AST::Members
 

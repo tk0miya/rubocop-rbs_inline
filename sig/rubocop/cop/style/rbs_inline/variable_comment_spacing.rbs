@@ -29,6 +29,10 @@ module RuboCop
         class VariableCommentSpacing < Base
           extend AutoCorrector
 
+          include SourceCodeHelper
+
+          include CommentParser
+
           MSG: ::String
 
           VARIABLE_COMMENT_PATTERN: ::Regexp
@@ -41,16 +45,6 @@ module RuboCop
 
           # @rbs comment: Parser::Source::Comment
           def check_variable_comment: (Parser::Source::Comment comment) -> void
-
-          # @rbs line_number: Integer
-          def blank_line?: (Integer line_number) -> bool
-
-          # Find the last comment line in a variable comment block
-          # @rbs start_comment: Parser::Source::Comment
-          def find_last_variable_comment_line: (Parser::Source::Comment start_comment) -> Parser::Source::Comment
-
-          # @rbs line_number: Integer
-          def line_range: (Integer line_number) -> Parser::Source::Range
         end
       end
     end

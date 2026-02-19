@@ -20,6 +20,7 @@ module RuboCop
         class UnmatchedAnnotations < Base # rubocop:disable Metrics/ClassLength
           include CommentParser
           include RangeHelp
+          include SourceCodeHelper
 
           MSG = 'target parameter not found.'
 

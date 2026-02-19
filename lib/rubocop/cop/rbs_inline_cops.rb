@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'style/rbs_inline/source_code_helper'
 require_relative 'style/rbs_inline/comment_parser'
 require_relative 'style/rbs_inline/embedded_rbs_spacing'
 require_relative 'style/rbs_inline/invalid_comment'

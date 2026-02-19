@@ -1,0 +1,27 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/source_code_helper.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Utility module for accessing processed source code information
+        # @rbs module-self RuboCop::Cop::Base
+        module SourceCodeHelper : RuboCop::Cop::Base
+          # Convert byte offset to character offset
+          # @rbs byte_offset: Integer
+          def character_offset: (Integer byte_offset) -> Integer
+
+          # @rbs line_number: Integer
+          def blank_line?: (Integer line_number) -> bool
+
+          # @rbs line_number: Integer
+          def line_range: (Integer line_number) -> Parser::Source::Range
+
+          # Convert Prism::Comment to Parser::Source::Range
+          # @rbs comment: Prism::Comment
+          def comment_range: (Prism::Comment comment) -> Parser::Source::Range
+        end
+      end
+    end
+  end
+end
