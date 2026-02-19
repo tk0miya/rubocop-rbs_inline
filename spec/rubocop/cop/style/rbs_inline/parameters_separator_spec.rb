@@ -20,6 +20,16 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
       # @rbs :param String
              ^^^^^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
     RUBY
+
+    expect_correction(<<~RUBY)
+      # @rbs param: String
+      # @rbs &block: String
+      # @rbs *: String
+      # @rbs **: String
+      # @rbs return: String
+      # @rbs return: String
+      # @rbs param: String
+    RUBY
   end
 
   it 'does not register an offense when using `#good_method`' do
