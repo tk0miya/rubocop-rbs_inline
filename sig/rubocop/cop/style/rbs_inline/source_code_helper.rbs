@@ -11,6 +11,9 @@ module RuboCop
           # @rbs byte_offset: Integer
           def character_offset: (Integer byte_offset) -> Integer
 
+          # @rbs line: Integer
+          def comment_at: (Integer line) -> Parser::Source::Comment?
+
           # @rbs line_number: Integer
           def blank_line?: (Integer line_number) -> bool
 

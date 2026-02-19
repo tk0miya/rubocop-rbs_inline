@@ -17,6 +17,11 @@ module RuboCop
             byte_offset
           end
 
+          # @rbs line: Integer
+          def comment_at(line) #: Parser::Source::Comment?
+            processed_source.comments.find { _1.location.line == line }
+          end
+
           # @rbs line_number: Integer
           def blank_line?(line_number) #: bool
             line = processed_source.buffer.source.lines[line_number - 1]
