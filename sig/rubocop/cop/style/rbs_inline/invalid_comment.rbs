@@ -17,18 +17,34 @@ module RuboCop
         #   #: () -> void
         #   # @rbs param: String
         class InvalidComment < Base
+          extend AutoCorrector
+
           MSG: ::String
-
-          ANNOTATION_KEYWORDS: Array[String]
-
-          SIGNATURE_PATTERN: ::String
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS: Array[String]
 
+          RBS_INLINE_KEYWORD_PATTERN: String
+
+          SIGNATURE_PATTERN: ::String
+
+          MISSING_HASH_COLON: ::Regexp
+
+          SPACE_BEFORE_COLON: ::Regexp
+
+          MIXED_ANNOTATION: ::Regexp
+
+          MISSING_AT_SIGN: ::Regexp
+
           def on_new_investigation: () -> void
 
           private
+
+          # @rbs comment: Parser::Source::Comment
+          def check_comment: (Parser::Source::Comment comment) -> void
+
+          # @rbs text: String
+          def corrected_text: (String text) -> String?
 
           # @rbs comments: Array[Parser::Source::Comment]
           def consume_embedded_rbs: (Array[Parser::Source::Comment] comments) -> Array[Parser::Source::Comment]

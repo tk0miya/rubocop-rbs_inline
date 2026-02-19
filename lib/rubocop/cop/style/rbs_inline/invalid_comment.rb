@@ -20,52 +20,68 @@ module RuboCop
         #   # @rbs param: String
         #
         class InvalidComment < Base
-          MSG = 'Invalid RBS annotation comment found.'
+          extend AutoCorrector
 
-          ANNOTATION_KEYWORDS = %w[return inherits override use module-self generic in out
-                                   unchecked self skip yields module class].freeze #: Array[String]
-          SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
+          MSG = 'Invalid RBS annotation comment found.'
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
+          RBS_INLINE_KEYWORD_PATTERN = RBS_INLINE_KEYWORDS.join('|') #: String
+
+          SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
+
+          MISSING_HASH_COLON = /\A#\s+#{SIGNATURE_PATTERN}/
+          SPACE_BEFORE_COLON = /\A#\s+:\s*#{SIGNATURE_PATTERN}/
+          MIXED_ANNOTATION   = /\A#:\s+@rbs\s+/
+          MISSING_AT_SIGN    = /\A#\s*rbs\s+(#{RBS_INLINE_KEYWORD_PATTERN}|\S+:|%a\{.*\}|#{SIGNATURE_PATTERN})/
 
           def on_new_investigation #: void
-            comments = consume_embedded_rbs(processed_source.comments)
-            comments.each do |comment|
-              add_offense(comment) if comment.text =~ /\A#\s+#{SIGNATURE_PATTERN}/
-              add_offense(comment) if comment.text =~ /\A#\s+:\s*#{SIGNATURE_PATTERN}/
-
-              add_offense(comment) if comment.text =~ /\A#:\s+@rbs\s+/
-              if comment.text =~ /\A#\s*rbs\s+(#{RBS_INLINE_KEYWORDS.join('|')}|\S+:|%a{.*}|#{SIGNATURE_PATTERN})/
-                add_offense(comment)
-              end
+            consume_embedded_rbs(processed_source.comments).each do |comment|
+              check_comment(comment)
             end
           end
 
           private
 
+          # @rbs comment: Parser::Source::Comment
+          def check_comment(comment) #: void
+            corrected = corrected_text(comment.text)
+            return unless corrected
+
+            add_offense(comment) do |corrector|
+              corrector.replace(comment.source_range, corrected)
+            end
+          end
+
+          # @rbs text: String
+          def corrected_text(text) #: String?
+            case text
+            when MISSING_HASH_COLON then text.sub(/\A#\s+/, '#: ')
+            when SPACE_BEFORE_COLON then text.sub(/\A#\s+:\s*/, '#: ')
+            when MIXED_ANNOTATION   then text.sub(/\A#:\s+/, '# ')
+            when MISSING_AT_SIGN    then text.sub(/\A#\s*rbs\s+/, '# @rbs ')
+            end
+          end
+
           # @rbs comments: Array[Parser::Source::Comment]
-          def consume_embedded_rbs(comments) #: Array[Parser::Source::Comment] # rubocop:disable Metrics/MethodLength
+          def consume_embedded_rbs(comments) #: Array[Parser::Source::Comment]
             in_embedded = false
             indent = 1
             line = 0
-            comments.select do |comment|
-              case comment.text
-              when /\A#(\s+)@rbs!(\s+|\Z)/
+
+            comments.reject do |comment|
+              if (match = comment.text.match(/\A#(\s+)@rbs!(\s+|\Z)/))
                 in_embedded = true
-                indent = Regexp.last_match(1).to_s.size
+                indent = match[1].size
                 line = comment.loc.line
-                false
-              when /\A#(\s{#{indent + 1},}.*|\s*)\Z/
-                if in_embedded && comment.loc.line == line + 1
-                  line += 1
-                  false
-                else
-                  true
-                end
+                true
+              elsif in_embedded && comment.loc.line == line + 1 &&
+                    comment.text.match?(/\A#(\s{#{indent + 1},}.*|\s*)\Z/)
+                line += 1
+                true
               else
                 in_embedded = false
-                true
+                false
               end
             end
           end

@@ -13,6 +13,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
         #: @rbs param: String
         ^^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/InvalidComment: Invalid RBS annotation comment found.
       RUBY
+
+      expect_correction(<<~RUBY)
+        #: () -> void
+        #: () -> void
+        # @rbs param: String
+      RUBY
     end
 
     it 'does not register an offense when using valid annotation comments' do
@@ -54,6 +60,22 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
         ^^^^^^^^^^^^^^^ Style/RbsInline/InvalidComment: Invalid RBS annotation comment found.
         # rbs **: String
         ^^^^^^^^^^^^^^^^ Style/RbsInline/InvalidComment: Invalid RBS annotation comment found.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @rbs return: String
+        # @rbs inherits String
+        # @rbs override
+        # @rbs use String
+        # @rbs module-self String
+        # @rbs generic String
+        # @rbs skip
+        # @rbs module String
+        # @rbs class String
+        # @rbs param: String
+        # @rbs &block: String
+        # @rbs *: String
+        # @rbs **: String
       RUBY
     end
 
