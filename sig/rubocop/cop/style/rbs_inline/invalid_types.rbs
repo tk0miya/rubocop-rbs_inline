@@ -29,6 +29,17 @@ module RuboCop
           MSG: ::String
 
           def on_new_investigation: () -> void
+
+          private
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::t
+          def annotation_range: (RBS::Inline::AST::Annotations::t annotation) -> Parser::Source::Range
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::t
+          def invalid_annotation?: (RBS::Inline::AST::Annotations::t annotation) -> bool
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::Embedded
+          def invalid_embedded?: (RBS::Inline::AST::Annotations::Embedded annotation) -> bool
         end
       end
     end
