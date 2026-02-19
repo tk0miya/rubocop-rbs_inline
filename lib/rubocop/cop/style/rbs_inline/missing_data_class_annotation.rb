@@ -31,8 +31,8 @@ module RuboCop
           def on_send(node) #: void
             return unless data_define?(node)
 
-            if one_liner?(node)
-              add_one_liner_offenses(node)
+            if folded_data_class?(node)
+              add_offenses_for_folded_data_class(node)
             else
               check_multiline_data_class(node)
             end
@@ -64,16 +64,16 @@ module RuboCop
           end
 
           # @rbs node: RuboCop::AST::SendNode
-          def one_liner?(node) #: bool
+          def folded_data_class?(node) #: bool
             attrs = data_attributes(node)
-            first = attrs.first or return false
-            last = attrs.last or return false
+            return false if attrs.empty?
 
-            first.location.line == last.location.line
+            lines = attrs.map { _1.location.line }
+            lines.uniq.length < attrs.length || lines.include?(node.location.line)
           end
 
           # @rbs node: RuboCop::AST::SendNode
-          def add_one_liner_offenses(node) #: void
+          def add_offenses_for_folded_data_class(node) #: void
             corrected = false
             data_attributes(node).each do |arg|
               if corrected

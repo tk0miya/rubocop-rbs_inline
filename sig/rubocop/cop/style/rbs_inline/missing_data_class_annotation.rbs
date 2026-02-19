@@ -46,10 +46,10 @@ module RuboCop
           def inline_type_annotation?: (Integer line) -> boolish
 
           # @rbs node: RuboCop::AST::SendNode
-          def one_liner?: (RuboCop::AST::SendNode node) -> bool
+          def folded_data_class?: (RuboCop::AST::SendNode node) -> bool
 
           # @rbs node: RuboCop::AST::SendNode
-          def add_one_liner_offenses: (RuboCop::AST::SendNode node) -> void
+          def add_offenses_for_folded_data_class: (RuboCop::AST::SendNode node) -> void
 
           # @rbs node: RuboCop::AST::SendNode
           def build_multiline_replacement: (RuboCop::AST::SendNode node) -> String

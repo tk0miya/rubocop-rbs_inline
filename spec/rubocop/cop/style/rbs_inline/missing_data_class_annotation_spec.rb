@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingDataClassAnnotation, :conf
     RUBY
   end
 
-  it 'registers an offense and corrects one-liner Data.define' do
+  it 'registers an offense and corrects folded Data.define' do
     expect_offense(<<~RUBY)
       MethodEntry = Data.define(:name, :node, :visibility)
                                 ^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
@@ -86,6 +86,43 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingDataClassAnnotation, :conf
         :name,       #: untyped -- the method name
         :node,       #: Parser::AST::Node
         :visibility  #: untyped -- public, protected, or private
+      )
+    RUBY
+  end
+
+  it 'registers an offense and corrects attributes folded on the same line inside parentheses' do
+    expect_offense(<<~RUBY)
+      MethodEntry = Data.define(
+        :name, :node, :visibility
+        ^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+               ^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+                      ^^^^^^^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      MethodEntry = Data.define(
+        :name,       #: untyped
+        :node,       #: untyped
+        :visibility  #: untyped
+      )
+    RUBY
+  end
+
+  it 'registers an offense and corrects attributes split across lines but not one per line' do
+    expect_offense(<<~RUBY)
+      MethodEntry = Data.define(:name, :node,
+                                ^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+                                       ^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+                                :visibility)
+                                ^^^^^^^^^^^ Style/RbsInline/MissingDataClassAnnotation: Missing inline type annotation for Data attribute (e.g., `#: Type`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      MethodEntry = Data.define(
+        :name,       #: untyped
+        :node,       #: untyped
+        :visibility  #: untyped
       )
     RUBY
   end
