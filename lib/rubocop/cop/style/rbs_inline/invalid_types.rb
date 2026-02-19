@@ -28,32 +28,40 @@ module RuboCop
 
           MSG = 'Invalid annotation found.'
 
-          def on_new_investigation #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-            results = parse_comments
-            results.each do |result|
+          def on_new_investigation #: void
+            parse_comments.each do |result|
               result.each_annotation do |annotation|
-                location = annotation.source.comments.first&.location or raise
-                range = range_between(character_offset(location.start_offset), character_offset(location.end_offset))
-
-                case annotation
-                when Application
-                  add_offense(range) unless annotation.types
-                when BlockType, IvarType, SpecialVarTypeAnnotation, VarType
-                  add_offense(range) unless annotation.type
-                when Generic
-                  add_offense(range) unless annotation.type_param
-                when ModuleSelf
-                  add_offense(range) if annotation.self_types.empty?
-                when SyntaxErrorAssertion
-                  add_offense(range)
-                when Embedded
-                  comment = annotation.source.comments.fetch(0)
-                  parsing_result = RBS::Inline::AnnotationParser::ParsingResult.new(comment)
-                  embedded = RBSEmbedded.new(parsing_result, annotation)
-                  add_offense(range) if embedded.members.is_a?(RBS::ParsingError)
-                end
+                add_offense(annotation_range(annotation)) if invalid_annotation?(annotation)
               end
             end
+          end
+
+          private
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::t
+          def annotation_range(annotation) #: Parser::Source::Range
+            location = annotation.source.comments.first&.location or raise
+            range_between(character_offset(location.start_offset), character_offset(location.end_offset))
+          end
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::t
+          def invalid_annotation?(annotation) #: bool
+            case annotation
+            when Application then !annotation.types
+            when BlockType, IvarType, SpecialVarTypeAnnotation, VarType then !annotation.type
+            when Generic then !annotation.type_param
+            when ModuleSelf then annotation.self_types.empty?
+            when SyntaxErrorAssertion then true
+            when Embedded then invalid_embedded?(annotation)
+            else false
+            end
+          end
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::Embedded
+          def invalid_embedded?(annotation) #: bool
+            comment = annotation.source.comments.fetch(0)
+            parsing_result = RBS::Inline::AnnotationParser::ParsingResult.new(comment)
+            RBSEmbedded.new(parsing_result, annotation).members.is_a?(RBS::ParsingError)
           end
         end
       end
