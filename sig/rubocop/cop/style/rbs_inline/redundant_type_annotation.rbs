@@ -85,6 +85,8 @@ module RuboCop
 
           include RangeHelp
 
+          include SourceCodeHelper
+
           MSG_DOC_STYLE_PARAM: ::String
 
           MSG_DOC_STYLE_RETURN: ::String

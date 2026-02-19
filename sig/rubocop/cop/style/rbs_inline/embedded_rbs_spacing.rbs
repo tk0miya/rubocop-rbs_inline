@@ -24,6 +24,10 @@ module RuboCop
         class EmbeddedRbsSpacing < Base
           extend AutoCorrector
 
+          include SourceCodeHelper
+
+          include CommentParser
+
           MSG: ::String
 
           def on_new_investigation: () -> void
@@ -34,17 +38,6 @@ module RuboCop
 
           # @rbs comment: Parser::Source::Comment
           def check_embedded_rbs_comment: (Parser::Source::Comment comment) -> void
-
-          # @rbs line_number: Integer
-          def blank_line?: (Integer line_number) -> bool
-
-          # Find the last comment line in an embedded RBS block
-          # @rbs start_comment: Parser::Source::Comment
-          # @rbs indent: Integer
-          def find_last_embedded_comment_line: (Parser::Source::Comment start_comment, Integer indent) -> Parser::Source::Comment
-
-          # @rbs line_number: Integer
-          def line_range: (Integer line_number) -> Parser::Source::Range
         end
       end
     end

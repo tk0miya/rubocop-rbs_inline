@@ -84,6 +84,7 @@ module RuboCop
           include CommentParser
           include ConfigurableEnforcedStyle
           include RangeHelp
+          include SourceCodeHelper
 
           MSG_DOC_STYLE_PARAM = 'Redundant `@rbs` parameter annotation.'
           MSG_DOC_STYLE_RETURN = 'Redundant `@rbs return` annotation.'

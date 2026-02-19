@@ -2,6 +2,8 @@
 
 require 'rbs/inline'
 
+require_relative 'source_code_helper'
+
 module RuboCop
   module Cop
     module Style
@@ -17,14 +19,25 @@ module RuboCop
             @parsed_comments = RBS::Inline::AnnotationParser.parse(parsed_result.comments)
           end
 
-          # Convert byte offset to character offset
-          # @rbs byte_offset: Integer
-          def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
-            text = source[...byte_offset] or raise
-            text.force_encoding(processed_source.buffer.source.encoding).size
-          rescue StandardError
-            byte_offset
+          # Find the last comment in a consecutive block starting from start_comment
+          # @rbs start_comment: Parser::Source::Comment
+          # @rbs &block: (Parser::Source::Comment) -> bool
+          def find_last_consecutive_comment(start_comment, &block) #: Parser::Source::Comment
+            start_index = processed_source.comments.index(start_comment)
+            return start_comment unless start_index
+
+            last_comment = start_comment
+            current_line = start_comment.loc.line
+
+            processed_source.comments.drop(start_index + 1).each do |comment|
+              break if comment.loc.line != current_line + 1
+              break unless block.call(comment)
+
+              last_comment = comment
+              current_line = comment.loc.line
+            end
+
+            last_comment
           end
 
           # Find the leading annotation comment before the given line
