@@ -36,8 +36,8 @@ module RuboCop
 
           def check_embedded_rbs_spacing: () -> void
 
-          # @rbs comment: Parser::Source::Comment
-          def check_embedded_rbs_comment: (Parser::Source::Comment comment) -> void
+          # @rbs annotation: RBS::Inline::AST::Annotations::Embedded
+          def check_embedded_annotation: (RBS::Inline::AST::Annotations::Embedded annotation) -> void
         end
       end
     end
