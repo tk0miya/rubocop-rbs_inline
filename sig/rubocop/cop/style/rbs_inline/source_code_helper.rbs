@@ -15,6 +15,9 @@ module RuboCop
           def comment_at: (Integer line) -> Parser::Source::Comment?
 
           # @rbs line_number: Integer
+          def source_code_at: (Integer line_number) -> String
+
+          # @rbs line_number: Integer
           def blank_line?: (Integer line_number) -> bool
 
           # @rbs line_number: Integer

@@ -23,6 +23,11 @@ module RuboCop
           end
 
           # @rbs line_number: Integer
+          def source_code_at(line_number) #: String
+            processed_source.buffer.source.lines[line_number - 1] || ''
+          end
+
+          # @rbs line_number: Integer
           def blank_line?(line_number) #: bool
             line = processed_source.buffer.source.lines[line_number - 1]
             line.nil? || line.strip.empty?
