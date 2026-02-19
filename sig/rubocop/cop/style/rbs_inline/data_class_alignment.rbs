@@ -1,0 +1,66 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/data_class_alignment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that inline type annotation comments on `Data.define` attributes
+        # are aligned to the same column.
+        #
+        # When multiple attributes have `#:` type annotations, they should all
+        # start at the same column position for readability.
+        #
+        # @example
+        #   # bad
+        #   MethodEntry = Data.define(
+        #     :name, #: Symbol
+        #     :node, #: Parser::AST::Node
+        #     :visibility  #: Symbol
+        #   )
+        #
+        #   # good
+        #   MethodEntry = Data.define(
+        #     :name,       #: Symbol
+        #     :node,       #: Parser::AST::Node
+        #     :visibility  #: Symbol
+        #   )
+        class DataClassAlignment < Base
+          include RangeHelp
+
+          include SourceCodeHelper
+
+          extend AutoCorrector
+
+          MSG: ::String
+
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def data_define?: (RuboCop::AST::SendNode node) -> bool
+
+          # @rbs node: RuboCop::AST::SendNode
+          def one_liner?: (RuboCop::AST::SendNode node) -> bool
+
+          # @rbs node: RuboCop::AST::SendNode
+          def data_attributes: (RuboCop::AST::SendNode node) -> Array[RuboCop::AST::Node]
+
+          # @rbs node: RuboCop::AST::SendNode
+          def collect_annotations: (RuboCop::AST::SendNode node) -> Array[{ arg: RuboCop::AST::Node, comment: Parser::Source::Comment }]
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs comment: Parser::Source::Comment
+          # @rbs target_column: Integer
+          def correct_alignment: (RuboCop::Cop::Corrector corrector, Parser::Source::Comment comment, Integer target_column) -> void
+
+          # @rbs line: Integer
+          # @rbs code_end_col: Integer
+          # @rbs comment_col: Integer
+          def build_space_range: (Integer line, Integer code_end_col, Integer comment_col) -> Parser::Source::Range
+        end
+      end
+    end
+  end
+end
