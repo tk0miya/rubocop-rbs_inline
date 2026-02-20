@@ -88,6 +88,8 @@ module RuboCop
 
           MESSAGES: untyped
 
+          ATTR_MESSAGE: ::String
+
           ATTR_METHODS: untyped
 
           VISIBILITY_MODIFIERS: untyped

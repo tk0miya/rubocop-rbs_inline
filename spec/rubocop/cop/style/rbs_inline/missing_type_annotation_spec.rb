@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           #: String
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           attr_writer :name
-          ^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           attr_accessor :name
-          ^^^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+          ^^^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing `@rbs` annotation.
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           attr_reader :name
-          ^^^^^^^^^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
         RUBY
       end
     end
@@ -620,7 +620,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
             private
 
             attr_reader :name
-            ^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
           end
         RUBY
       end
@@ -645,7 +645,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           class Foo
             attr_reader :name
-            ^^^^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
             private :name
           end
         RUBY
