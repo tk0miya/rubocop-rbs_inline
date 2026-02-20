@@ -161,6 +161,10 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def annotated_def?: (Parser::AST::Node node) -> boolish
 
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: Parser::AST::Node
+          def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
+
           # @rbs line: Integer
           def annotated_attr?: (Integer line) -> boolish
 

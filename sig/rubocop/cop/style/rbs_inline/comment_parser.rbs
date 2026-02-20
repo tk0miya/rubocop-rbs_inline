@@ -26,8 +26,8 @@ module RuboCop
           def find_method_type_signature_comments: (Integer def_line) -> Array[Parser::Source::Comment]?
 
           # Find trailing comment on the same line as the method definition
-          # @rbs def_line: Integer
-          def find_trailing_comment: (Integer def_line) -> Parser::Source::Comment?
+          # @rbs line: Integer
+          def find_trailing_comment: (Integer line) -> Parser::Source::Comment?
 
           # Find @rbs parameter annotations before a method definition
           # @rbs def_line: Integer

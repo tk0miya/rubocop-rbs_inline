@@ -110,8 +110,13 @@ module RuboCop
           # @rbs def_line: Integer
           def check_parameter_redundancy: (Integer def_line) -> void
 
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: Parser::AST::Node
+          def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
+
           # @rbs def_line: Integer
-          def check_return_type_redundancy: (Integer def_line) -> void
+          # @rbs parameter_list_end_line: Integer
+          def check_return_type_redundancy: (Integer def_line, Integer parameter_list_end_line) -> void
 
           # @rbs comments: Array[Parser::Source::Comment]
           def add_offense_for_method_type_signature: (Array[Parser::Source::Comment] comments) -> void
