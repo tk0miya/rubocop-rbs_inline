@@ -166,8 +166,7 @@ module RuboCop
 
           # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
           def add_offense_for_doc_style_param(annotation) #: void
-            loc = annotation.source.comments.first&.location or return
-            range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
+            range = annotation_range(annotation) or return
             add_offense(range, message: MSG_DOC_STYLE_PARAM) do |corrector|
               unexpected_style_detected(:doc_style)
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
@@ -198,8 +197,7 @@ module RuboCop
 
           # @rbs annotation: RBS::Inline::AST::Annotations::ReturnType
           def add_offense_for_doc_style_return(annotation) #: void
-            loc = annotation.source.comments.first&.location or return
-            range = range_between(character_offset(loc.start_offset), character_offset(loc.end_offset))
+            range = annotation_range(annotation) or return
             add_offense(range, message: MSG_DOC_STYLE_RETURN) do |corrector|
               unexpected_style_detected(:doc_style)
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))

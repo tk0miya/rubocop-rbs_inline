@@ -32,18 +32,15 @@ module RuboCop
           def on_new_investigation #: void
             parse_comments.each do |result|
               result.each_annotation do |annotation|
-                add_offense(annotation_range(annotation)) if invalid_annotation?(annotation)
+                next unless invalid_annotation?(annotation)
+
+                range = annotation_range(annotation) or raise
+                add_offense(range)
               end
             end
           end
 
           private
-
-          # @rbs annotation: RBS::Inline::AST::Annotations::t
-          def annotation_range(annotation) #: Parser::Source::Range
-            location = annotation.source.comments.first&.location or raise
-            range_between(character_offset(location.start_offset), character_offset(location.end_offset))
-          end
 
           # @rbs annotation: RBS::Inline::AST::Annotations::t
           def invalid_annotation?(annotation) #: bool
