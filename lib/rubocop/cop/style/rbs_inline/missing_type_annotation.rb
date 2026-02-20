@@ -93,6 +93,8 @@ module RuboCop
             doc_style_and_return_annotation: 'Missing `@rbs` params and trailing return type.'
           }.freeze
 
+          ATTR_MESSAGE = 'Missing inline type annotation (e.g., `#: Type`).'
+
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
           VISIBILITY_MODIFIERS = %i[public protected private].freeze
 
@@ -218,7 +220,7 @@ module RuboCop
               if entry.node.def_type? || entry.node.defs_type?
                 add_offense(offense_range_for_def(entry.node), message: msg)
               else
-                add_offense(entry.node, message: msg)
+                add_offense(entry.node, message: ATTR_MESSAGE)
               end
             end
           end
