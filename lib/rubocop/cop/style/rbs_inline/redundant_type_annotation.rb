@@ -118,7 +118,10 @@ module RuboCop
 
             return unless method_type_signature_comments && param_annotations
 
-            case style
+            # Overload signatures (2+ #: lines) cannot be expressed in doc_style, so always prefer #:
+            preferred_style = overload_type_signatures?(def_line) ? :method_type_signature : style
+
+            case preferred_style
             when :method_type_signature
               param_annotations.each { add_offense_for_doc_style_param(_1) }
             when :doc_style, :doc_style_and_return_annotation
@@ -148,8 +151,11 @@ module RuboCop
 
             return unless sources.size >= 2
 
+            # Overload signatures (2+ #: lines) cannot be expressed in doc_style, so always prefer #:
+            preferred_style = overload_type_signatures?(def_line) ? :method_type_signature : style
+
             sources.each do |type, value|
-              add_offense_for_return(type, value) unless type == style
+              add_offense_for_return(type, value) unless type == preferred_style
             end
           end
 

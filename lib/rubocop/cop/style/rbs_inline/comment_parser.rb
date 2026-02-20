@@ -106,6 +106,14 @@ module RuboCop
             end
             ret
           end
+
+          # Returns true if there are 2 or more leading #: method type signature lines (overloads).
+          # Overloads cannot be expressed in doc_style format, so they take precedence over style config.
+          # @rbs def_line: Integer
+          def overload_type_signatures?(def_line) #: bool
+            comments = find_method_type_signature_comments(def_line)
+            comments.is_a?(Array) && comments.size >= 2
+          end
         end
       end
     end

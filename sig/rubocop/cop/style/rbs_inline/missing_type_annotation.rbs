@@ -163,10 +163,6 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def annotated_def?: (Parser::AST::Node node) -> boolish
 
-          # Returns true if there are 2 or more leading #: method type signature lines.
-          # @rbs line: Integer
-          def overload_type_signatures?: (Integer line) -> bool
-
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: Parser::AST::Node
           def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
