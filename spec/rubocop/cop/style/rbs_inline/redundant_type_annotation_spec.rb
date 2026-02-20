@@ -190,6 +190,15 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           RUBY
         end
       end
+
+      context 'when consecutive methods each have an inline #: annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def self.safe_autofixable?; true; end #: bool
+            def self.unsafe_autofixable?; false; end #: bool
+          RUBY
+        end
+      end
     end
 
     context 'with combined parameter and return type redundancy' do
@@ -395,6 +404,15 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           RUBY
         end
       end
+
+      context 'when consecutive methods each have an inline #: annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def self.safe_autofixable?; true; end #: bool
+            def self.unsafe_autofixable?; false; end #: bool
+          RUBY
+        end
+      end
     end
 
     context 'with combined parameter and return type redundancy' do
@@ -573,6 +591,15 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
             #: () -> String
             def method(arg)
             end
+          RUBY
+        end
+      end
+
+      context 'when consecutive methods each have an inline #: annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def self.safe_autofixable?; true; end #: bool
+            def self.unsafe_autofixable?; false; end #: bool
           RUBY
         end
       end
