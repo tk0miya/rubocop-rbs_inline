@@ -45,6 +45,16 @@ module RuboCop
         #   def method(x)
         #   end
         #
+        #   # good
+        #   # @rbs x: Integer
+        #   private_class_method def self.method(x)
+        #   end
+        #
+        #   # good
+        #   # @rbs x: Integer
+        #   private def method(x)
+        #   end
+        #
         class MethodCommentSpacing < Base
           extend AutoCorrector
           include RangeHelp
@@ -53,6 +63,8 @@ module RuboCop
 
           MSG = 'Method-related `@rbs` annotation must be immediately before a method definition.'
           MSG_WITH_BLANK_LINE = 'Remove blank line between method annotation and method definition.'
+          METHOD_DEFINITION_PATTERN =
+            /\A(?:(?:private|protected|public|private_class_method|module_function)\s+)?def\s/ #: Regexp
 
           attr_reader :processed_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
@@ -159,8 +171,7 @@ module RuboCop
 
           # @rbs line_number: Integer
           def method_definition_line?(line_number) #: bool
-            line = processed_source.lines[line_number - 1]
-            line&.strip&.start_with?('def ') || false
+            METHOD_DEFINITION_PATTERN.match?(source_code_at(line_number).strip)
           end
         end
       end

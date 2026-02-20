@@ -41,6 +41,16 @@ module RuboCop
         #   #: (Integer) -> String
         #   def method(x)
         #   end
+        #
+        #   # good
+        #   # @rbs x: Integer
+        #   private_class_method def self.method(x)
+        #   end
+        #
+        #   # good
+        #   # @rbs x: Integer
+        #   private def method(x)
+        #   end
         class MethodCommentSpacing < Base
           extend AutoCorrector
 
@@ -53,6 +63,8 @@ module RuboCop
           MSG: ::String
 
           MSG_WITH_BLANK_LINE: ::String
+
+          METHOD_DEFINITION_PATTERN: Regexp
 
           attr_reader processed_comments: Array[RBS::Inline::AnnotationParser::ParsingResult]
 

@@ -317,4 +317,52 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MethodCommentSpacing, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for annotation before private_class_method def' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs x: Integer
+      private_class_method def self.method(x)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for annotation before private def' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs x: Integer
+      private def method(x)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for annotation before protected def' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs x: Integer
+      protected def method(x)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for annotation before module_function def' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs x: Integer
+      module_function def method(x)
+      end
+    RUBY
+  end
+
+  it 'registers an offense for blank line between annotation and private_class_method def' do
+    expect_offense(<<~RUBY)
+      # @rbs x: Integer
+
+      ^{} Remove blank line between method annotation and method definition.
+      private_class_method def self.method(x)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # @rbs x: Integer
+      private_class_method def self.method(x)
+      end
+    RUBY
+  end
 end
