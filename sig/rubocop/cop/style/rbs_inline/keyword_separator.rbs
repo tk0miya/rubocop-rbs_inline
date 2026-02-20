@@ -16,6 +16,8 @@ module RuboCop
         class KeywordSeparator < Base
           extend AutoCorrector
 
+          include CommentParser
+
           include RangeHelp
 
           MSG: ::String
@@ -23,9 +25,38 @@ module RuboCop
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS: Array[String]
 
+          # `override` and `skip` are standalone markers that take no arguments.
+          # Even before a method definition they may not be followed by `:` alone,
+          # because `# @rbs override:` (no type) is not a valid parameter annotation.
+          # Only `# @rbs override: SomeType` (with a type) is valid as a parameter annotation.
+          NO_ARGUMENT_KEYWORDS: Array[String]
+
           def on_new_investigation: () -> void
 
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_defs: (Parser::AST::Node node) -> void
+
+          def on_investigation_end: () -> void
+
           private
+
+          # Collect line numbers of leading annotation comments for a method definition
+          # into @method_annotation_lines.
+          # @rbs def_line: Integer
+          def collect_method_annotation_comments: (Integer def_line) -> void
+
+          # Returns true when comment is a leading annotation for a method definition and
+          # is not a no-argument keyword (`override` or `skip`) followed by `:` without a type.
+          # @rbs comment: Parser::Source::Comment
+          def valid_method_annotation?: (Parser::Source::Comment comment) -> bool
+
+          # Returns true when `comment` is a no-argument keyword (`override` or `skip`)
+          # followed by `:` but no type.
+          # @rbs comment: Parser::Source::Comment
+          def no_argument_keyword_without_type?: (Parser::Source::Comment comment) -> bool
 
           # @rbs comment: Parser::Source::Comment
           # @rbs matched: MatchData
