@@ -161,6 +161,18 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def annotated_def?: (Parser::AST::Node node) -> boolish
 
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def annotated_by_style?: (Parser::AST::Node node, Integer line) -> boolish
+
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def annotated_doc_style_and_return?: (Parser::AST::Node node, Integer line) -> boolish
+
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def no_arg_with_trailing_comment?: (Parser::AST::Node node, Integer line) -> boolish
+
           # @rbs line: Integer
           def annotated_attr?: (Integer line) -> boolish
 

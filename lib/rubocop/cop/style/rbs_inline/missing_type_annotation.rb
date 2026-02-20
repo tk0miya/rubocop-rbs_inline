@@ -228,15 +228,33 @@ module RuboCop
             line = node.location.line
             return true if skip_annotation?(line)
 
+            annotated_by_style?(node, line)
+          end
+
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def annotated_by_style?(node, line) #: boolish
             case style
             when :method_type_signature
-              find_method_type_signature_comments(line)
+              find_method_type_signature_comments(line) || no_arg_with_trailing_comment?(node, line)
             when :doc_style
-              rbs_annotations?(line)
+              rbs_annotations?(line) || no_arg_with_trailing_comment?(node, line)
             when :doc_style_and_return_annotation
-              # Inline comment is always required for return type
-              find_trailing_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
+              annotated_doc_style_and_return?(node, line)
             end
+          end
+
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def annotated_doc_style_and_return?(node, line) #: boolish
+            # Inline comment is always required for return type
+            find_trailing_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
+          end
+
+          # @rbs node: Parser::AST::Node
+          # @rbs line: Integer
+          def no_arg_with_trailing_comment?(node, line) #: boolish
+            node.arguments.empty? && find_trailing_comment(line)
           end
 
           # @rbs line: Integer

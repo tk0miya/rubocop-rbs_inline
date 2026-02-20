@@ -57,6 +57,26 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
+    context 'when method has no arguments and inline #: comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet #: String
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when singleton method has no arguments and inline #: comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def self.config #: Hash[String, untyped]
+            {}
+          end
+        RUBY
+      end
+    end
+
     context 'when method has only @rbs annotation' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -222,6 +242,26 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
           def greet(name) #: String
           ^^^^^^^^^ Missing `@rbs` annotation.
             "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and inline #: comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet #: String
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when singleton method has no arguments and inline #: comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def self.config #: Hash[String, untyped]
+            {}
           end
         RUBY
       end
