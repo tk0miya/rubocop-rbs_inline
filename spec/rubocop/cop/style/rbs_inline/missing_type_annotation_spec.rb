@@ -359,6 +359,52 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         RUBY
       end
     end
+
+    context 'when method has multi-line signature with @rbs and trailing #: on closing ) line' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs a: String
+          # @rbs b: Integer
+          def greet(
+            a,
+            b
+          ) #: void
+            a + b.to_s
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has multi-line signature with @rbs but no trailing #:' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs a: String
+          # @rbs b: Integer
+          def greet(
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+            a,
+            b
+          )
+            a + b.to_s
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has multi-line signature with inline comment on def line and #: on closing ) line' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs a: String
+          # @rbs b: Integer
+          def greet( # some comment
+            a,
+            b
+          ) #: void
+            a + b.to_s
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when Visibility is public' do

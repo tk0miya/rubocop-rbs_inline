@@ -234,9 +234,22 @@ module RuboCop
             when :doc_style
               rbs_annotations?(line)
             when :doc_style_and_return_annotation
-              # Inline comment is always required for return type
-              find_trailing_comment(line) && (node.arguments.empty? || rbs_annotations?(line))
+              # Inline comment is always required for return type.
+              # For multi-line signatures, the trailing #: comment may be on the closing ) line.
+              trailing = find_trailing_comment(method_parameter_list_end_line(node))
+              trailing && (node.arguments.empty? || rbs_annotations?(line))
             end
+          end
+
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: Parser::AST::Node
+          def method_parameter_list_end_line(node) #: Integer
+            args_node = case node.type
+                        when :def  then node.children[1]
+                        when :defs then node.children[2]
+                        else raise
+                        end
+            args_node.location.end&.line || node.location.line
           end
 
           # @rbs line: Integer

@@ -71,10 +71,10 @@ module RuboCop
           end
 
           # Find trailing comment on the same line as the method definition
-          # @rbs def_line: Integer
-          def find_trailing_comment(def_line) #: Parser::Source::Comment?
+          # @rbs line: Integer
+          def find_trailing_comment(line) #: Parser::Source::Comment?
             processed_source.comments.find do |c|
-              c.loc.expression.line == def_line && c.text.match?(/\A#:/)
+              c.loc.expression.line == line && c.text.match?(/\A#:/)
             end
           end
 

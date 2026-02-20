@@ -108,7 +108,7 @@ module RuboCop
           def process(node) #: void
             def_line = node.location.line
             check_parameter_redundancy(def_line)
-            check_return_type_redundancy(def_line)
+            check_return_type_redundancy(def_line, method_parameter_list_end_line(node))
           end
 
           # @rbs def_line: Integer
@@ -126,11 +126,23 @@ module RuboCop
             end
           end
 
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: Parser::AST::Node
+          def method_parameter_list_end_line(node) #: Integer
+            args_node = case node.type
+                        when :def  then node.children[1]
+                        when :defs then node.children[2]
+                        else raise
+                        end
+            args_node.location.end&.line || node.location.line
+          end
+
           # @rbs def_line: Integer
-          def check_return_type_redundancy(def_line) #: void
+          # @rbs parameter_list_end_line: Integer
+          def check_return_type_redundancy(def_line, parameter_list_end_line) #: void
             sources = {
               method_type_signature: find_method_type_signature_comments(def_line),
-              doc_style_and_return_annotation: find_trailing_comment(def_line),
+              doc_style_and_return_annotation: find_trailing_comment(parameter_list_end_line),
               doc_style: find_doc_style_return_annotation(def_line)
             }.compact
 

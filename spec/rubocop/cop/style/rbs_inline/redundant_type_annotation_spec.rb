@@ -603,6 +603,39 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           RUBY
         end
       end
+
+      context 'with multi-line parameter list and inline #: on closing ) line' do
+        context 'when @rbs return and inline #: on ) line are present' do
+          it 'registers an offense on the @rbs return annotation' do
+            expect_offense(<<~RUBY)
+              # @rbs return: String
+              ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+              def method(
+                arg
+              ) #: String
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def method(
+                arg
+              ) #: String
+              end
+            RUBY
+          end
+        end
+
+        context 'when only inline #: on ) line is present' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              def method(
+                arg
+              ) #: String
+              end
+            RUBY
+          end
+        end
+      end
     end
 
     context 'with combined parameter and return type redundancy' do
