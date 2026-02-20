@@ -216,6 +216,18 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
+    context 'when method has overload #: annotation comments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #: (String) -> String
+          #: (Integer) -> String
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
     context 'when method has only inline #: comment' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -316,6 +328,18 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
           #: (String) -> String
           def greet(name)
           ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has overload #: annotation comments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #: (String) -> String
+          #: (Integer) -> String
+          def greet(name)
             "Hello, \#{name}"
           end
         RUBY
