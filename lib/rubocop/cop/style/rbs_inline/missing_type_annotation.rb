@@ -226,9 +226,12 @@ module RuboCop
           end
 
           # @rbs node: Parser::AST::Node
-          def annotated_def?(node) #: boolish
+          def annotated_def?(node) #: boolish # rubocop:disable Metrics/CyclomaticComplexity
             line = node.location.line
             return true if skip_annotation?(line)
+            # Overload signatures (2+ #: lines) are always valid regardless of style,
+            # because overloads cannot be expressed in doc_style format.
+            return true if overload_type_signatures?(line)
 
             case style
             when :method_type_signature
@@ -241,6 +244,13 @@ module RuboCop
               trailing = find_trailing_comment(method_parameter_list_end_line(node))
               trailing && (node.arguments.empty? || rbs_annotations?(line))
             end
+          end
+
+          # Returns true if there are 2 or more leading #: method type signature lines.
+          # @rbs line: Integer
+          def overload_type_signatures?(line) #: bool
+            comments = find_method_type_signature_comments(line)
+            comments.is_a?(Array) && comments.size >= 2
           end
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
