@@ -4,6 +4,7 @@
 
 ### New Cops
 
+- **Style/RbsInline/RedundantAnnotationWithSkip**: Warns when type annotations (`#:` method type signatures, `# @rbs` method types, parameter annotations, return type annotations, or trailing inline types) are present alongside `# @rbs skip` or `# @rbs override`. These directives skip RBS generation, making any additional type annotations redundant. Supports unsafe autocorrect.
 - **Style/RbsInline/RedundantReturnType**: Warns when both a `# @rbs return` comment and a `#:` annotation comment specify the return type for the same method. The `EnforcedStyle` option accepts `inline_comment` (prefer `#:`) or `rbs_return_comment` (prefer `# @rbs return`). Supports safe autocorrect.
 - **Style/RbsInline/RedundantArgumentType**: Warns when both a `# @rbs param` comment and a `#:` annotation comment specify the argument type for the same method. The `EnforcedStyle` option accepts `annotation_comment` or `rbs_param_comment` (default). Supports autocorrect when `annotation_comment` style is preferred.
 - **Style/RbsInline/MissingTypeAnnotation**: Warns when a method definition has no type annotation. The `Visibility` option narrows the target methods by visibility (default: `all`).
