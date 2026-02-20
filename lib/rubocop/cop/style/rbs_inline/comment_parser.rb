@@ -45,7 +45,11 @@ module RuboCop
           def find_leading_annotation(def_line) #: RBS::Inline::AnnotationParser::ParsingResult?
             parsed_comments.find do |r|
               last_comment = r.comments.last or next
-              last_comment.location.start_line + 1 == def_line
+              next unless last_comment.location.start_line + 1 == def_line
+
+              # Exclude trailing inline comments (e.g., `def method = value #: Type`)
+              # by verifying all comment lines contain only whitespace before '#'
+              r.comments.all? { |c| processed_source.buffer.source_line(c.location.start_line).match?(/\A\s*#/) }
             end
           end
 
