@@ -70,11 +70,14 @@ module RuboCop
 
           # @rbs node: RuboCop::AST::SendNode
           def check_annotation_alignment(node) #: void
-            expected_col = annotation_column(node)
-            data_attributes(node).each do |arg|
+            annotated = data_attributes(node).filter_map do |arg|
               comment = inline_type_comment(arg.location.line)
-              next unless comment
+              [arg, comment] if comment
+            end
+            return if annotated.size < 2
 
+            expected_col = annotation_column(node)
+            annotated.each do |arg, comment|
               actual_col = comment.location.column
               next if actual_col == expected_col
 
