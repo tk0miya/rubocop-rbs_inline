@@ -246,13 +246,6 @@ module RuboCop
             end
           end
 
-          # Returns true if there are 2 or more leading #: method type signature lines.
-          # @rbs line: Integer
-          def overload_type_signatures?(line) #: bool
-            comments = find_method_type_signature_comments(line)
-            comments.is_a?(Array) && comments.size >= 2
-          end
-
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: Parser::AST::Node
           def method_parameter_list_end_line(node) #: Integer

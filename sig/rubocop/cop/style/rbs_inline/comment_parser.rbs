@@ -36,6 +36,11 @@ module RuboCop
           # Find @rbs return annotation before a method definition
           # @rbs def_line: Integer
           def find_doc_style_return_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::ReturnType?
+
+          # Returns true if there are 2 or more leading #: method type signature lines (overloads).
+          # Overloads cannot be expressed in doc_style format, so they take precedence over style config.
+          # @rbs def_line: Integer
+          def overload_type_signatures?: (Integer def_line) -> bool
         end
       end
     end

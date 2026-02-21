@@ -223,6 +223,39 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
+    context 'with overload type signatures (2+ #: lines)' do
+      context 'when overload #: annotations are present with # @rbs param:' do
+        it 'registers an offense on the # @rbs param: annotation' do
+          expect_offense(<<~RUBY)
+            # @rbs a: Integer
+            ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when only overload #: annotations are present' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'when no annotations are present' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
@@ -430,6 +463,59 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           expect_correction(<<~RUBY)
             # @rbs a: Integer
             # @rbs return: String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'with overload type signatures (2+ #: lines)' do
+      context 'when overload #: annotations and # @rbs param: are present' do
+        it 'registers an offense on the # @rbs param: annotation (not the #:)' do
+          expect_offense(<<~RUBY)
+            # @rbs a: Integer
+            ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when overload #: annotations and # @rbs return: are present' do
+        it 'registers an offense on the # @rbs return: annotation (not the #:)' do
+          expect_offense(<<~RUBY)
+            # @rbs return: String
+            ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when only overload #: annotations are present' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
             def method(a)
             end
           RUBY
@@ -670,6 +756,78 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           expect_correction(<<~RUBY)
             # @rbs a: Integer
             def method(a) #: String
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'with overload type signatures (2+ #: lines)' do
+      context 'when overload #: annotations and # @rbs param: are present' do
+        it 'registers an offense on the # @rbs param: annotation (not the #:)' do
+          expect_offense(<<~RUBY)
+            # @rbs a: Integer
+            ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when overload #: annotations and trailing inline #: are present' do
+        it 'registers an offense on the trailing inline #: annotation' do
+          expect_offense(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a) #: String
+                          ^^^^^^^^^ Redundant trailing return type annotation.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when overload #: annotations and # @rbs return: are present' do
+        it 'registers an offense on the # @rbs return: annotation (not the #:)' do
+          expect_offense(<<~RUBY)
+            # @rbs return: String
+            ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context 'when only overload #: annotations are present' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            #: (Integer) -> void
+            #: (String) -> String
+            def method(a)
             end
           RUBY
         end
