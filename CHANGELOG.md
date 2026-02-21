@@ -7,7 +7,7 @@
 - **Style/RbsInline/RedundantAnnotationWithSkip**: Warns when type annotations (`#:` method type signatures, `# @rbs` method types, parameter annotations, return type annotations, or trailing inline types) are present alongside `# @rbs skip` or `# @rbs override`. These directives skip RBS generation, making any additional type annotations redundant. Supports unsafe autocorrect.
 - **Style/RbsInline/RedundantReturnType**: Warns when both a `# @rbs return` comment and a `#:` annotation comment specify the return type for the same method. The `EnforcedStyle` option accepts `inline_comment` (prefer `#:`) or `rbs_return_comment` (prefer `# @rbs return`). Supports safe autocorrect.
 - **Style/RbsInline/RedundantArgumentType**: Warns when both a `# @rbs param` comment and a `#:` annotation comment specify the argument type for the same method. The `EnforcedStyle` option accepts `annotation_comment` or `rbs_param_comment` (default). Supports autocorrect when `annotation_comment` style is preferred.
-- **Style/RbsInline/MissingTypeAnnotation**: Warns when a method definition has no type annotation. The `Visibility` option narrows the target methods by visibility (default: `all`).
+- **Style/RbsInline/MissingTypeAnnotation**: Warns when a method definition has no type annotation. The `Visibility` option narrows the target methods by visibility (default: `all`). The `IgnoreUnderscoreArguments` option (default: `false`) exempts methods whose arguments are all underscore-prefixed from the `# @rbs` parameter annotation requirement, reflecting the rbs-inline behavior of ignoring `# @rbs _param:` annotations.
 - **Style/RbsInline/RequireRbsInlineComment**: Enforces the presence or absence of a `# rbs_inline:` magic comment. The `EnforcedStyle` option accepts `always` (default, requires the comment) or `never` (forbids the comment).
 - **Style/RbsInline/EmbeddedRbsSpacing**: Warns when a `@rbs!` embedded RBS comment block is not followed by a blank line. Supports autocorrect.
 - **Style/RbsInline/VariableCommentSpacing**: Warns when a `@rbs` variable comment (`@ivar`, `@@cvar`, `self.@ivar`) is not followed by a blank line. Supports autocorrect.
@@ -20,7 +20,6 @@
 - **InvalidComment**: Added autocorrect support.
 - **KeywordSeparator**: Added autocorrect support.
 - **ParametersSeparator**: Added autocorrect support.
-- **MissingTypeAnnotation**: Added `IgnoreUnderscoreArguments` option (default: `false`). When enabled, methods whose arguments are all underscore-prefixed are exempt from the `doc_style` annotation requirement, and from the `# @rbs` parameter annotation requirement in `doc_style_and_return_annotation` style. This reflects the rbs-inline behavior of ignoring `# @rbs _param:` annotations.
 
 ### Dependency Updates
 
