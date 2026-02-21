@@ -35,6 +35,8 @@ module RuboCop
 
           private
 
+          def ignore_underscore_arguments?: () -> bool
+
           # @rbs node: Parser::AST::Node
           def process: (Parser::AST::Node node) -> void
 

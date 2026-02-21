@@ -676,4 +676,152 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
   end
+
+  context 'when IgnoreUnderscoreArguments is true' do
+    context 'when EnforcedStyle is doc_style' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/RbsInline/MissingTypeAnnotation' => {
+            'EnforcedStyle' => 'doc_style',
+            'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation],
+            'Visibility' => 'all',
+            'IgnoreUnderscoreArguments' => true
+          }
+        )
+      end
+
+      context 'when method has only underscore-prefixed arguments and no annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def greet(_name)
+              "Hello"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has only bare underscore argument and no annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def greet(_)
+              "Hello"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has mixed arguments and no annotation' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def greet(_unused, name)
+            ^^^^^^^^^ Missing `@rbs` annotation.
+              "Hello, \#{name}"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has only underscore-prefixed arguments with annotation' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            # @rbs return: String
+            def greet(_name)
+              "Hello"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has no arguments and no annotation' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def greet
+            ^^^^^^^^^ Missing `@rbs` annotation.
+              "Hello"
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'when EnforcedStyle is doc_style_and_return_annotation' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/RbsInline/MissingTypeAnnotation' => {
+            'EnforcedStyle' => 'doc_style_and_return_annotation',
+            'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation],
+            'Visibility' => 'all',
+            'IgnoreUnderscoreArguments' => true
+          }
+        )
+      end
+
+      context 'when method has only underscore-prefixed arguments with trailing #:' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def greet(_name) #: String
+              "Hello"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has only underscore-prefixed arguments but no trailing #:' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def greet(_name)
+            ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+              "Hello"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has mixed arguments with @rbs and trailing #:' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            # @rbs name: String
+            def greet(_unused, name) #: String
+              "Hello, \#{name}"
+            end
+          RUBY
+        end
+      end
+
+      context 'when method has mixed arguments with no @rbs annotation' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def greet(_unused, name) #: String
+            ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+              "Hello, \#{name}"
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'when EnforcedStyle is method_type_signature' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/RbsInline/MissingTypeAnnotation' => {
+            'EnforcedStyle' => 'method_type_signature',
+            'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation],
+            'Visibility' => 'all',
+            'IgnoreUnderscoreArguments' => true
+          }
+        )
+      end
+
+      context 'when method has only underscore-prefixed arguments and no annotation' do
+        it 'registers an offense (method_type_signature is unaffected)' do
+          expect_offense(<<~RUBY)
+            def greet(_name)
+            ^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+              "Hello"
+            end
+          RUBY
+        end
+      end
+    end
+  end
 end

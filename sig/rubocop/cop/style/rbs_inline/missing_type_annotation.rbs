@@ -176,6 +176,13 @@ module RuboCop
           # @rbs line: Integer
           def skip_annotation?: (Integer line) -> bool
 
+          def ignore_underscore_arguments?: () -> bool
+
+          # Returns true if the method node has at least one argument and all arguments are
+          # underscore-prefixed or anonymous. rbs-inline ignores doc_style annotations for such arguments.
+          # @rbs node: Parser::AST::Node
+          def all_args_underscore?: (Parser::AST::Node node) -> bool
+
           # @rbs node: Parser::AST::Node
           def offense_range_for_def: (Parser::AST::Node node) -> Parser::Source::Range
         end

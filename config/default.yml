@@ -38,6 +38,7 @@ Style/RbsInline/MissingTypeAnnotation:
     - doc_style
     - doc_style_and_return_annotation
   Visibility: all
+  IgnoreUnderscoreArguments: false
 
 Style/RbsInline/KeywordSeparator:
   Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
@@ -79,6 +80,7 @@ Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true
   VersionAdded: "1.0.0"
+  IgnoreUnderscoreArguments: false
 
 Style/RbsInline/VariableCommentSpacing:
   Description: 'Checks that `@rbs` variable comments are followed by a blank line.'
