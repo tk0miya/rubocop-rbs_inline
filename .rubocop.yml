@@ -49,6 +49,8 @@ Style/CommentedKeyword:
 # rubocop-rbs_inline configuration
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
+  Exclude:
+    - "**/spec/**/*.rb"
 
 Style/RbsInline/RedundantTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
