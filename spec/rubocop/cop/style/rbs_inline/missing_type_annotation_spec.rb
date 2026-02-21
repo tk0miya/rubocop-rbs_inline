@@ -182,10 +182,35 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
-    context 'when method has @rbs parameter annotation' do
+    context 'when method has only @rbs parameter annotation without return' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs name: String
+          def greet(name)
+          ^^^^^^^^^ Missing `@rbs` annotation.
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs return annotation but no parameter annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs return: String
+          def greet(name)
+          ^^^^^^^^^ Missing `@rbs` annotation.
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs parameter and return annotations' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           # @rbs name: String
+          # @rbs return: String
           def greet(name)
             "Hello, \#{name}"
           end
@@ -193,11 +218,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
-    context 'when method has @rbs return annotation' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
-          # @rbs return: String
-          def greet(name)
+    context 'when method has @rbs annotation but missing some arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs name: String
+          def greet(name, age)
+          ^^^^^^^^^ Missing `@rbs` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -380,6 +406,30 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           attr_reader :name
           ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs annotation but missing some arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs name: String
+          def greet(name, age) #: String
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has all arguments annotated with trailing #:' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs name: String
+          # @rbs age: Integer
+          def greet(name, age) #: String
+            "Hello, \#{name}"
+          end
         RUBY
       end
     end

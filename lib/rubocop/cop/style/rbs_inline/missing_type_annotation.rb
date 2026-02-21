@@ -237,24 +237,26 @@ module RuboCop
             when :method_type_signature
               find_method_type_signature_comments(line)
             when :doc_style
-              rbs_annotations?(line)
+              doc_style_params_annotated?(node, line) && find_doc_style_return_annotation(line)
             when :doc_style_and_return_annotation
               # Inline comment is always required for return type.
               # For multi-line signatures, the trailing #: comment may be on the closing ) line.
-              trailing = find_trailing_comment(method_parameter_list_end_line(node))
-              trailing && (node.arguments.empty? || rbs_annotations?(line))
+              doc_style_params_annotated?(node, line) && find_trailing_comment(method_parameter_list_end_line(node))
             end
           end
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: Parser::AST::Node
           def method_parameter_list_end_line(node) #: Integer
-            args_node = case node.type
-                        when :def  then node.children[1]
-                        when :defs then node.children[2]
-                        else raise
-                        end
-            args_node.location.end&.line || node.location.line
+            args_node_for(node).location.end&.line || node.location.line
+          end
+
+          # @rbs node: Parser::AST::Node
+          def args_node_for(node) #: Parser::AST::Node
+            case node.type
+            when :defs then node.children[2]
+            else node.children[1]
+            end
           end
 
           # @rbs line: Integer
@@ -263,12 +265,55 @@ module RuboCop
             find_trailing_comment(line)
           end
 
+          # Returns true if all annotatable parameters have @rbs annotations.
+          # @rbs node: Parser::AST::Node
           # @rbs line: Integer
-          def rbs_annotations?(line) #: bool
-            annotation = find_leading_annotation(line)
-            return false unless annotation
+          def doc_style_params_annotated?(node, line) #: bool
+            params = method_parameter_names(node)
+            return true if params.empty?
 
-            annotation.comments.any? { |c| c.location.slice.match?(/\A#\s+@rbs\b/) }
+            param_annotations = find_doc_style_param_annotations(line)
+            return false unless param_annotations
+
+            annotated_names = param_annotations.map { doc_style_annotation_name(_1) }
+            params.all? do |candidate_names|
+              candidate_names.any? { annotated_names.include?(_1) }
+            end
+          end
+
+          # Returns acceptable annotation name variants for each annotatable parameter.
+          # Each entry is an array of acceptable annotation name strings for that parameter.
+          # Excludes anonymous (no name) and underscore-prefixed parameters.
+          # Underscore-prefixed parameters (e.g. `_unused`) are excluded because RBS::Inline
+          # does not support `# @rbs _name: Type` annotations.
+          # @rbs node: Parser::AST::Node
+          def method_parameter_names(node) #: Array[Array[String]] # rubocop:disable Metrics/CyclomaticComplexity
+            args_node_for(node).children.filter_map do |argument|
+              name = argument.children[0]&.to_s
+              # Skip anonymous (no name) and underscore-prefixed (intentionally unused) parameters
+              next if name.nil? || name.start_with?('_')
+
+              case argument.type
+              when :arg, :optarg, :kwarg, :kwoptarg
+                [name]
+              when :restarg
+                ["*#{name}", '*']
+              when :kwrestarg
+                ["**#{name}", '**']
+              when :blockarg
+                ['&', "&#{name}"]
+              end
+            end
+          end
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          def doc_style_annotation_name(annotation) #: String
+            case annotation
+            when RBS::Inline::AST::Annotations::BlockType
+              "&#{annotation.name}"
+            else
+              annotation.name.to_s
+            end
           end
 
           # @rbs line: Integer

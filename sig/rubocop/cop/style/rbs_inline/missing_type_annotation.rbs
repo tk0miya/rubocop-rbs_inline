@@ -167,11 +167,27 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
 
+          # @rbs node: Parser::AST::Node
+          def args_node_for: (Parser::AST::Node node) -> Parser::AST::Node
+
           # @rbs line: Integer
           def annotated_attr?: (Integer line) -> boolish
 
+          # Returns true if all annotatable parameters have @rbs annotations.
+          # @rbs node: Parser::AST::Node
           # @rbs line: Integer
-          def rbs_annotations?: (Integer line) -> bool
+          def doc_style_params_annotated?: (Parser::AST::Node node, Integer line) -> bool
+
+          # Returns acceptable annotation name variants for each annotatable parameter.
+          # Each entry is an array of acceptable annotation name strings for that parameter.
+          # Excludes anonymous (no name) and underscore-prefixed parameters.
+          # Underscore-prefixed parameters (e.g. `_unused`) are excluded because RBS::Inline
+          # does not support `# @rbs _name: Type` annotations.
+          # @rbs node: Parser::AST::Node
+          def method_parameter_names: (Parser::AST::Node node) -> Array[Array[String]]
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          def doc_style_annotation_name: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType annotation) -> String
 
           # @rbs line: Integer
           def skip_annotation?: (Integer line) -> bool
