@@ -164,6 +164,50 @@ Checks that parameter annotations use `:` as a separator between parameter name 
 # @rbs %a{pure}
 ```
 
+### Style/RbsInline/RedundantAnnotationWithSkip
+
+Warns when type annotations are present alongside `# @rbs skip` or `# @rbs override`. These directives instruct RBS::Inline to skip or inherit RBS generation for the method, making any additional type annotations redundant.
+
+Detected redundant annotations include `#:` method type signatures, `# @rbs (Type) -> Type` method types, `# @rbs param:` parameter annotations, `# @rbs return:` return type annotations, and trailing `#:` inline types.
+
+Supports unsafe autocorrect (removes the redundant annotations).
+
+**Examples:**
+```ruby
+# bad - redundant method type signature with @rbs skip
+# @rbs skip
+#: (Integer) -> void
+def method(a)
+end
+
+# bad - redundant doc-style method type with @rbs skip
+# @rbs skip
+# @rbs (Integer) -> void
+def method(a)
+end
+
+# bad - redundant param annotation with @rbs override
+# @rbs override
+# @rbs a: Integer
+def method(a)
+end
+
+# bad - redundant trailing return type with @rbs skip
+# @rbs skip
+def method(a) #: void
+end
+
+# good
+# @rbs skip
+def method(a)
+end
+
+# good
+# @rbs override
+def method(a)
+end
+```
+
 ### Style/RbsInline/RedundantArgumentType
 
 Detects redundant argument type specifications when both `#:` annotation comments and `# @rbs` parameter comments exist.

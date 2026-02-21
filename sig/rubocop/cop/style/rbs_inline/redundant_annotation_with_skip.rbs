@@ -1,0 +1,116 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_annotation_with_skip.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant type annotations when `@rbs skip` or `@rbs override` is present.
+        #
+        # `@rbs skip` tells RBS::Inline to skip RBS generation for this method entirely.
+        # `@rbs override` tells RBS::Inline to inherit the type signature from the parent class.
+        # In both cases, any additional type annotations (method type signatures, parameter
+        # annotations, return type annotations) are redundant and will be ignored by RBS::Inline.
+        #
+        # @safety
+        #   Autocorrection is unsafe because it removes type annotations that may contain
+        #   useful documentation even if not used for RBS generation.
+        #
+        # @example
+        #   # bad - redundant method type signature with @rbs skip
+        #   # @rbs skip
+        #   #: (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant doc-style method type annotation with @rbs skip
+        #   # @rbs skip
+        #   # @rbs (Integer) -> void
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant param annotation with @rbs skip
+        #   # @rbs skip
+        #   # @rbs a: Integer
+        #   def method(a)
+        #   end
+        #
+        #   # bad - redundant trailing return type with @rbs skip
+        #   # @rbs skip
+        #   def method(a) #: void
+        #   end
+        #
+        #   # bad - redundant type annotations with @rbs override
+        #   # @rbs override
+        #   # @rbs a: Integer
+        #   def method(a)
+        #   end
+        #
+        #   # good
+        #   # @rbs skip
+        #   def method(a)
+        #   end
+        #
+        #   # good
+        #   # @rbs override
+        #   def method(a)
+        #   end
+        class RedundantAnnotationWithSkip < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include RangeHelp
+
+          include SourceCodeHelper
+
+          MSG_METHOD_TYPE_SIGNATURE: ::String
+
+          MSG_DOC_STYLE_ANNOTATION: ::String
+
+          MSG_TRAILING_RETURN: ::String
+
+          MSG_DUPLICATE_SKIP: ::String
+
+          MSG_DUPLICATE_OVERRIDE: ::String
+
+          MSG_CONFLICTING_SKIP_OVERRIDE: ::String
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs line: Integer
+          def skip_or_override_annotation?: (Integer line) -> bool
+
+          # @rbs def_line: Integer
+          def check_skip_override: (Integer def_line) -> void
+
+          # @rbs first: RBS::Inline::AST::Annotations::Skip | RBS::Inline::AST::Annotations::Override
+          # @rbs current: RBS::Inline::AST::Annotations::Skip | RBS::Inline::AST::Annotations::Override
+          def skip_override_message: (RBS::Inline::AST::Annotations::Skip | RBS::Inline::AST::Annotations::Override first, RBS::Inline::AST::Annotations::Skip | RBS::Inline::AST::Annotations::Override current) -> String
+
+          # @rbs def_line: Integer
+          def check_doc_style_annotations: (Integer def_line) -> void
+
+          # @rbs annotation: untyped
+          def doc_style_annotation_message: (untyped annotation) -> String?
+
+          # @rbs param_list_end_line: Integer
+          def check_trailing_return: (Integer param_list_end_line) -> void
+
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: Parser::AST::Node
+          def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
+        end
+      end
+    end
+  end
+end

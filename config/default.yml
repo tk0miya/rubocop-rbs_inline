@@ -49,6 +49,12 @@ Style/RbsInline/ParametersSeparator:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/RedundantAnnotationWithSkip:
+  Description: "Checks for redundant type annotations when `@rbs skip` or `@rbs override` is present."
+  Enabled: true
+  SafeAutoCorrect: false
+  VersionAdded: '1.5.0'
+
 Style/RbsInline/RedundantTypeAnnotation:
   Description: "Checks for redundant type annotations when multiple type specifications exist for the same method definition."
   Enabled: true
