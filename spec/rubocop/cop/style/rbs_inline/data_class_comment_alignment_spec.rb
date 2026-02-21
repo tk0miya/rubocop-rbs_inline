@@ -82,6 +82,23 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
+  it 'does not register an offense when only one attribute has an annotation' do
+    expect_no_offenses(<<~RUBY)
+      AggregatedResult = Data.define(
+        :results,
+        :errors  #: Array[String]
+      )
+    RUBY
+  end
+
+  it 'does not register an offense when there is only one attribute with an annotation' do
+    expect_no_offenses(<<~RUBY)
+      Foo = Data.define(
+        :bar  #: String
+      )
+    RUBY
+  end
+
   it 'does not register an offense for folded Data.define' do
     expect_no_offenses(<<~RUBY)
       MethodEntry = Data.define(:name, :node, :visibility)
