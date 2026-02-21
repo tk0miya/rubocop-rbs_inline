@@ -80,6 +80,7 @@ Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true
   VersionAdded: "1.0.0"
+  VersionChanged: '1.5.0'
   IgnoreUnderscoreArguments: false
 
 Style/RbsInline/VariableCommentSpacing:

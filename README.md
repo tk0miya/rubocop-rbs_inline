@@ -103,6 +103,7 @@ Enforces that method definitions and `attr_*` declarations have RBS inline type 
 - `Visibility` (default: `all`)
   - `all`: Checks all methods regardless of visibility
   - `public`: Only checks public methods and `attr_*` declarations
+- `IgnoreUnderscoreArguments` (default: `false`): When `true`, methods whose arguments are all underscore-prefixed are exempt from the `# @rbs` parameter annotation requirement. This reflects the rbs-inline behavior of ignoring `# @rbs _param:` doc-style annotations. Has no effect on `method_type_signature` style.
 
 Methods annotated with `# @rbs skip` are always excluded.
 
@@ -315,6 +316,9 @@ end
 
 Verifies that annotation parameters match the actual method parameters.
 
+**Configuration:**
+- `IgnoreUnderscoreArguments` (default: `false`): When `true`, annotations whose names start with `_` are silently skipped. This is useful because rbs-inline ignores doc-style annotations for underscore-prefixed arguments, so annotating them is pointless and should not be flagged.
+
 **Examples:**
 ```ruby
 # bad
@@ -323,6 +327,13 @@ def method(arg); end
 
 # good
 # @rbs arg: String
+def method(arg); end
+```
+
+**Examples (IgnoreUnderscoreArguments: true):**
+```ruby
+# good - underscore-prefixed annotation is silently ignored
+# @rbs _name: String
 def method(arg); end
 ```
 
@@ -341,6 +352,13 @@ Style/RbsInline/RedundantReturnType:
 # Only require annotations on public methods
 Style/RbsInline/MissingTypeAnnotation:
   Visibility: public
+
+# Ignore underscore-prefixed arguments (rbs-inline ignores their doc-style annotations)
+Style/RbsInline/MissingTypeAnnotation:
+  IgnoreUnderscoreArguments: true
+
+Style/RbsInline/UnmatchedAnnotations:
+  IgnoreUnderscoreArguments: true
 ```
 
 See [config/default.yml](config/default.yml) for all available configuration options.
