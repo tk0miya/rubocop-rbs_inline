@@ -342,10 +342,6 @@ Style/RbsInline/RedundantReturnType:
 # Only require annotations on public methods
 Style/RbsInline/MissingTypeAnnotation:
   Visibility: public
-
-# Ignore underscore-prefixed arguments (rbs-inline ignores their doc-style annotations)
-Style/RbsInline/MissingTypeAnnotation:
-  IgnoreUnderscoreArguments: true
 ```
 
 See [config/default.yml](config/default.yml) for all available configuration options.

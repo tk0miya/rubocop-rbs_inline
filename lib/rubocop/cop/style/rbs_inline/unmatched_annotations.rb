@@ -71,8 +71,7 @@ module RuboCop
               when RBS::Inline::AST::Annotations::IvarType
                 add_offense_for(annotation)
               when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
-                name = annotation_name(annotation)
-                add_offense_for(annotation) unless arguments.include?(name)
+                add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
               end
             end
           end
