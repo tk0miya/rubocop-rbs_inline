@@ -1,0 +1,92 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_instance_variable_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant `@rbs` instance variable type annotation when
+        # `attr_*` with an inline type annotation is already defined.
+        #
+        # When `attr_reader :foo #: Integer` is defined, a separate `# @rbs @foo: Integer`
+        # declaration for the instance variable is redundant. RBS::Inline automatically
+        # generates the instance variable type from the inline annotation on `attr_*`.
+        #
+        # @example
+        #   # bad
+        #   # @rbs @foo: Integer
+        #
+        #   attr_reader :foo #: Integer
+        #
+        #   # good
+        #   attr_reader :foo #: Integer
+        #
+        #   # good - no inline annotation, so ivar annotation is not redundant
+        #   # @rbs @foo: Integer
+        #
+        #   attr_reader :foo
+        class RedundantInstanceVariableAnnotation < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include RangeHelp
+
+          include SourceCodeHelper
+
+          MSG: ::String
+
+          ATTRIBUTE_METHODS: Array[Symbol]
+
+          attr_reader attributes_scope_stack: Array[Set[Symbol]]
+
+          attr_reader ivar_annotations: Hash[Integer, RBS::Inline::AST::Annotations::IvarType]
+
+          def on_new_investigation: () -> void
+
+          def on_investigation_end: () -> void
+
+          # @rbs _node: RuboCop::AST::Node
+          def on_class: (untyped _node) -> void
+
+          alias on_module on_class
+
+          # @rbs node: RuboCop::AST::Node
+          def after_class: (RuboCop::AST::Node node) -> void
+
+          alias after_module after_class
+
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          def push_attributes_scope: () -> void
+
+          def pop_attributes_scope: () -> Set[Symbol]
+
+          def current_attributes_scope: () -> Set[Symbol]
+
+          def collect_ivar_annotations: () -> Hash[Integer, RBS::Inline::AST::Annotations::IvarType]
+
+          # @rbs start_line: Integer
+          # @rbs end_line: Integer | Float
+          def extract_ivar_annotations: (Integer start_line, Integer | Float end_line) -> Array[RBS::Inline::AST::Annotations::IvarType]
+
+          # @rbs node: RuboCop::AST::SendNode
+          def register_attribute_method: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs start_line: Integer
+          # @rbs end_line: Integer | Float
+          # @rbs attributes: Set[Symbol]
+          def check_offenses: (Integer start_line, Integer | Float end_line, Set[Symbol] attributes) -> void
+
+          # @rbs annotation: RBS::Inline::AST::Annotations::IvarType
+          def add_ivar_offense: (RBS::Inline::AST::Annotations::IvarType annotation) -> void
+
+          # @rbs node: RuboCop::AST::SendNode
+          def attribute_names_from: (RuboCop::AST::SendNode node) -> Array[Symbol]
+        end
+      end
+    end
+  end
+end

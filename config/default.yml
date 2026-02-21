@@ -60,6 +60,11 @@ Style/RbsInline/RedundantAnnotationWithSkip:
   SafeAutoCorrect: false
   VersionAdded: '1.5.0'
 
+Style/RbsInline/RedundantInstanceVariableAnnotation:
+  Description: "Checks for redundant `@rbs` instance variable type annotation when `attr_*` with an inline type annotation is already defined."
+  Enabled: true
+  VersionAdded: '1.5.0'
+
 Style/RbsInline/RedundantTypeAnnotation:
   Description: "Checks for redundant type annotations when multiple type specifications exist for the same method definition."
   Enabled: true
