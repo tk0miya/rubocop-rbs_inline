@@ -186,8 +186,8 @@ module RuboCop
           # @rbs node: Parser::AST::Node
           def method_parameter_names: (Parser::AST::Node node) -> Array[Array[String]]
 
-          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
-          def doc_style_annotation_name: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType annotation) -> String
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType # rubocop:disable Layout/LineLength
+          def doc_style_annotation_name: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType annotation) -> String
 
           # @rbs line: Integer
           def skip_annotation?: (Integer line) -> bool
