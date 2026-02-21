@@ -46,8 +46,6 @@ module RuboCop
                 when RBS::Inline::AST::Annotations::BlockType,
                      RBS::Inline::AST::Annotations::ReturnType,
                      RBS::Inline::AST::Annotations::VarType
-                  next if ignore_underscore_arguments? && annotation_name(annotation).start_with?('_')
-
                   add_offense_for(annotation)
                 end
               end
@@ -58,12 +56,8 @@ module RuboCop
 
           private
 
-          def ignore_underscore_arguments? #: bool
-            cop_config['IgnoreUnderscoreArguments']
-          end
-
           # @rbs node: Parser::AST::Node
-          def process(node) #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          def process(node) #: void # rubocop:disable Metrics/CyclomaticComplexity
             arguments = arguments_for(node)
 
             comment = parsed_comments.find do |r|
@@ -78,8 +72,6 @@ module RuboCop
                 add_offense_for(annotation)
               when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
                 name = annotation_name(annotation)
-                next if ignore_underscore_arguments? && name.start_with?('_')
-
                 add_offense_for(annotation) unless arguments.include?(name)
               end
             end
