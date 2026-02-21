@@ -316,9 +316,6 @@ end
 
 Verifies that annotation parameters match the actual method parameters.
 
-**Configuration:**
-- `IgnoreUnderscoreArguments` (default: `false`): When `true`, annotations whose names start with `_` are silently skipped. This is useful because rbs-inline ignores doc-style annotations for underscore-prefixed arguments, so annotating them is pointless and should not be flagged.
-
 **Examples:**
 ```ruby
 # bad
@@ -327,13 +324,6 @@ def method(arg); end
 
 # good
 # @rbs arg: String
-def method(arg); end
-```
-
-**Examples (IgnoreUnderscoreArguments: true):**
-```ruby
-# good - underscore-prefixed annotation is silently ignored
-# @rbs _name: String
 def method(arg); end
 ```
 
@@ -355,9 +345,6 @@ Style/RbsInline/MissingTypeAnnotation:
 
 # Ignore underscore-prefixed arguments (rbs-inline ignores their doc-style annotations)
 Style/RbsInline/MissingTypeAnnotation:
-  IgnoreUnderscoreArguments: true
-
-Style/RbsInline/UnmatchedAnnotations:
   IgnoreUnderscoreArguments: true
 ```
 

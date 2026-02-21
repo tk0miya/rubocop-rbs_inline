@@ -21,7 +21,6 @@
 - **KeywordSeparator**: Added autocorrect support.
 - **ParametersSeparator**: Added autocorrect support.
 - **MissingTypeAnnotation**: Added `IgnoreUnderscoreArguments` option (default: `false`). When enabled, methods whose arguments are all underscore-prefixed are exempt from the `doc_style` annotation requirement, and from the `# @rbs` parameter annotation requirement in `doc_style_and_return_annotation` style. This reflects the rbs-inline behavior of ignoring `# @rbs _param:` annotations.
-- **UnmatchedAnnotations**: Added `IgnoreUnderscoreArguments` option (default: `false`). When enabled, annotations whose names start with `_` are silently skipped, so `# @rbs _foo: String` will not be flagged even if `_foo` is not a parameter of the method.
 
 ### Dependency Updates
 
