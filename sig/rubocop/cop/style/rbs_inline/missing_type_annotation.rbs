@@ -86,9 +86,15 @@ module RuboCop
 
           include RangeHelp
 
-          MESSAGES: untyped
+          METHOD_TYPE_SIGNATURE_MESSAGE: ::String
 
-          ATTR_MESSAGE: ::String
+          DOC_STYLE_PARAM_MESSAGE: ::String
+
+          DOC_STYLE_RETURN_MESSAGE: ::String
+
+          DOC_STYLE_TRAILING_RETURN_MESSAGE: ::String
+
+          ATTRIBUTE_METHOD_MESSAGE: ::String
 
           ATTR_METHODS: untyped
 
@@ -158,10 +164,25 @@ module RuboCop
           # @rbs visibility: visibility
           def target_node?: (visibility visibility) -> bool
 
-          def report_offenses: () -> void
+          def check_method_entries: () -> void
 
           # @rbs node: Parser::AST::Node
-          def annotated_def?: (Parser::AST::Node node) -> boolish
+          def check_def: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_method_type_signature: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_method_parameters_in_doc_style: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_return_type_in_doc_style: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_return_type_in_return_annotation: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_attribute_method: (Parser::AST::Node node) -> void
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: Parser::AST::Node
@@ -171,26 +192,22 @@ module RuboCop
           def args_node_for: (Parser::AST::Node node) -> Parser::AST::Node
 
           # @rbs line: Integer
-          def annotated_attr?: (Integer line) -> boolish
-
-          # Returns true if all annotatable parameters have @rbs annotations.
-          # @rbs node: Parser::AST::Node
-          # @rbs line: Integer
-          def doc_style_params_annotated?: (Parser::AST::Node node, Integer line) -> bool
-
-          # Returns acceptable annotation name variants for each annotatable parameter.
-          # Each entry is an array of acceptable annotation name strings for that parameter.
-          # Excludes anonymous (no name) and underscore-prefixed parameters.
-          # Underscore-prefixed parameters (e.g. `_unused`) are excluded because RBS::Inline
-          # does not support `# @rbs _name: Type` annotations.
-          # @rbs node: Parser::AST::Node
-          def method_parameter_names: (Parser::AST::Node node) -> Array[Array[String]]
+          def annotated_attribute_method?: (Integer line) -> boolish
 
           # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType # rubocop:disable Layout/LineLength
           def doc_style_annotation_name: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType annotation) -> String
 
           # @rbs line: Integer
           def skip_annotation?: (Integer line) -> bool
+
+          # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.
+          # @rbs argument: Parser::AST::Node
+          # @rbs name: String
+          def param_candidate_names: (Parser::AST::Node argument, String name) -> Array[String]?
+
+          # Returns the display name for a parameter node, used in offense messages.
+          # @rbs argument: Parser::AST::Node
+          def param_display_name: (Parser::AST::Node argument) -> String
 
           # @rbs node: Parser::AST::Node
           def offense_range_for_def: (Parser::AST::Node node) -> Parser::Source::Range

@@ -175,7 +175,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -187,7 +188,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -199,7 +200,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs return: String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^ Missing `@rbs name:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -223,7 +224,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           def greet(name, age)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                          ^^^ Missing `@rbs age:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -235,7 +237,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           #: (String) -> String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -258,7 +261,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(name) #: String
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -287,7 +291,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet
-          ^^^^^^^^^ Missing `@rbs` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello"
           end
         RUBY
@@ -298,7 +302,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(*args)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^^ Missing `@rbs *args:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
           end
         RUBY
       end
@@ -350,7 +355,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(**opts)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^^^ Missing `@rbs **opts:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
           end
         RUBY
       end
@@ -402,7 +408,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(&block)
-          ^^^^^^^^^ Missing `@rbs` annotation.
+                    ^^^^^^ Missing `@rbs &block:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
           end
         RUBY
       end
@@ -456,7 +463,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
             "Hello, \#{name}"
           end
         RUBY
@@ -468,7 +476,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
             "Hello, \#{name}"
           end
         RUBY
@@ -479,7 +487,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense when method has arguments' do
         expect_offense(<<~RUBY)
           def greet(name) #: String
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^ Missing `@rbs name:` annotation.
             "Hello, \#{name}"
           end
         RUBY
@@ -499,7 +507,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           #: (String) -> String
           def greet(name)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
             "Hello, \#{name}"
           end
         RUBY
@@ -561,7 +570,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         expect_offense(<<~RUBY)
           # @rbs name: String
           def greet(name, age) #: String
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                          ^^^ Missing `@rbs age:` annotation.
             "Hello"
           end
         RUBY
@@ -601,7 +610,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
           # @rbs a: String
           # @rbs b: Integer
           def greet(
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
             a,
             b
           )
@@ -630,7 +639,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(*args)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^^ Missing `@rbs *args:` annotation.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
           end
         RUBY
       end
@@ -678,7 +688,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(**opts)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^^^ Missing `@rbs **opts:` annotation.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
           end
         RUBY
       end
@@ -726,7 +737,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(&block)
-          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+                    ^^^^^^ Missing `@rbs &block:` annotation.
+          ^^^^^^^^^ Missing trailing return type annotation (e.g., `#: void`).
           end
         RUBY
       end
