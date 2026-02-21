@@ -3,6 +3,11 @@ Style/RbsInline/DataClassCommentAlignment:
   Enabled: true
   VersionAdded: '1.5.0'
 
+Style/RbsInline/DataDefineWithBlock:
+  Description: "Checks for `Data.define` calls with a block, which RBS::Inline does not parse."
+  Enabled: true
+  VersionAdded: '1.5.0'
+
 Style/RbsInline/MissingDataClassAnnotation:
   Description: "Checks that `Data.define` attributes have inline type annotations."
   Enabled: true

@@ -1,0 +1,43 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/data_define_with_block.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for `Data.define` calls with a block.
+        #
+        # RBS::Inline does not parse the contents of `Data.define` blocks, so any
+        # methods defined inside will not be recognized for type checking. Instead,
+        # call `Data.define` without a block and define additional methods by
+        # reopening the class separately.
+        #
+        # NOTE: This is a known limitation of RBS::Inline. See
+        # https://github.com/soutaro/rbs-inline/pull/183 for the upstream fix.
+        #
+        # @example
+        #   # bad
+        #   User = Data.define(:name, :role) do
+        #     def admin? = role == :admin #: bool
+        #   end
+        #
+        #   # good
+        #   User = Data.define(:name, :role)
+        #
+        #   class User
+        #     def admin? = role == :admin #: bool
+        #   end
+        class DataDefineWithBlock < Base
+          MSG: ::String
+
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def data_define?: (RuboCop::AST::SendNode node) -> bool
+        end
+      end
+    end
+  end
+end

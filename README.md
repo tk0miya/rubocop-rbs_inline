@@ -27,6 +27,29 @@ plugins:
 
 rubocop-rbs_inline provides the following cops to validate [RBS::Inline](https://github.com/soutaro/rbs-inline) annotations:
 
+### Style/RbsInline/DataDefineWithBlock
+
+Checks for `Data.define` calls with a block. RBS::Inline does not parse block contents, so any methods defined inside the block will not be recognized for type checking. Instead, call `Data.define` without a block and reopen the class separately to add methods.
+
+**Examples:**
+```ruby
+# bad
+User = Data.define(:name, :role) do
+  def admin?
+    role == :admin
+  end
+end
+
+# good
+User = Data.define(:name, :role)
+
+class User
+  def admin? #: bool
+    role == :admin
+  end
+end
+```
+
 ### Style/RbsInline/EmbeddedRbsSpacing
 
 Checks that `@rbs!` comments (embedded RBS) are followed by a blank line.
