@@ -8,11 +8,6 @@ Style/RbsInline/DataDefineWithBlock:
   Enabled: true
   VersionAdded: '1.5.0'
 
-Style/RbsInline/MissingDataClassAnnotation:
-  Description: "Checks that `Data.define` attributes have inline type annotations."
-  Enabled: true
-  VersionAdded: '1.5.0'
-
 Style/RbsInline/EmbeddedRbsSpacing:
   Description: 'Checks that `@rbs!` comments (embedded RBS) are followed by a blank line.'
   Enabled: true
@@ -28,8 +23,18 @@ Style/RbsInline/InvalidTypes:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/KeywordSeparator:
+  Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
+  Enabled: true
+  VersionAdded: "1.0.0"
+
 Style/RbsInline/MethodCommentSpacing:
   Description: 'Checks that method-related `@rbs` annotations are placed immediately before method definitions.'
+  Enabled: true
+  VersionAdded: '1.5.0'
+
+Style/RbsInline/MissingDataClassAnnotation:
+  Description: "Checks that `Data.define` attributes have inline type annotations."
   Enabled: true
   VersionAdded: '1.5.0'
 
@@ -43,11 +48,6 @@ Style/RbsInline/MissingTypeAnnotation:
     - doc_style
     - doc_style_and_return_annotation
   Visibility: all
-
-Style/RbsInline/KeywordSeparator:
-  Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
-  Enabled: true
-  VersionAdded: "1.0.0"
 
 Style/RbsInline/ParametersSeparator:
   Description: "Checks the rbs-inline annotation comment uses a separator to parameters"
