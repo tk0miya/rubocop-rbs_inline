@@ -293,6 +293,152 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
         RUBY
       end
     end
+
+    context 'when method has *args and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(*args)
+          ^^^^^^^^^ Missing `@rbs` annotation.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *args with @rbs *args annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs *args: String
+          # @rbs return: void
+          def greet(*args)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *args with @rbs * annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs *: String
+          # @rbs return: void
+          def greet(*args)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has anonymous * and return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs return: void
+          def greet(*)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *_args (underscore-prefixed) and return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs return: void
+          def greet(*_args)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(**opts)
+          ^^^^^^^^^ Missing `@rbs` annotation.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts with @rbs **opts annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs **opts: String
+          # @rbs return: void
+          def greet(**opts)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts with @rbs ** annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs **: String
+          # @rbs return: void
+          def greet(**opts)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has anonymous ** and return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs return: void
+          def greet(**)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **_opts (underscore-prefixed) and return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs return: void
+          def greet(**_opts)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(&block)
+          ^^^^^^^^^ Missing `@rbs` annotation.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block with @rbs &block annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs &block: (String) -> void
+          # @rbs return: void
+          def greet(&block)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block with @rbs & annotation and return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs &: (String) -> void
+          # @rbs return: void
+          def greet(&block)
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &_block (underscore-prefixed) and return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs return: void
+          def greet(&_block)
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is doc_style_and_return_annotation' do
@@ -475,6 +621,141 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
             b
           ) #: void
             a + b.to_s
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *args and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(*args)
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *args with @rbs *args annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs *args: String
+          def greet(*args) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *args with @rbs * annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs *: String
+          def greet(*args) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has anonymous * and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet(*) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has *_args (underscore-prefixed) and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet(*_args) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(**opts)
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts with @rbs **opts annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs **opts: String
+          def greet(**opts) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **opts with @rbs ** annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs **: String
+          def greet(**opts) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has anonymous ** and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet(**) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has **_opts (underscore-prefixed) and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet(**_opts) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(&block)
+          ^^^^^^^^^ Missing `@rbs` params and trailing return type.
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block with @rbs &block annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs &block: (String) -> void
+          def greet(&block) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &block with @rbs & annotation and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs &: (String) -> void
+          def greet(&block) #: void
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has &_block (underscore-prefixed) and inline return' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet(&_block) #: void
           end
         RUBY
       end

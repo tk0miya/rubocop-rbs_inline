@@ -306,11 +306,15 @@ module RuboCop
             end
           end
 
-          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType # rubocop:disable Layout/LineLength
           def doc_style_annotation_name(annotation) #: String
             case annotation
             when RBS::Inline::AST::Annotations::BlockType
               "&#{annotation.name}"
+            when RBS::Inline::AST::Annotations::SplatParamType
+              annotation.name ? "*#{annotation.name}" : '*'
+            when RBS::Inline::AST::Annotations::DoubleSplatParamType
+              annotation.name ? "**#{annotation.name}" : '**'
             else
               annotation.name.to_s
             end

@@ -80,14 +80,17 @@ module RuboCop
 
           # Find @rbs parameter annotations before a method definition
           # @rbs def_line: Integer
-          def find_doc_style_param_annotations(def_line) #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]?
+          # rubocop:disable Layout/LineLength
+          def find_doc_style_param_annotations(def_line) #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType]?
+            # rubocop:enable Layout/LineLength
             leading_annotation = find_leading_annotation(def_line)
             return unless leading_annotation
 
-            annotations = [] #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType]
+            annotations = [] #: Array[RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType] # rubocop:disable Layout/LineLength
             leading_annotation.each_annotation do |annotation|
               case annotation
-              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType
+              when RBS::Inline::AST::Annotations::VarType, RBS::Inline::AST::Annotations::BlockType,
+                   RBS::Inline::AST::Annotations::SplatParamType, RBS::Inline::AST::Annotations::DoubleSplatParamType
                 annotations << annotation
               end
             end
