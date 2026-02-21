@@ -226,7 +226,7 @@ module RuboCop
           end
 
           # @rbs node: Parser::AST::Node
-          def annotated_def?(node) #: boolish # rubocop:disable Metrics/CyclomaticComplexity
+          def annotated_def?(node) #: boolish # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             line = node.location.line
             return true if skip_annotation?(line)
             # Overload signatures (2+ #: lines) are always valid regardless of style,
@@ -237,12 +237,16 @@ module RuboCop
             when :method_type_signature
               find_method_type_signature_comments(line)
             when :doc_style
+              return true if ignore_underscore_arguments? && all_args_underscore?(node)
+
               rbs_annotations?(line)
             when :doc_style_and_return_annotation
               # Inline comment is always required for return type.
               # For multi-line signatures, the trailing #: comment may be on the closing ) line.
               trailing = find_trailing_comment(method_parameter_list_end_line(node))
-              trailing && (node.arguments.empty? || rbs_annotations?(line))
+              no_meaningful_args = node.arguments.empty? ||
+                                   (ignore_underscore_arguments? && all_args_underscore?(node))
+              trailing && (no_meaningful_args || rbs_annotations?(line))
             end
           end
 
@@ -277,6 +281,26 @@ module RuboCop
             return false unless annotation
 
             annotation.comments.any? { |c| c.location.slice.match?(/\A#\s+@rbs\s+(skip|override)\b/) }
+          end
+
+          def ignore_underscore_arguments? #: bool
+            cop_config['IgnoreUnderscoreArguments']
+          end
+
+          # Returns true if the method node has at least one argument and all arguments are
+          # underscore-prefixed or anonymous. rbs-inline ignores doc_style annotations for such arguments.
+          # @rbs node: Parser::AST::Node
+          def all_args_underscore?(node) #: bool
+            args_node = case node.type
+                        when :defs then node.children[2]
+                        else node.children[1]
+                        end
+            return false if args_node.children.empty?
+
+            args_node.children.all? do |arg|
+              name = arg.children[0]&.to_s
+              name.nil? || name.start_with?('_')
+            end
           end
 
           # @rbs node: Parser::AST::Node
