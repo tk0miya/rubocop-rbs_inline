@@ -315,6 +315,28 @@ def method(a)
 end
 ```
 
+### Style/RbsInline/RedundantInstanceVariableAnnotation
+
+Warns when a `# @rbs @ivar: Type` instance variable type annotation is redundant because an `attr_*` with an inline type annotation already exists for the same attribute.
+
+Supports autocorrect (removes the redundant instance variable type annotation).
+
+**Examples:**
+```ruby
+# bad
+# @rbs @foo: Integer
+
+attr_reader :foo #: Integer
+
+# good
+attr_reader :foo #: Integer
+
+# good - no inline annotation, so ivar annotation is not redundant
+# @rbs @foo: Integer
+
+attr_reader :foo
+```
+
 ### Style/RbsInline/RedundantTypeAnnotation
 
 Detects redundant type annotations when multiple type specifications exist for the same method. This covers both redundant argument type annotations (when both `#:` and `# @rbs param` specify the same parameter) and redundant return type annotations (when multiple of `#:`, trailing `#:`, and `# @rbs return` specify the return type).

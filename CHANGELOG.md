@@ -15,6 +15,7 @@
 - **Style/RbsInline/MissingDataClassAnnotation**: Warns when an attribute passed to `Data.define` does not have a trailing `#:` inline type annotation. Supports autocorrect.
 - **Style/RbsInline/DataClassCommentAlignment**: Warns when the `#:` inline type annotation comments in a multiline `Data.define` block are not aligned to the same column. Supports autocorrect.
 - **Style/RbsInline/DataDefineWithBlock**: Warns when `Data.define` is called with a block. RBS::Inline does not parse block contents, so methods defined inside will not be recognized. Users should call `Data.define` without a block and reopen the class separately to add methods.
+- **Style/RbsInline/RedundantInstanceVariableAnnotation**: Warns when a `# @rbs @ivar: Type` instance variable type annotation is redundant because an `attr_*` with an inline type annotation already exists for the same attribute. Supports autocorrect.
 
 ### Enhancements
 
