@@ -85,6 +85,11 @@ Style/RbsInline/UnmatchedAnnotations:
   Enabled: true
   VersionAdded: "1.0.0"
 
+Style/RbsInline/UntypedInstanceVariable:
+  Description: "Checks that instance variables in classes/modules have RBS type annotations."
+  Enabled: true
+  VersionAdded: '1.5.0'
+
 Style/RbsInline/VariableCommentSpacing:
   Description: 'Checks that `@rbs` variable comments are followed by a blank line.'
   Enabled: true
