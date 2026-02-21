@@ -1,0 +1,98 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/untyped_instance_variable.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that instance variables in classes/modules have RBS type annotations.
+        #
+        # Instance variables must either have a `# @rbs @ivar: Type` annotation
+        # or be covered by a typed `attr_reader/writer/accessor` declaration.
+        #
+        # @example
+        #   # bad
+        #   class Foo
+        #     def bar
+        #       @baz
+        #     end
+        #   end
+        #
+        #   # good
+        #   class Foo
+        #     # @rbs @baz: Integer
+        #
+        #     def bar
+        #       @baz
+        #     end
+        #   end
+        #
+        #   # good
+        #   class Foo
+        #     attr_reader :baz  #: Integer
+        #
+        #     def bar
+        #       @baz
+        #     end
+        #   end
+        class UntypedInstanceVariable < Base
+          include CommentParser
+
+          include RangeHelp
+
+          MSG: ::String
+
+          ATTR_METHODS: untyped
+
+          type scope = { typed_ivars: Set[Symbol], used_ivars: Hash[Symbol, Parser::AST::Node] }
+
+          attr_reader scope_stack: Array[scope]
+
+          attr_reader ivar_type_annotations: Hash[Integer, Symbol]
+
+          def on_new_investigation: () -> void
+
+          def on_investigation_end: () -> void
+
+          # @rbs _node: Parser::AST::Node
+          def on_class: (untyped _node) -> void
+
+          alias on_module on_class
+
+          # @rbs node: Parser::AST::Node
+          def after_class: (Parser::AST::Node node) -> void
+
+          alias after_module after_class
+
+          # @rbs node: Parser::AST::Node
+          def on_ivar: (Parser::AST::Node node) -> void
+
+          alias on_ivasgn on_ivar
+
+          # @rbs node: Parser::AST::Node
+          def on_send: (Parser::AST::Node node) -> void
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def attr_method?: (Parser::AST::Node node) -> bool
+
+          # @rbs node: Parser::AST::Node
+          def register_attr_ivars: (Parser::AST::Node node) -> void
+
+          def push_scope: () -> void
+
+          def pop_scope: () -> void
+
+          def current_scope: () -> scope
+
+          # @rbs node: Parser::AST::Node
+          def collect_typed_ivars_for_scope: (Parser::AST::Node node) -> void
+
+          def collect_ivar_type_annotations: () -> Hash[Integer, Symbol]
+
+          def report_offenses: () -> void
+        end
+      end
+    end
+  end
+end

@@ -420,6 +420,38 @@ def method(arg); end
 def method(arg); end
 ```
 
+### Style/RbsInline/UntypedInstanceVariable
+
+Warns when an instance variable used in a class or module does not have an RBS type annotation. An instance variable is considered typed when a `# @rbs @ivar: Type` annotation exists in the class body, or when it is covered by an `attr_reader`, `attr_writer`, or `attr_accessor` declaration with an inline `#: Type` comment.
+
+**Examples:**
+```ruby
+# bad
+class Foo
+  def bar
+    @baz
+  end
+end
+
+# good
+class Foo
+  # @rbs @baz: Integer
+
+  def bar
+    @baz
+  end
+end
+
+# good
+class Foo
+  attr_reader :baz  #: Integer
+
+  def bar
+    @baz
+  end
+end
+```
+
 ### Style/RbsInline/VariableCommentSpacing
 
 Checks that `@rbs` variable comments for instance variables (`@ivar`), class variables (`@@cvar`), and class instance variables (`self.@civar`) are followed by a blank line. RBS::Inline requires these comments to be standalone, so code must not immediately follow them.

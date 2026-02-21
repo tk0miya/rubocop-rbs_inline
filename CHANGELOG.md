@@ -4,6 +4,7 @@
 
 ### New Cops
 
+- **Style/RbsInline/UntypedInstanceVariable**: Warns when an instance variable used in a class or module does not have an RBS type annotation. An instance variable is considered typed when a `# @rbs @ivar: Type` annotation exists in the class body, or when it is covered by an `attr_reader`, `attr_writer`, or `attr_accessor` declaration with an inline `#: Type` comment.
 - **Style/RbsInline/RedundantAnnotationWithSkip**: Warns when type annotations (`#:` method type signatures, `# @rbs` method types, parameter annotations, return type annotations, or trailing inline types) are present alongside `# @rbs skip` or `# @rbs override`. These directives skip RBS generation, making any additional type annotations redundant. Supports unsafe autocorrect.
 - **Style/RbsInline/RedundantTypeAnnotation**: Warns when redundant type annotations exist for the same method definition. Detects conflicts between `#:` method type signatures, `# @rbs param:` annotations, `# @rbs return:` annotations, and trailing inline `#:` return types. The `EnforcedStyle` option accepts `method_type_signature` (prefer `#:` signatures), `doc_style` (prefer `# @rbs` annotations), or `doc_style_and_return_annotation` (prefer `# @rbs` params with trailing `#:` return type, default: `doc_style`). Supports unsafe autocorrect.
 - **Style/RbsInline/MissingTypeAnnotation**: Warns when a method definition has no type annotation. The `Visibility` option narrows the target methods by visibility (default: `all`).

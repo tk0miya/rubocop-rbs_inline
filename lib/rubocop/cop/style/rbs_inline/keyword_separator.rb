@@ -29,6 +29,8 @@ module RuboCop
           # Only `# @rbs override: SomeType` (with a type) is valid as a parameter annotation.
           NO_ARGUMENT_KEYWORDS = %w[override skip].freeze #: Array[String]
 
+          # @rbs @method_annotation_lines: Set[Integer]
+
           def on_new_investigation #: void
             super
             parse_comments
