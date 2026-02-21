@@ -87,13 +87,11 @@ module RuboCop
           include ConfigurableEnforcedStyle
           include RangeHelp
 
-          MESSAGES = {
-            method_type_signature: 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).',
-            doc_style: 'Missing `@rbs` annotation.',
-            doc_style_and_return_annotation: 'Missing `@rbs` params and trailing return type.'
-          }.freeze
-
-          ATTR_MESSAGE = 'Missing inline type annotation (e.g., `#: Type`).'
+          METHOD_TYPE_SIGNATURE_MESSAGE = 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).'
+          DOC_STYLE_PARAM_MESSAGE = 'Missing `@rbs %<name>s:` annotation.'
+          DOC_STYLE_RETURN_MESSAGE = 'Missing `@rbs return:` annotation.'
+          DOC_STYLE_TRAILING_RETURN_MESSAGE = 'Missing trailing return type annotation (e.g., `#: void`).'
+          ATTRIBUTE_METHOD_MESSAGE = 'Missing inline type annotation (e.g., `#: Type`).'
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
           VISIBILITY_MODIFIERS = %i[public protected private].freeze
@@ -117,7 +115,7 @@ module RuboCop
           end
 
           def on_investigation_end #: void
-            report_offenses
+            check_method_entries
             super
           end
 
@@ -132,7 +130,7 @@ module RuboCop
 
           # @rbs _node: Parser::AST::Node
           def after_class(_node) #: void
-            report_offenses
+            check_method_entries
             visibility_stack.pop
             unannotated_methods_stack.pop
           end
@@ -142,8 +140,6 @@ module RuboCop
 
           # @rbs node: Parser::AST::Node
           def on_def(node) #: void
-            return if annotated_def?(node)
-
             current_method_entries << MethodEntry.new(
               name: node.method_name, node:, visibility: current_visibility(node)
             )
@@ -184,8 +180,6 @@ module RuboCop
 
           # @rbs node: Parser::AST::Node
           def on_attribute_method(node) #: void
-            return if annotated_attr?(node.location.line)
-
             node.arguments.each do |arg|
               next unless arg.sym_type? || arg.str_type?
 
@@ -212,37 +206,82 @@ module RuboCop
             visibility == :public
           end
 
-          def report_offenses #: void
-            msg = MESSAGES[style]
+          def check_method_entries #: void
             current_method_entries.each do |entry|
               next unless target_node?(entry.visibility)
 
               if entry.node.def_type? || entry.node.defs_type?
-                add_offense(offense_range_for_def(entry.node), message: msg)
+                check_def(entry.node)
               else
-                add_offense(entry.node, message: ATTR_MESSAGE)
+                check_attribute_method(entry.node)
               end
             end
           end
 
           # @rbs node: Parser::AST::Node
-          def annotated_def?(node) #: boolish # rubocop:disable Metrics/CyclomaticComplexity
+          def check_def(node) #: void
             line = node.location.line
-            return true if skip_annotation?(line)
+            return if skip_annotation?(line)
             # Overload signatures (2+ #: lines) are always valid regardless of style,
             # because overloads cannot be expressed in doc_style format.
-            return true if overload_type_signatures?(line)
+            return if overload_type_signatures?(line)
 
             case style
             when :method_type_signature
-              find_method_type_signature_comments(line)
+              check_method_type_signature(node)
             when :doc_style
-              doc_style_params_annotated?(node, line) && find_doc_style_return_annotation(line)
+              check_method_parameters_in_doc_style(node)
+              check_return_type_in_doc_style(node)
             when :doc_style_and_return_annotation
-              # Inline comment is always required for return type.
-              # For multi-line signatures, the trailing #: comment may be on the closing ) line.
-              doc_style_params_annotated?(node, line) && find_trailing_comment(method_parameter_list_end_line(node))
+              check_method_parameters_in_doc_style(node)
+              check_return_type_in_return_annotation(node)
             end
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_method_type_signature(node) #: void
+            return if find_method_type_signature_comments(node.location.line)
+
+            add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_MESSAGE)
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_method_parameters_in_doc_style(node) #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+            line = node.location.line
+            param_annotations = find_doc_style_param_annotations(line)
+            annotated_names = param_annotations ? param_annotations.map { doc_style_annotation_name(_1) } : []
+
+            args_node_for(node).children.each do |argument|
+              name = argument.children[0]&.to_s
+              next if name.nil? || name.start_with?('_')
+
+              candidates = param_candidate_names(argument, name)
+              next unless candidates
+              next if candidates.any? { annotated_names.include?(_1) }
+
+              add_offense(argument, message: format(DOC_STYLE_PARAM_MESSAGE, name: param_display_name(argument)))
+            end
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_return_type_in_doc_style(node) #: void
+            return if find_doc_style_return_annotation(node.location.line)
+
+            add_offense(offense_range_for_def(node), message: DOC_STYLE_RETURN_MESSAGE)
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_return_type_in_return_annotation(node) #: void
+            return if find_trailing_comment(method_parameter_list_end_line(node))
+
+            add_offense(offense_range_for_def(node), message: DOC_STYLE_TRAILING_RETURN_MESSAGE)
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_attribute_method(node) #: void
+            return if annotated_attribute_method?(node.location.line)
+
+            add_offense(node, message: ATTRIBUTE_METHOD_MESSAGE)
           end
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
@@ -260,50 +299,9 @@ module RuboCop
           end
 
           # @rbs line: Integer
-          def annotated_attr?(line) #: boolish
+          def annotated_attribute_method?(line) #: boolish
             # attr_* always requires inline comment regardless of style
             find_trailing_comment(line)
-          end
-
-          # Returns true if all annotatable parameters have @rbs annotations.
-          # @rbs node: Parser::AST::Node
-          # @rbs line: Integer
-          def doc_style_params_annotated?(node, line) #: bool
-            params = method_parameter_names(node)
-            return true if params.empty?
-
-            param_annotations = find_doc_style_param_annotations(line)
-            return false unless param_annotations
-
-            annotated_names = param_annotations.map { doc_style_annotation_name(_1) }
-            params.all? do |candidate_names|
-              candidate_names.any? { annotated_names.include?(_1) }
-            end
-          end
-
-          # Returns acceptable annotation name variants for each annotatable parameter.
-          # Each entry is an array of acceptable annotation name strings for that parameter.
-          # Excludes anonymous (no name) and underscore-prefixed parameters.
-          # Underscore-prefixed parameters (e.g. `_unused`) are excluded because RBS::Inline
-          # does not support `# @rbs _name: Type` annotations.
-          # @rbs node: Parser::AST::Node
-          def method_parameter_names(node) #: Array[Array[String]] # rubocop:disable Metrics/CyclomaticComplexity
-            args_node_for(node).children.filter_map do |argument|
-              name = argument.children[0]&.to_s
-              # Skip anonymous (no name) and underscore-prefixed (intentionally unused) parameters
-              next if name.nil? || name.start_with?('_')
-
-              case argument.type
-              when :arg, :optarg, :kwarg, :kwoptarg
-                [name]
-              when :restarg
-                ["*#{name}", '*']
-              when :kwrestarg
-                ["**#{name}", '**']
-              when :blockarg
-                ['&', "&#{name}"]
-              end
-            end
           end
 
           # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType # rubocop:disable Layout/LineLength
@@ -326,6 +324,30 @@ module RuboCop
             return false unless annotation
 
             annotation.comments.any? { |c| c.location.slice.match?(/\A#\s+@rbs\s+(skip|override)\b/) }
+          end
+
+          # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.
+          # @rbs argument: Parser::AST::Node
+          # @rbs name: String
+          def param_candidate_names(argument, name) #: Array[String]?
+            case argument.type
+            when :arg, :optarg, :kwarg, :kwoptarg then [name]
+            when :restarg then ["*#{name}", '*']
+            when :kwrestarg then ["**#{name}", '**']
+            when :blockarg then ['&', "&#{name}"]
+            end
+          end
+
+          # Returns the display name for a parameter node, used in offense messages.
+          # @rbs argument: Parser::AST::Node
+          def param_display_name(argument) #: String
+            name = argument.children[0].to_s
+            case argument.type
+            when :restarg then "*#{name}"
+            when :kwrestarg then "**#{name}"
+            when :blockarg then "&#{name}"
+            else name
+            end
           end
 
           # @rbs node: Parser::AST::Node
