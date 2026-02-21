@@ -27,6 +27,29 @@ plugins:
 
 rubocop-rbs_inline provides the following cops to validate [RBS::Inline](https://github.com/soutaro/rbs-inline) annotations:
 
+### Style/RbsInline/DataClassCommentAlignment
+
+Checks that `#:` inline type annotations in a multiline `Data.define` call are aligned to the same column. The expected column is determined by the longest attribute name (plus its trailing comma). Folded `Data.define` calls (where multiple attributes share a line) are excluded.
+
+Supports autocorrect.
+
+**Examples:**
+```ruby
+# bad
+MethodEntry = Data.define(
+  :name, #: Symbol
+  :node,       #: Parser::AST::Node
+  :visibility  #: Symbol
+)
+
+# good
+MethodEntry = Data.define(
+  :name,       #: Symbol
+  :node,       #: Parser::AST::Node
+  :visibility  #: Symbol
+)
+```
+
 ### Style/RbsInline/DataDefineWithBlock
 
 Checks for `Data.define` calls with a block. RBS::Inline does not parse block contents, so any methods defined inside the block will not be recognized for type checking. Instead, call `Data.define` without a block and reopen the class separately to add methods.
@@ -112,6 +135,67 @@ Ensures RBS keywords (`module-self`, `inherits`, `override`, etc.) are not follo
 
 # good
 # @rbs module-self String
+```
+
+### Style/RbsInline/MethodCommentSpacing
+
+Checks that method-related `@rbs` annotations are placed immediately before their method definition, with no blank lines in between. Also flags method-related annotations that are not followed by a method definition at all.
+
+Method-related annotations include `# @rbs param:`, `# @rbs return:`, `# @rbs &block:`, `# @rbs override`, `# @rbs skip`, `# @rbs %a{...}`, `# @rbs (...) -> Type`, and `#: (...) -> Type`.
+
+Supports autocorrect (removes blank lines between the annotation and the method definition).
+
+**Examples:**
+```ruby
+# bad - blank line between annotation and method
+# @rbs x: Integer
+# @rbs return: String
+
+def method(x)
+end
+
+# bad - annotation comment not followed by a method definition
+# @rbs x: Integer
+puts "something"
+
+# good
+# @rbs x: Integer
+# @rbs return: String
+def method(x)
+end
+
+# good
+#: (Integer) -> String
+def method(x)
+end
+```
+
+### Style/RbsInline/MissingDataClassAnnotation
+
+Checks that each attribute passed to `Data.define` has a trailing `#:` inline type annotation on the same line.
+
+For folded `Data.define` calls (where multiple attributes share a line), the cop will suggest rewriting as a multiline call so each attribute can be annotated individually.
+
+Supports autocorrect.
+
+**Examples:**
+```ruby
+# bad
+MethodEntry = Data.define(:name, :node, :visibility)
+
+# bad - missing annotation for :node
+MethodEntry = Data.define(
+  :name,       #: Symbol
+  :node,
+  :visibility  #: Symbol
+)
+
+# good
+MethodEntry = Data.define(
+  :name,       #: Symbol
+  :node,       #: Parser::AST::Node
+  :visibility  #: Symbol
+)
 ```
 
 ### Style/RbsInline/MissingTypeAnnotation
@@ -231,86 +315,73 @@ def method(a)
 end
 ```
 
-### Style/RbsInline/RedundantArgumentType
+### Style/RbsInline/RedundantTypeAnnotation
 
-Detects redundant argument type specifications when both `#:` annotation comments and `# @rbs` parameter comments exist.
+Detects redundant type annotations when multiple type specifications exist for the same method. This covers both redundant argument type annotations (when both `#:` and `# @rbs param` specify the same parameter) and redundant return type annotations (when multiple of `#:`, trailing `#:`, and `# @rbs return` specify the return type).
+
+Supports unsafe autocorrect.
 
 **Configuration:** `EnforcedStyle` (default: `doc_style`)
-- `method_type_signature`: Prefers `#:` annotation comments with parameter types
-- `doc_style`: Prefers `# @rbs param:` annotations
-
-**Examples (EnforcedStyle: doc_style):**
-```ruby
-# bad - both annotation comment and @rbs param
-# @rbs a: Integer
-#: (Integer) -> void
-def method(a)
-end
-
-# good
-# @rbs a: Integer
-def method(a) #: void
-end
-```
+- `method_type_signature`: Prefers `#:` annotation comments with the full method signature; `# @rbs param:` and `# @rbs return:` annotations alongside a `#:` signature are redundant
+- `doc_style`: Prefers `# @rbs` annotations; `#:` method type signatures alongside `# @rbs` annotations are redundant
+- `doc_style_and_return_annotation`: Prefers `# @rbs param:` annotations with a trailing inline `#:` return type; full `#:` signatures and `# @rbs return:` annotations are redundant
 
 **Examples (EnforcedStyle: method_type_signature):**
 ```ruby
-# bad - both annotation comment and @rbs param
+# bad - redundant @rbs parameter annotation
 # @rbs a: Integer
 #: (Integer) -> void
 def method(a)
 end
 
+# bad - redundant trailing return type
+#: () -> String
+def method(arg) #: String
+end
+
 # good
-#: (Integer) -> void
+#: (Integer) -> String
 def method(a)
-end
-```
-
-### Style/RbsInline/RedundantReturnType
-
-Detects redundant return type specifications when multiple return type annotations exist.
-
-**Configuration:** `EnforcedStyle` (default: `return_type_annotation`)
-- `method_type_signature`: Prefers `#:` annotation comments before the method
-- `return_type_annotation`: Prefers inline `#:` return type on the def line
-- `doc_style`: Prefers `# @rbs return:` annotations
-
-**Examples (EnforcedStyle: return_type_annotation):**
-```ruby
-# bad - multiple return type specifications
-#: () -> String
-def method(arg) #: String
-end
-
-# good - single inline return type
-def method(arg) #: String
-end
-```
-
-**Examples (EnforcedStyle: method_type_signature):**
-```ruby
-# bad - multiple return type specifications
-#: () -> String
-def method(arg) #: String
-end
-
-# good - annotation comment with return type
-#: () -> String
-def method(arg)
 end
 ```
 
 **Examples (EnforcedStyle: doc_style):**
 ```ruby
-# bad - multiple return type specifications
+# bad - redundant #: method type signature
+# @rbs a: Integer
+#: (Integer) -> void
+def method(a)
+end
+
+# bad - redundant trailing return type
 # @rbs return: String
 def method(arg) #: String
 end
 
-# good - @rbs return annotation
+# good
+# @rbs a: Integer
 # @rbs return: String
-def method(arg)
+def method(a)
+end
+```
+
+**Examples (EnforcedStyle: doc_style_and_return_annotation):**
+```ruby
+# bad - redundant #: method type signature
+# @rbs a: Integer
+#: (Integer) -> String
+def method(a)
+end
+
+# bad - redundant @rbs return annotation
+# @rbs a: Integer
+# @rbs return: String
+def method(a) #: String
+end
+
+# good
+# @rbs a: Integer
+def method(a) #: String
 end
 ```
 
@@ -349,16 +420,37 @@ def method(arg); end
 def method(arg); end
 ```
 
+### Style/RbsInline/VariableCommentSpacing
+
+Checks that `@rbs` variable comments for instance variables (`@ivar`), class variables (`@@cvar`), and class instance variables (`self.@civar`) are followed by a blank line. RBS::Inline requires these comments to be standalone, so code must not immediately follow them.
+
+Supports autocorrect.
+
+**Examples:**
+```ruby
+# bad
+# @rbs @ivar: Integer
+# @rbs @@cvar: Float
+# @rbs self.@civar: String
+def method
+end
+
+# good
+# @rbs @ivar: Integer
+# @rbs @@cvar: Float
+# @rbs self.@civar: String
+
+def method
+end
+```
+
 ## Configuration
 
 You can customize cop behavior in your `.rubocop.yml`. For example:
 
 ```yaml
 # Prefer method type signatures over doc-style annotations
-Style/RbsInline/RedundantArgumentType:
-  EnforcedStyle: method_type_signature
-
-Style/RbsInline/RedundantReturnType:
+Style/RbsInline/RedundantTypeAnnotation:
   EnforcedStyle: method_type_signature
 
 # Only require annotations on public methods
