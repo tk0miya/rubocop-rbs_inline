@@ -1,7 +1,7 @@
 Style/RbsInline/AnnotationSeparator:
   Description: "Checks that `:` is used correctly in `# @rbs` annotation comments: not after keywords, but required after parameter names."
   Enabled: true
-  VersionAdded: "1.6.0"
+  VersionAdded: '1.5.0'
 
 Style/RbsInline/DataClassCommentAlignment:
   Description: "Checks that `#:` inline type annotations in `Data.define` blocks are aligned."
