@@ -32,9 +32,9 @@ module RuboCop
 
           include RangeHelp
 
-          KEYWORD_MSG: ::String
+          KEYWORD_MSG: String
 
-          PARAMETER_MSG: ::String
+          PARAMETER_MSG: String
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS: Array[String]
