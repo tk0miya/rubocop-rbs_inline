@@ -1,26 +1,40 @@
-# Generated from lib/rubocop/cop/style/rbs_inline/keyword_separator.rb with RBS::Inline
+# Generated from lib/rubocop/cop/style/rbs_inline/annotation_separator.rb with RBS::Inline
 
 module RuboCop
   module Cop
     module Style
       module RbsInline
-        # IRB::Inline expects annotations comments for keywords are not separeted with `:`.
-        # This cop checks for comments that do not match the expected pattern.
+        # RBS::Inline expects annotation comments for keywords to not use a `:` separator,
+        # and for parameters to use a `:` separator.
         #
         # @example
-        #   # bad
+        #   # bad (keyword followed by colon)
         #   # @rbs module-self: String
+        #
+        #   # bad (parameter without colon)
+        #   # @rbs param String
+        #
+        #   # bad (parameter with leading colon instead of trailing)
+        #   # @rbs :param String
         #
         #   # good
         #   # @rbs module-self String
-        class KeywordSeparator < Base
+        #
+        #   # good
+        #   # @rbs param: String
+        #
+        #   # good
+        #   # @rbs %a{pure}
+        class AnnotationSeparator < Base
           extend AutoCorrector
 
           include CommentParser
 
           include RangeHelp
 
-          MSG: ::String
+          KEYWORD_MSG: ::String
+
+          PARAMETER_MSG: ::String
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS: Array[String]
@@ -30,6 +44,8 @@ module RuboCop
           # because `# @rbs override:` (no type) is not a valid parameter annotation.
           # Only `# @rbs override: SomeType` (with a type) is valid as a parameter annotation.
           NO_ARGUMENT_KEYWORDS: Array[String]
+
+          RBS_INLINE_REGEXP_KEYWORDS: Array[Regexp]
 
           @method_annotation_lines: Set[Integer]
 
@@ -44,6 +60,10 @@ module RuboCop
           def on_investigation_end: () -> void
 
           private
+
+          def check_parameters_separator: () -> void
+
+          def check_keyword_separator: () -> void
 
           # Collect line numbers of leading annotation comments for a method definition
           # into @method_annotation_lines.
@@ -60,9 +80,23 @@ module RuboCop
           # @rbs comment: Parser::Source::Comment
           def no_argument_keyword_without_type?: (Parser::Source::Comment comment) -> bool
 
+          # @rbs matched: String?
+          def valid_parameter_comment?: (String? matched) -> bool
+
           # @rbs comment: Parser::Source::Comment
           # @rbs matched: MatchData
-          def invalid_location_for: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
+          def parameter_offense_location: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
+
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def parameter_keyword_range: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
+
+          # @rbs keyword: String
+          def corrected_keyword: (String keyword) -> String
+
+          # @rbs comment: Parser::Source::Comment
+          # @rbs matched: MatchData
+          def keyword_colon_location: (Parser::Source::Comment comment, MatchData matched) -> Parser::Source::Range
         end
       end
     end

@@ -1,3 +1,8 @@
+Style/RbsInline/AnnotationSeparator:
+  Description: "Checks that `:` is used correctly in `# @rbs` annotation comments: not after keywords, but required after parameter names."
+  Enabled: true
+  VersionAdded: "1.6.0"
+
 Style/RbsInline/DataClassCommentAlignment:
   Description: "Checks that `#:` inline type annotations in `Data.define` blocks are aligned."
   Enabled: true
@@ -23,11 +28,6 @@ Style/RbsInline/InvalidTypes:
   Enabled: true
   VersionAdded: "1.0.0"
 
-Style/RbsInline/KeywordSeparator:
-  Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
-  Enabled: true
-  VersionAdded: "1.0.0"
-
 Style/RbsInline/MethodCommentSpacing:
   Description: 'Checks that method-related `@rbs` annotations are placed immediately before method definitions.'
   Enabled: true
@@ -48,11 +48,6 @@ Style/RbsInline/MissingTypeAnnotation:
     - doc_style
     - doc_style_and_return_annotation
   Visibility: all
-
-Style/RbsInline/ParametersSeparator:
-  Description: "Checks the rbs-inline annotation comment uses a separator to parameters"
-  Enabled: true
-  VersionAdded: "1.0.0"
 
 Style/RbsInline/RedundantAnnotationWithSkip:
   Description: "Checks for redundant type annotations when `@rbs skip` or `@rbs override` is present."

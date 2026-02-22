@@ -17,11 +17,13 @@
 - **Style/RbsInline/DataDefineWithBlock**: Warns when `Data.define` is called with a block. RBS::Inline does not parse block contents, so methods defined inside will not be recognized. Users should call `Data.define` without a block and reopen the class separately to add methods.
 - **Style/RbsInline/RedundantInstanceVariableAnnotation**: Warns when a `# @rbs @ivar: Type` instance variable type annotation is redundant because an `attr_*` with an inline type annotation already exists for the same attribute. Supports autocorrect.
 
+### New Cops
+
+- **Style/RbsInline/AnnotationSeparator**: Replaces the separate `KeywordSeparator` and `ParametersSeparator` cops with a single cop that checks correct use of `:` separators in `# @rbs` annotations: keywords must not be followed by `:`, while parameter names must be followed by `:`. Supports autocorrect.
+
 ### Enhancements
 
 - **InvalidComment**: Added autocorrect support.
-- **KeywordSeparator**: Added autocorrect support.
-- **ParametersSeparator**: Added autocorrect support.
 
 ### Dependency Updates
 
