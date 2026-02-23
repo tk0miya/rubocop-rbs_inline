@@ -9,11 +9,14 @@ module RuboCop
         # Instance variables must either have a `# @rbs @ivar: Type` annotation
         # or be covered by a typed `attr_reader/writer/accessor` declaration.
         #
+        # Only instance variables that are **assigned** within the class/module are checked.
+        # Read-only references are ignored because the variable may be defined in a parent class.
+        #
         # @example
         #   # bad
         #   class Foo
-        #     def bar
-        #       @baz
+        #     def initialize
+        #       @baz = 1
         #     end
         #   end
         #
@@ -21,8 +24,8 @@ module RuboCop
         #   class Foo
         #     # @rbs @baz: Integer
         #
-        #     def bar
-        #       @baz
+        #     def initialize
+        #       @baz = 1
         #     end
         #   end
         #
@@ -30,6 +33,13 @@ module RuboCop
         #   class Foo
         #     attr_reader :baz  #: Integer
         #
+        #     def initialize
+        #       @baz = 1
+        #     end
+        #   end
+        #
+        #   # good (only read, may be defined in parent class)
+        #   class Foo
         #     def bar
         #       @baz
         #     end
@@ -43,7 +53,7 @@ module RuboCop
 
           ATTR_METHODS: untyped
 
-          type scope = { typed_ivars: Set[Symbol], used_ivars: Hash[Symbol, Parser::AST::Node] }
+          type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, Parser::AST::Node] }
 
           attr_reader scope_stack: Array[scope]
 
@@ -64,9 +74,7 @@ module RuboCop
           alias after_module after_class
 
           # @rbs node: Parser::AST::Node
-          def on_ivar: (Parser::AST::Node node) -> void
-
-          alias on_ivasgn on_ivar
+          def on_ivasgn: (Parser::AST::Node node) -> void
 
           # @rbs node: Parser::AST::Node
           def on_send: (Parser::AST::Node node) -> void
