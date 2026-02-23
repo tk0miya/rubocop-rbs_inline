@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubocop-rbs_inline (1.5.0)
+    rubocop-rbs_inline (1.5.1)
       lint_roller (~> 1.1)
       rbs-inline
       rubocop (>= 1.72.1, < 2.0)
@@ -140,4 +140,4 @@ DEPENDENCIES
   steep
 
 BUNDLED WITH
-   2.5.18
+  2.5.18
