@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.1 (2026-02-24)
+
+### Bug Fixes
+
+- **Style/RbsInline/UntypedInstanceVariable**: No longer reports an offense for instance variables that are only read without being assigned in the class. Read-only references are excluded because the variable may be defined in a parent class, making it impossible to determine whether a type annotation is needed.
+
 ## 1.5.0 (2026-02-24)
 
 ### New Cops

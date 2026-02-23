@@ -4,12 +4,11 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
   let(:config) { RuboCop::Config.new }
 
   context 'when instance variable has no type annotation' do
-    it 'registers an offense for an ivar read inside a method' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for an ivar read (may be defined in parent class)' do
+      expect_no_offenses(<<~RUBY)
         class Foo
           def bar
             @baz
-            ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
           end
         end
       RUBY
@@ -26,24 +25,24 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for multiple untyped ivars' do
+    it 'registers an offense for multiple untyped ivar assignments' do
       expect_offense(<<~RUBY)
         class Foo
           def bar
-            @baz
+            @baz = 1
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
-            @qux
+            @qux = 2
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@qux` is not typed. Add `# @rbs @qux: Type` or use `attr_* :qux #: Type`.
           end
         end
       RUBY
     end
 
-    it 'registers an offense for an ivar in a module' do
+    it 'registers an offense for an ivar assignment in a module' do
       expect_offense(<<~RUBY)
         module Foo
           def bar
-            @baz
+            @baz = 1
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
           end
         end
@@ -72,12 +71,26 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'reports each ivar only once even if used multiple times' do
+    it 'reports each ivar only once even if assigned multiple times' do
       expect_offense(<<~RUBY)
         class Foo
           def bar
-            @baz
+            @baz = 1
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
+          end
+
+          def baz
+            @baz = 2
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when ivar is only read (not assigned)' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def bar
+            @baz
           end
 
           def baz
@@ -131,9 +144,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
           # @rbs @baz: Integer
           # @rbs @qux: String
 
-          def bar
-            @baz
-            @qux
+          def initialize
+            @baz = 1
+            @qux = 'hello'
           end
         end
       RUBY
@@ -192,7 +205,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
   end
 
   context 'with nested classes' do
-    it 'registers an offense when only inner class annotates the ivar but outer uses it' do
+    it 'registers an offense when only inner class annotates the ivar but outer assigns it' do
       expect_offense(<<~RUBY)
         class Outer
           class Inner
@@ -200,7 +213,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
           end
 
           def foo
-            @baz
+            @baz = 1
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
           end
         end
@@ -214,13 +227,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
 
           class Inner
             def bar
-              @baz
+              @baz = 1
               ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
             end
           end
 
           def foo
-            @baz
+            @baz = 1
           end
         end
       RUBY
@@ -235,12 +248,12 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
             # @rbs @baz: String
 
             def bar
-              @baz
+              @baz = 'hello'
             end
           end
 
           def foo
-            @baz
+            @baz = 1
           end
         end
       RUBY
@@ -253,8 +266,22 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
             # @rbs @baz: Integer
 
             def bar
-              @baz
+              @baz = 1
             end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for read-only ivar in outer class' do
+      expect_no_offenses(<<~RUBY)
+        class Outer
+          class Inner
+            # @rbs @baz: Integer
+          end
+
+          def foo
+            @baz
           end
         end
       RUBY
@@ -262,11 +289,19 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
   end
 
   context 'with top-level methods (no class)' do
-    it 'registers an offense for ivars outside any class' do
+    it 'registers an offense for ivar assignments outside any class' do
       expect_offense(<<~RUBY)
         def bar
-          @baz
+          @baz = 1
           ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for ivar reads outside any class' do
+      expect_no_offenses(<<~RUBY)
+        def bar
+          @baz
         end
       RUBY
     end
@@ -276,21 +311,21 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
         # @rbs @baz: Integer
 
         def bar
-          @baz
+          @baz = 1
         end
       RUBY
     end
   end
 
   context 'with mixed typed and untyped ivars' do
-    it 'only reports the untyped ivar' do
+    it 'only reports the untyped ivar assignment' do
       expect_offense(<<~RUBY)
         class Foo
           # @rbs @baz: Integer
 
           def bar
-            @baz
-            @qux
+            @baz = 1
+            @qux = 2
             ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@qux` is not typed. Add `# @rbs @qux: Type` or use `attr_* :qux #: Type`.
           end
         end

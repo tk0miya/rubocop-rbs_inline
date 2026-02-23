@@ -11,11 +11,14 @@ module RuboCop
         # Instance variables must either have a `# @rbs @ivar: Type` annotation
         # or be covered by a typed `attr_reader/writer/accessor` declaration.
         #
+        # Only instance variables that are **assigned** within the class/module are checked.
+        # Read-only references are ignored because the variable may be defined in a parent class.
+        #
         # @example
         #   # bad
         #   class Foo
-        #     def bar
-        #       @baz
+        #     def initialize
+        #       @baz = 1
         #     end
         #   end
         #
@@ -23,8 +26,8 @@ module RuboCop
         #   class Foo
         #     # @rbs @baz: Integer
         #
-        #     def bar
-        #       @baz
+        #     def initialize
+        #       @baz = 1
         #     end
         #   end
         #
@@ -32,6 +35,13 @@ module RuboCop
         #   class Foo
         #     attr_reader :baz  #: Integer
         #
+        #     def initialize
+        #       @baz = 1
+        #     end
+        #   end
+        #
+        #   # good (only read, may be defined in parent class)
+        #   class Foo
         #     def bar
         #       @baz
         #     end
@@ -46,7 +56,7 @@ module RuboCop
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
 
-          # @rbs! type scope = { typed_ivars: Set[Symbol], used_ivars: Hash[Symbol, Parser::AST::Node] }
+          # @rbs! type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, Parser::AST::Node] }
 
           attr_reader :scope_stack #: Array[scope]
           attr_reader :ivar_type_annotations #: Hash[Integer, Symbol]
@@ -81,12 +91,10 @@ module RuboCop
           alias after_module after_class
 
           # @rbs node: Parser::AST::Node
-          def on_ivar(node) #: void
+          def on_ivasgn(node) #: void
             name = node.children.first #: Symbol
-            current_scope[:used_ivars][name] ||= node
+            current_scope[:assigned_ivars][name] ||= node
           end
-
-          alias on_ivasgn on_ivar
 
           # @rbs node: Parser::AST::Node
           def on_send(node) #: void
@@ -112,7 +120,7 @@ module RuboCop
           end
 
           def push_scope #: void
-            scope_stack.push({ typed_ivars: Set.new, used_ivars: {} })
+            scope_stack.push({ typed_ivars: Set.new, assigned_ivars: {} })
           end
 
           def pop_scope #: void
@@ -143,7 +151,7 @@ module RuboCop
           end
 
           def report_offenses #: void
-            current_scope[:used_ivars].each do |name, node|
+            current_scope[:assigned_ivars].each do |name, node|
               next if current_scope[:typed_ivars].include?(name)
 
               bare_name = name.to_s.delete_prefix('@')
