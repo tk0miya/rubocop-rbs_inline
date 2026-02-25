@@ -38,6 +38,9 @@ module RuboCop
 
           # @rbs annotation: RBS::Inline::AST::Annotations::Embedded
           def check_embedded_annotation: (RBS::Inline::AST::Annotations::Embedded annotation) -> void
+
+          # @rbs line_number: Integer
+          def block_end_line?: (Integer line_number) -> bool
         end
       end
     end

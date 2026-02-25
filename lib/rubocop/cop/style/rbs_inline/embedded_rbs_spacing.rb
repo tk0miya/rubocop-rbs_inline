@@ -54,10 +54,16 @@ module RuboCop
             next_line_number = last_comment.location.start_line + 1
 
             return if blank_line?(next_line_number)
+            return if block_end_line?(next_line_number)
 
             add_offense(line_range(next_line_number)) do |corrector|
               corrector.insert_before(line_range(next_line_number), "\n")
             end
+          end
+
+          # @rbs line_number: Integer
+          def block_end_line?(line_number) #: bool
+            source_code_at(line_number).strip.match?(/\Aend\b/)
           end
         end
       end
