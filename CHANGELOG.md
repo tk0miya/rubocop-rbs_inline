@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 (2026-02-26)
+
+### Bug Fixes
+
+- **Style/RbsInline/EmbeddedRbsSpacing**: No longer reports an offense when a `@rbs!` comment appears at the end of a class or module body (i.e. immediately before `end`). Adding a blank line before `end` is not recommended in Ruby style guides.
+
 ## 1.5.1 (2026-02-24)
 
 ### Bug Fixes

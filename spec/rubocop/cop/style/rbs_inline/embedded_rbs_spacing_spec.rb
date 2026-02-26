@@ -62,6 +62,14 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::EmbeddedRbsSpacing, :config do
     RUBY
   end
 
+  it 'does not register an offense when @rbs! comment is at the end of class body' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        # @rbs! type foo = Integer
+      end
+    RUBY
+  end
+
   it 'registers an offense when @rbs! with space is directly followed by code' do
     expect_offense(<<~RUBY)
       # @rbs! type foo = Integer
