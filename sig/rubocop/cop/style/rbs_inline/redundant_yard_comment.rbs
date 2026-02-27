@@ -1,0 +1,127 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/redundant_yard_comment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks for redundant YARD type comments when RBS inline annotations exist.
+        #
+        # When both YARD documentation (`@param`, `@return`, `@option`, `@yield`,
+        # `@yieldparam`, `@yieldreturn`) and RBS::Inline annotations are present for the
+        # same method, the YARD type information is considered redundant since RBS provides
+        # the canonical type specification.
+        #
+        # @safety
+        #   Autocorrection is unsafe because YARD comments may contain additional
+        #   documentation beyond just type information (parameter descriptions, examples, notes).
+        #   Removing YARD comments will lose this additional documentation.
+        #
+        # @example
+        #   # bad - YARD @param when RBS annotation exists
+        #   # @param name [String] the name
+        #   #: (String) -> void
+        #   def greet(name)
+        #   end
+        #
+        #   # bad - YARD @return when RBS annotation exists
+        #   # @return [String] the greeting
+        #   #: () -> String
+        #   def greet
+        #   end
+        #
+        #   # bad - YARD @option when RBS annotation exists
+        #   # @option opts [String] :name the name
+        #   #: (Hash[Symbol, untyped]) -> void
+        #   def greet(opts)
+        #   end
+        #
+        #   # bad - YARD @yieldparam when RBS block annotation exists
+        #   # @yieldparam item [String] the item
+        #   #: () { (String) -> void } -> void
+        #   def each(&block)
+        #   end
+        #
+        #   # good - only RBS annotations
+        #   #: (String) -> String
+        #   def greet(name)
+        #   end
+        #
+        #   # good - only YARD comments (no RBS)
+        #   # @param name [String] the name
+        #   # @return [String] the greeting
+        #   def greet(name)
+        #   end
+        class RedundantYardComment < Base
+          extend AutoCorrector
+
+          include CommentParser
+
+          include RangeHelp
+
+          MSG_YARD_PARAM: ::String
+
+          MSG_YARD_RETURN: ::String
+
+          MSG_YARD_OPTION: ::String
+
+          MSG_YARD_YIELD: ::String
+
+          MSG_YARD_YIELDPARAM: ::String
+
+          MSG_YARD_YIELDRETURN: ::String
+
+          # @rbs YARD_TAGS_FOR_PARAMS: Regexp
+          YARD_TAGS_FOR_PARAMS: ::Regexp
+
+          # @rbs YARD_TAGS_FOR_BLOCK: Regexp
+          YARD_TAGS_FOR_BLOCK: ::Regexp
+
+          # @rbs MSG_MAP: Hash[String, String]
+          MSG_MAP: untyped
+
+          def on_new_investigation: () -> void
+
+          # @rbs node: Parser::AST::Node
+          def on_def: (Parser::AST::Node node) -> void
+
+          alias on_defs on_def
+
+          private
+
+          # @rbs node: Parser::AST::Node
+          def process: (Parser::AST::Node node) -> void
+
+          # @rbs def_line: Integer
+          def check_parameter_redundancy: (Integer def_line) -> void
+
+          # @rbs def_line: Integer
+          def check_return_type_redundancy: (Integer def_line) -> void
+
+          # @rbs def_line: Integer
+          def check_block_redundancy: (Integer def_line) -> void
+
+          # Find consecutive leading comments before a method definition
+          # @rbs def_line: Integer
+          def find_leading_comments: (Integer def_line) -> Array[Parser::Source::Comment]
+
+          # Find YARD comments matching a pattern before a method definition
+          # @rbs def_line: Integer
+          # @rbs pattern: Regexp
+          def find_yard_comments_by_pattern: (Integer def_line, Regexp pattern) -> Array[Parser::Source::Comment]
+
+          # Find YARD @return comment before a method definition
+          # @rbs def_line: Integer
+          def find_yard_return_comment: (Integer def_line) -> Parser::Source::Comment?
+
+          # Find @rbs block annotation before a method definition
+          # @rbs def_line: Integer
+          def find_doc_style_block_annotation: (Integer def_line) -> RBS::Inline::AST::Annotations::BlockType?
+
+          # Detect the YARD tag name from a comment and register an offense
+          # @rbs comment: Parser::Source::Comment
+          def add_offense_for_yard: (Parser::Source::Comment comment) -> void
+        end
+      end
+    end
+  end
+end

@@ -76,6 +76,12 @@ Style/RbsInline/RedundantTypeAnnotation:
     - doc_style
     - doc_style_and_return_annotation
 
+Style/RbsInline/RedundantYardComment:
+  Description: "Checks for redundant YARD type comments when RBS annotations exist."
+  Enabled: false
+  VersionAdded: "1.5.0"
+  SafeAutoCorrect: false
+
 Style/RbsInline/RequireRbsInlineComment:
   Description: "Checks the presence or absence of `# rbs_inline: enabled` magic comment."
   Enabled: true
