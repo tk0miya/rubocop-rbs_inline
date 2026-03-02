@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.3 (2026-03-02)
+
+### Enhancements
+
+- **Style/RbsInline/MissingTypeAnnotation**: Added `method_type_signature_or_return_annotation` style. Methods with arguments require a leading `#:` method type signature; methods without arguments accept either a leading `#:` signature or a trailing `#:` return type annotation.
+
 ## 1.5.2 (2026-02-26)
 
 ### Bug Fixes

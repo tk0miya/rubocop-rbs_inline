@@ -9,9 +9,11 @@ module RuboCop
         #
         # The `EnforcedStyle` option determines which annotation format is required:
         #
-        # - `method_type_signature`: Requires `#:` annotation comments only
         # - `doc_style`: Requires `# @rbs` annotations
         # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and trailing `#:` return type
+        # - `method_type_signature`: Requires `#:` annotation comments only
+        # - `method_type_signature_or_return_annotation`: Requires `#:` annotation for methods with arguments;
+        #   accepts either `#:` annotation or trailing `#:` return type for methods without arguments
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -19,25 +21,6 @@ module RuboCop
         # - `public`: Only checks public methods and `attr_*` declarations
         #
         # Methods annotated with `# @rbs skip` are always excluded from inspection.
-        #
-        # @example EnforcedStyle: method_type_signature
-        #   # bad
-        #   def greet(name)
-        #     "Hello, #{name}"
-        #   end
-        #
-        #   # bad
-        #   attr_reader :name
-        #
-        #   # good
-        #   #: (String) -> String
-        #   def greet(name)
-        #     "Hello, #{name}"
-        #   end
-        #
-        #   # good
-        #   #: String
-        #   attr_reader :name
         #
         # @example EnforcedStyle: doc_style
         #   # bad
@@ -79,6 +62,56 @@ module RuboCop
         #
         #   # good - attr with trailing type
         #   attr_reader :name #: String
+        #
+        # @example EnforcedStyle: method_type_signature
+        #   # bad
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad
+        #   attr_reader :name
+        #
+        #   # good
+        #   #: (String) -> String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good
+        #   #: String
+        #   attr_reader :name
+        #
+        # @example EnforcedStyle: method_type_signature_or_return_annotation
+        #   # bad - method with arguments requires method_type_signature
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad - inline trailing comment is not accepted for methods with arguments
+        #   def greet(name) #: String
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - method_type_signature for methods with arguments
+        #   #: (String) -> String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - method_type_signature for methods without arguments
+        #   #: -> String
+        #   def greet
+        #     "Hello"
+        #   end
+        #
+        #   # good - trailing return type annotation for methods without arguments
+        #   def greet #: String
+        #     "Hello"
+        #   end
+        #
+        #   # good - attr with trailing type
+        #   attr_reader :name #: String
         class MissingTypeAnnotation < Base
           include CommentParser
 
@@ -87,6 +120,8 @@ module RuboCop
           include RangeHelp
 
           METHOD_TYPE_SIGNATURE_MESSAGE: ::String
+
+          METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE: ::String
 
           DOC_STYLE_PARAM_MESSAGE: ::String
 
@@ -173,6 +208,12 @@ module RuboCop
           def check_method_type_signature: (Parser::AST::Node node) -> void
 
           # @rbs node: Parser::AST::Node
+          def check_method_type_signature_or_return_annotation_style: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
+          def check_method_type_signature_or_return_annotation: (Parser::AST::Node node) -> void
+
+          # @rbs node: Parser::AST::Node
           def check_method_parameters_in_doc_style: (Parser::AST::Node node) -> void
 
           # @rbs node: Parser::AST::Node
@@ -190,6 +231,9 @@ module RuboCop
 
           # @rbs node: Parser::AST::Node
           def args_node_for: (Parser::AST::Node node) -> Parser::AST::Node
+
+          # @rbs node: Parser::AST::Node
+          def method_has_arguments?: (Parser::AST::Node node) -> bool
 
           # @rbs line: Integer
           def annotated_attribute_method?: (Integer line) -> boolish

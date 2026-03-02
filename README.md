@@ -204,9 +204,10 @@ Enforces that method definitions and `attr_*` declarations have RBS inline type 
 
 **Configuration:**
 - `EnforcedStyle` (default: `doc_style`)
-  - `method_type_signature`: Requires `#:` annotation comments
   - `doc_style`: Requires `# @rbs` annotations
   - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and inline `#:` return type
+  - `method_type_signature`: Requires `#:` annotation comments
+  - `method_type_signature_or_return_annotation`: Requires `#:` annotation for methods with arguments; accepts either `#:` annotation or trailing `#:` return type for methods without arguments
 - `Visibility` (default: `all`)
   - `all`: Checks all methods regardless of visibility
   - `public`: Only checks public methods and `attr_*` declarations
@@ -228,6 +229,20 @@ def greet(name)
 end
 ```
 
+**Examples (EnforcedStyle: doc_style_and_return_annotation):**
+```ruby
+# bad - no annotation
+def greet(name)
+  "Hello, #{name}"
+end
+
+# good
+# @rbs name: String
+def greet(name) #: String
+  "Hello, #{name}"
+end
+```
+
 **Examples (EnforcedStyle: method_type_signature):**
 ```ruby
 # bad - no annotation
@@ -242,17 +257,33 @@ def greet(name)
 end
 ```
 
-**Examples (EnforcedStyle: doc_style_and_return_annotation):**
+**Examples (EnforcedStyle: method_type_signature_or_return_annotation):**
 ```ruby
-# bad - no annotation
+# bad - method with arguments requires method_type_signature
 def greet(name)
   "Hello, #{name}"
 end
 
-# good
-# @rbs name: String
+# bad - trailing return annotation is not accepted for methods with arguments
 def greet(name) #: String
   "Hello, #{name}"
+end
+
+# good - method_type_signature for methods with arguments
+#: (String) -> String
+def greet(name)
+  "Hello, #{name}"
+end
+
+# good - method_type_signature for methods without arguments
+#: -> String
+def greet
+  "Hello"
+end
+
+# good - trailing return annotation for methods without arguments
+def greet #: String
+  "Hello"
 end
 ```
 

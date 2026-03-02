@@ -44,9 +44,10 @@ Style/RbsInline/MissingTypeAnnotation:
   VersionAdded: "1.5.0"
   EnforcedStyle: doc_style
   SupportedStyles:
-    - method_type_signature
     - doc_style
     - doc_style_and_return_annotation
+    - method_type_signature
+    - method_type_signature_or_return_annotation
   Visibility: all
 
 Style/RbsInline/ParametersSeparator:
