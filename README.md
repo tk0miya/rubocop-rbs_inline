@@ -198,6 +198,48 @@ MethodEntry = Data.define(
 )
 ```
 
+### Style/RbsInline/RedundantYardComment
+
+Checks for redundant YARD type comments (`@param`, `@return`, `@option`, `@yield`, `@yieldparam`, `@yieldreturn`) when RBS inline annotations exist for the same method.
+
+**Examples:**
+```ruby
+# bad - YARD @param when RBS annotation exists
+# @param name [String] the name
+#: (String) -> void
+def greet(name)
+end
+
+# bad - YARD @return when RBS annotation exists
+# @return [String] the greeting
+#: () -> String
+def greet
+end
+
+# bad - YARD @option when RBS annotation exists
+# @option opts [String] :name the name
+#: (Hash[Symbol, untyped]) -> void
+def greet(opts)
+end
+
+# bad - YARD @yieldparam when RBS block annotation exists
+# @yieldparam item [String] the item
+#: () { (String) -> void } -> void
+def each(&block)
+end
+
+# good - only RBS annotations
+#: (String) -> String
+def greet(name)
+end
+
+# good - only YARD comments (no RBS)
+# @param name [String] the name
+# @return [String] the greeting
+def greet(name)
+end
+```
+
 ### Style/RbsInline/MissingTypeAnnotation
 
 Enforces that method definitions and `attr_*` declarations have RBS inline type annotations.
