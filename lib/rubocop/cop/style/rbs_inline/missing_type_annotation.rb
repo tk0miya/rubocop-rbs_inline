@@ -11,9 +11,11 @@ module RuboCop
         #
         # The `EnforcedStyle` option determines which annotation format is required:
         #
-        # - `method_type_signature`: Requires `#:` annotation comments only
         # - `doc_style`: Requires `# @rbs` annotations
         # - `doc_style_and_return_annotation`: Requires `# @rbs` parameters and trailing `#:` return type
+        # - `method_type_signature`: Requires `#:` annotation comments only
+        # - `method_type_signature_or_return_annotation`: Requires `#:` annotation for methods with arguments;
+        #   accepts either `#:` annotation or trailing `#:` return type for methods without arguments
         #
         # The `Visibility` option determines which methods to check:
         #
@@ -21,25 +23,6 @@ module RuboCop
         # - `public`: Only checks public methods and `attr_*` declarations
         #
         # Methods annotated with `# @rbs skip` are always excluded from inspection.
-        #
-        # @example EnforcedStyle: method_type_signature
-        #   # bad
-        #   def greet(name)
-        #     "Hello, #{name}"
-        #   end
-        #
-        #   # bad
-        #   attr_reader :name
-        #
-        #   # good
-        #   #: (String) -> String
-        #   def greet(name)
-        #     "Hello, #{name}"
-        #   end
-        #
-        #   # good
-        #   #: String
-        #   attr_reader :name
         #
         # @example EnforcedStyle: doc_style
         #   # bad
@@ -82,12 +65,64 @@ module RuboCop
         #   # good - attr with trailing type
         #   attr_reader :name #: String
         #
+        # @example EnforcedStyle: method_type_signature
+        #   # bad
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad
+        #   attr_reader :name
+        #
+        #   # good
+        #   #: (String) -> String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good
+        #   #: String
+        #   attr_reader :name
+        #
+        # @example EnforcedStyle: method_type_signature_or_return_annotation
+        #   # bad - method with arguments requires method_type_signature
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # bad - inline trailing comment is not accepted for methods with arguments
+        #   def greet(name) #: String
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - method_type_signature for methods with arguments
+        #   #: (String) -> String
+        #   def greet(name)
+        #     "Hello, #{name}"
+        #   end
+        #
+        #   # good - method_type_signature for methods without arguments
+        #   #: -> String
+        #   def greet
+        #     "Hello"
+        #   end
+        #
+        #   # good - trailing return type annotation for methods without arguments
+        #   def greet #: String
+        #     "Hello"
+        #   end
+        #
+        #   # good - attr with trailing type
+        #   attr_reader :name #: String
+        #
         class MissingTypeAnnotation < Base # rubocop:disable Metrics/ClassLength
           include CommentParser
           include ConfigurableEnforcedStyle
           include RangeHelp
 
           METHOD_TYPE_SIGNATURE_MESSAGE = 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).'
+          METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE =
+            'Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`).'
           DOC_STYLE_PARAM_MESSAGE = 'Missing `@rbs %<name>s:` annotation.'
           DOC_STYLE_RETURN_MESSAGE = 'Missing `@rbs return:` annotation.'
           DOC_STYLE_TRAILING_RETURN_MESSAGE = 'Missing trailing return type annotation (e.g., `#: void`).'
@@ -227,14 +262,16 @@ module RuboCop
             return if overload_type_signatures?(line)
 
             case style
-            when :method_type_signature
-              check_method_type_signature(node)
             when :doc_style
               check_method_parameters_in_doc_style(node)
               check_return_type_in_doc_style(node)
             when :doc_style_and_return_annotation
               check_method_parameters_in_doc_style(node)
               check_return_type_in_return_annotation(node)
+            when :method_type_signature
+              check_method_type_signature(node)
+            when :method_type_signature_or_return_annotation
+              check_method_type_signature_or_return_annotation_style(node)
             end
           end
 
@@ -243,6 +280,23 @@ module RuboCop
             return if find_method_type_signature_comments(node.location.line)
 
             add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_MESSAGE)
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_method_type_signature_or_return_annotation_style(node) #: void
+            if method_has_arguments?(node)
+              check_method_type_signature(node)
+            else
+              check_method_type_signature_or_return_annotation(node)
+            end
+          end
+
+          # @rbs node: Parser::AST::Node
+          def check_method_type_signature_or_return_annotation(node) #: void
+            return if find_method_type_signature_comments(node.location.line)
+            return if find_trailing_comment(method_parameter_list_end_line(node))
+
+            add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE)
           end
 
           # @rbs node: Parser::AST::Node
@@ -296,6 +350,11 @@ module RuboCop
             when :defs then node.children[2]
             else node.children[1]
             end
+          end
+
+          # @rbs node: Parser::AST::Node
+          def method_has_arguments?(node) #: bool
+            args_node_for(node).children.any?
           end
 
           # @rbs line: Integer

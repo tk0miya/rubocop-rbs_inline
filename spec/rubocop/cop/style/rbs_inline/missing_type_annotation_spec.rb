@@ -774,6 +774,170 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
     end
   end
 
+  context 'when EnforcedStyle is method_type_signature_or_return_annotation' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Style/RbsInline/MissingTypeAnnotation' => {
+          'EnforcedStyle' => 'method_type_signature_or_return_annotation',
+          'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation
+                                  method_type_signature_or_return_annotation],
+          'Visibility' => 'public'
+        }
+      )
+    end
+
+    context 'when method has arguments and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(name)
+          ^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has arguments and method_type_signature' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #: (String) -> String
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has arguments and trailing return annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet(name) #: String
+          ^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has arguments and doc_style annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs name: String
+          # @rbs return: String
+          def greet(name)
+          ^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def greet
+          ^^^^^^^^^ Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`).
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and method_type_signature' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #: -> String
+          def greet
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and trailing return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def greet #: String
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and doc_style annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs return: String
+          def greet
+          ^^^^^^^^^ Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`).
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has overload #: annotation comments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #: (String) -> String
+          #: (Integer) -> String
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs skip annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs skip
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when singleton method has arguments and no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def self.greet(name)
+          ^^^^^^^^^^^^^^ Missing annotation comment (e.g., `#: (Type) -> ReturnType`).
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when singleton method has no arguments and trailing return annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def self.greet #: String
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when attr_reader has no annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          attr_reader :name
+          ^^^^^^^^^^^^^^^^^ Missing inline type annotation (e.g., `#: Type`).
+        RUBY
+      end
+    end
+
+    context 'when attr_reader has inline #: comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          attr_reader :name #: String
+        RUBY
+      end
+    end
+  end
+
   context 'when Visibility is public' do
     let(:config) do
       RuboCop::Config.new(
