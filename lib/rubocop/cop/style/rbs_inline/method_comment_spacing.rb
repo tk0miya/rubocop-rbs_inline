@@ -166,7 +166,7 @@ module RuboCop
           def skip_only_annotation?(comment) #: bool
             annotations = []
             comment.each_annotation { |a| annotations << a }
-            annotations.any? && annotations.all? { |a| a.is_a?(RBS::Inline::AST::Annotations::Skip) }
+            annotations.any? && annotations.all?(RBS::Inline::AST::Annotations::Skip)
           end
 
           # @rbs line_number: Integer
