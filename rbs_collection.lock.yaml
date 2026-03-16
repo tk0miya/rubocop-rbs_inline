@@ -6,7 +6,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: ast
@@ -14,15 +14,15 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: bigdecimal
-  version: '3.1'
+  version: '4.0'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: dbm
@@ -34,7 +34,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: fileutils
@@ -62,7 +62,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: parser
@@ -70,7 +70,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: prism
@@ -90,7 +90,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rake
@@ -98,7 +98,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rbs
@@ -118,7 +118,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop
@@ -126,7 +126,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop-ast
@@ -134,7 +134,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 9fe4350e38c040ec50d18ce914261667ffc1c7cd
+    revision: 9bf2eebb1c54b5d6f23f2acb65d4c36f195b4783
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: strscan
