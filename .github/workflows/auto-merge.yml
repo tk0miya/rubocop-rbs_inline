@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'tk0miya/rubocop-rbs_inline'
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ vars.PR_AUTO_MERGER_APP_ID }}
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'rbs-collection-updater[bot]' && github.repository == 'tk0miya/rubocop-rbs_inline'
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ vars.PR_AUTO_MERGER_APP_ID }}
