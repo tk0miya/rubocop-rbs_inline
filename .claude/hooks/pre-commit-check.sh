@@ -12,15 +12,19 @@ fi
 
 cd "$CLAUDE_PROJECT_DIR" || exit 1
 
+if [ "${CLAUDE_CODE_REMOTE:-}" = "true" ]; then
+  eval "$(rbenv init - bash)"
+fi
+
 echo "Running pre-commit checks..." >&2
 
 # Generate RBS and run all checks
-if ! "$CLAUDE_PROJECT_DIR/bin/rbs-inline" --opt-out --output=sig/ lib/ >&2; then
+if ! bundle exec rbs-inline --opt-out --output=sig/ lib/ >&2; then
     echo "Error: RBS generation failed" >&2
     exit 2
 fi
 
-if ! "$CLAUDE_PROJECT_DIR/bin/rake" >&2; then
+if ! bundle exec rake >&2; then
     echo "Error: rake checks failed" >&2
     exit 2
 fi
