@@ -96,7 +96,7 @@ module RuboCop
             parse_comments
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_def(node) #: void
             process(node)
           end
@@ -104,7 +104,7 @@ module RuboCop
 
           private
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def process(node) #: void
             def_line = node.location.line
             check_parameter_redundancy(def_line)
@@ -130,7 +130,7 @@ module RuboCop
           end
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def method_parameter_list_end_line(node) #: Integer
             args_node = case node.type
                         when :def  then node.children[1]

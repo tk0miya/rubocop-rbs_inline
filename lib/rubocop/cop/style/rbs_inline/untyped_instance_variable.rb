@@ -56,7 +56,7 @@ module RuboCop
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
 
-          # @rbs! type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, Parser::AST::Node] }
+          # @rbs! type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, RuboCop::AST::Node] }
 
           attr_reader :scope_stack #: Array[scope]
           attr_reader :ivar_type_annotations #: Hash[Integer, Symbol]
@@ -74,14 +74,14 @@ module RuboCop
             pop_scope
           end
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def on_class(_node) #: void
             push_scope
           end
 
           alias on_module on_class
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::Node
           def after_class(node) #: void
             collect_typed_ivars_for_scope(node)
             report_offenses
@@ -90,13 +90,13 @@ module RuboCop
 
           alias after_module after_class
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::Node
           def on_ivasgn(node) #: void
             name = node.children.first #: Symbol
             current_scope[:assigned_ivars][name] ||= node
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def on_send(node) #: void
             return unless attr_method?(node)
 
@@ -105,12 +105,12 @@ module RuboCop
 
           private
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def attr_method?(node) #: bool
             node.receiver.nil? && ATTR_METHODS.include?(node.method_name)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def register_attr_ivars(node) #: void
             node.arguments.each do |arg|
               next unless arg.sym_type? || arg.str_type?
@@ -131,7 +131,7 @@ module RuboCop
             scope_stack.last
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::Node
           def collect_typed_ivars_for_scope(node) #: void
             class_start = node.location.line
             class_end = node.location.end&.line || class_start

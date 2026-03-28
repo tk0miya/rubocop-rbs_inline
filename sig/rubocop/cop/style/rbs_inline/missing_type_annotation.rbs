@@ -140,12 +140,12 @@ module RuboCop
           class MethodEntry < Data
             attr_reader name(): Symbol
 
-            attr_reader node(): Parser::AST::Node
+            attr_reader node(): RuboCop::AST::Node
 
             attr_reader visibility(): visibility
 
-            def self.new: (Symbol name, Parser::AST::Node node, visibility visibility) -> instance
-                        | (name: Symbol, node: Parser::AST::Node, visibility: visibility) -> instance
+            def self.new: (Symbol name, RuboCop::AST::Node node, visibility visibility) -> instance
+                        | (name: Symbol, node: RuboCop::AST::Node, visibility: visibility) -> instance
 
             def self.members: () -> [ :name, :node, :visibility ]
 
@@ -160,80 +160,80 @@ module RuboCop
 
           def on_investigation_end: () -> void
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def on_class: (untyped _node) -> void
 
           alias on_module on_class
 
           alias on_sclass on_class
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def after_class: (untyped _node) -> void
 
           alias after_module after_class
 
           alias after_sclass after_class
 
-          # @rbs node: Parser::AST::Node
-          def on_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_def: (RuboCop::AST::DefNode node) -> void
 
           alias on_defs on_def
 
-          # @rbs node: Parser::AST::Node
-          def on_send: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
 
           private
 
           # Returns the method entries for the current scope (class/module)
           def current_method_entries: () -> Array[MethodEntry]
 
-          # @rbs node: Parser::AST::Node
-          def on_visibility_modifier: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def on_visibility_modifier: (RuboCop::AST::SendNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_attribute_method: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def on_attribute_method: (RuboCop::AST::SendNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def current_visibility: (Parser::AST::Node node) -> visibility
+          # @rbs node: RuboCop::AST::Node
+          def current_visibility: (RuboCop::AST::Node node) -> visibility
 
           # @rbs visibility: visibility
           def target_node?: (visibility visibility) -> bool
 
           def check_method_entries: () -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_def: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_method_type_signature: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_method_type_signature: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_method_type_signature_or_return_annotation_style: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_method_type_signature_or_return_annotation_style: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_method_type_signature_or_return_annotation: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_method_type_signature_or_return_annotation: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_method_parameters_in_doc_style: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_method_parameters_in_doc_style: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_return_type_in_doc_style: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_return_type_in_doc_style: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_return_type_in_return_annotation: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def check_return_type_in_return_annotation: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def check_attribute_method: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def check_attribute_method: (RuboCop::AST::SendNode node) -> void
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: Parser::AST::Node
-          def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
+          # @rbs node: RuboCop::AST::DefNode
+          def method_parameter_list_end_line: (RuboCop::AST::DefNode node) -> Integer
 
-          # @rbs node: Parser::AST::Node
-          def args_node_for: (Parser::AST::Node node) -> Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
+          def args_node_for: (RuboCop::AST::DefNode node) -> RuboCop::AST::Node
 
-          # @rbs node: Parser::AST::Node
-          def method_has_arguments?: (Parser::AST::Node node) -> bool
+          # @rbs node: RuboCop::AST::DefNode
+          def method_has_arguments?: (RuboCop::AST::DefNode node) -> bool
 
           # @rbs line: Integer
           def annotated_attribute_method?: (Integer line) -> boolish
@@ -245,16 +245,16 @@ module RuboCop
           def skip_annotation?: (Integer line) -> bool
 
           # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.
-          # @rbs argument: Parser::AST::Node
+          # @rbs argument: RuboCop::AST::Node
           # @rbs name: String
-          def param_candidate_names: (Parser::AST::Node argument, String name) -> Array[String]?
+          def param_candidate_names: (RuboCop::AST::Node argument, String name) -> Array[String]?
 
           # Returns the display name for a parameter node, used in offense messages.
-          # @rbs argument: Parser::AST::Node
-          def param_display_name: (Parser::AST::Node argument) -> String
+          # @rbs argument: RuboCop::AST::Node
+          def param_display_name: (RuboCop::AST::Node argument) -> String
 
-          # @rbs node: Parser::AST::Node
-          def offense_range_for_def: (Parser::AST::Node node) -> Parser::Source::Range
+          # @rbs node: RuboCop::AST::DefNode
+          def offense_range_for_def: (RuboCop::AST::DefNode node) -> Parser::Source::Range
         end
       end
     end

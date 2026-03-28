@@ -29,12 +29,12 @@ module RuboCop
             parse_comments
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_def(node) #: void
             process(node)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_defs(node) #: void
             process(node)
           end
@@ -56,7 +56,7 @@ module RuboCop
 
           private
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def process(node) #: void # rubocop:disable Metrics/CyclomaticComplexity
             arguments = arguments_for(node)
 
@@ -76,7 +76,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def arguments_for(node) #: Array[String] # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
             args_for(node).children.flat_map do |argument| # rubocop:disable Metrics/BlockLength
               name = argument.children[0]&.to_s
@@ -109,8 +109,8 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
-          def args_for(node) #: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
+          def args_for(node) #: RuboCop::AST::Node
             case node.type
             when :defs
               node.children[2]

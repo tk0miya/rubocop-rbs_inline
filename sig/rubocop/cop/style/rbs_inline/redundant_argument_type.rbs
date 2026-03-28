@@ -60,15 +60,15 @@ module RuboCop
 
           def on_new_investigation: () -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_def: (RuboCop::AST::DefNode node) -> void
 
           alias on_defs on_def
 
           private
 
-          # @rbs node: Parser::AST::Node
-          def process: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def process: (RuboCop::AST::DefNode node) -> void
 
           # @rbs comments: Array[Parser::Source::Comment]
           def add_offense_for_annotation: (Array[Parser::Source::Comment] comments) -> void
