@@ -198,7 +198,7 @@ module RuboCop
 
           # Returns the method entries for the current scope (class/module)
           def current_method_entries #: Array[MethodEntry]
-            unannotated_methods_stack.last
+            unannotated_methods_stack.last || raise
           end
 
           # @rbs node: RuboCop::AST::SendNode
@@ -206,7 +206,12 @@ module RuboCop
             if node.arguments.empty?
               visibility_stack[-1] = node.method_name
             else
-              names = node.arguments.filter_map { |arg| arg.value.to_sym if arg.sym_type? || arg.str_type? }
+              names = node.arguments.filter_map do |arg|
+                case arg
+                when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
+                  arg.value.to_sym
+                end
+              end
               current_method_entries.map! do |entry|
                 names.include?(entry.name) ? entry.with(visibility: node.method_name) : entry
               end
@@ -216,22 +221,23 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def on_attribute_method(node) #: void
             node.arguments.each do |arg|
-              next unless arg.sym_type? || arg.str_type?
-
-              current_method_entries << MethodEntry.new(
-                name: arg.value.to_sym, node:, visibility: current_visibility(node)
-              )
+              case arg
+              when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
+                current_method_entries << MethodEntry.new(
+                  name: arg.value.to_sym, node:, visibility: current_visibility(node)
+                )
+              end
             end
           end
 
           # @rbs node: RuboCop::AST::Node
           def current_visibility(node) #: visibility
+            # method definition with visibility (ex. private def foo)
             if node.parent&.send_type? && VISIBILITY_MODIFIERS.include?(node.parent.method_name)
-              # method definition with visibility (ex. private def foo)
-              node.parent.method_name
-            else
-              visibility_stack.last
+              return node.parent.method_name
             end
+
+            visibility_stack.last || raise
           end
 
           # @rbs visibility: visibility

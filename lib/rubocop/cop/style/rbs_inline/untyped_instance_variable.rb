@@ -113,9 +113,10 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def register_attr_ivars(node) #: void
             node.arguments.each do |arg|
-              next unless arg.sym_type? || arg.str_type?
-
-              current_scope[:typed_ivars] << :"@#{arg.value}"
+              case arg
+              when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
+                current_scope[:typed_ivars] << :"@#{arg.value}"
+              end
             end
           end
 

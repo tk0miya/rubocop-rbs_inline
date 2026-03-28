@@ -1,15 +1,10 @@
 module Parser
   module Source
-    class Buffer
-      def line_range: (Integer) -> ::Range[Integer]
-    end
-
     class Comment
       attr_reader text: String
     end
 
     class Range
-      attr_reader source_buffer: Buffer
       attr_reader begin_pos: Integer
       attr_reader end_pos: Integer
     end
