@@ -35,6 +35,6 @@ end
 namespace :rbs do
   desc 'Do type check using Steep'
   task :check do
-    sh 'bin/steep', 'check'
+    sh 'bundle', 'exec', 'steep', 'check'
   end
 end

@@ -10,23 +10,23 @@ rubocop-rbs_inline is a RuboCop extension gem that provides cops for validating 
 
 ```bash
 # Run tests
-bin/rspec
-bin/rspec spec/rubocop/cop/style/rbs_inline/invalid_comment_spec.rb      # single file
-bin/rspec spec/rubocop/cop/style/rbs_inline/invalid_comment_spec.rb:8     # single example
+bundle exec rspec
+bundle exec rspec spec/rubocop/cop/style/rbs_inline/invalid_comment_spec.rb      # single file
+bundle exec rspec spec/rubocop/cop/style/rbs_inline/invalid_comment_spec.rb:8     # single example
 
 # Lint
-bin/rake rubocop
-bin/rake rubocop:autocorrect       # safe autocorrect
-bin/rake rubocop:autocorrect_all   # all autocorrect
+bundle exec rake rubocop
+bundle exec rake rubocop:autocorrect       # safe autocorrect
+bundle exec rake rubocop:autocorrect_all   # all autocorrect
 
 # Type check
-bin/rake rbs:check                 # runs steep check
+bundle exec rake rbs:check                 # runs steep check
 
 # Default rake task (runs specs, rubocop, and type check)
-bin/rake
+bundle exec rake
 
 # Generate a new cop
-bin/rake 'new_cop[Style/RbsInline/CopName]'
+bundle exec rake 'new_cop[Style/RbsInline/CopName]'
 ```
 
 ## Architecture
