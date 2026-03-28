@@ -37,12 +37,12 @@ module RuboCop
             @method_annotation_lines = Set.new #: Set[Integer]
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_def(node) #: void
             collect_method_annotation_comments(node.loc.line)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_defs(node) #: void
             collect_method_annotation_comments(node.loc.line)
           end

@@ -25,24 +25,24 @@ module RuboCop
 
           def on_new_investigation: () -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_def: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_defs: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_defs: (RuboCop::AST::DefNode node) -> void
 
           def on_investigation_end: () -> void
 
           private
 
-          # @rbs node: Parser::AST::Node
-          def process: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def process: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def arguments_for: (Parser::AST::Node node) -> Array[String]
+          # @rbs node: RuboCop::AST::DefNode
+          def arguments_for: (RuboCop::AST::DefNode node) -> Array[String]
 
-          # @rbs node: Parser::AST::Node
-          def args_for: (Parser::AST::Node node) -> Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
+          def args_for: (RuboCop::AST::DefNode node) -> RuboCop::AST::Node
 
           # @rbs annotation: RBS::Inline::AST::Annotations::BlockType |
           #                  RBS::Inline::AST::Annotations::IvarType |

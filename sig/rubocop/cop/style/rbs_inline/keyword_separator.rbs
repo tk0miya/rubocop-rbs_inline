@@ -35,11 +35,11 @@ module RuboCop
 
           def on_new_investigation: () -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_def: (RuboCop::AST::DefNode node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_defs: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_defs: (RuboCop::AST::DefNode node) -> void
 
           def on_investigation_end: () -> void
 

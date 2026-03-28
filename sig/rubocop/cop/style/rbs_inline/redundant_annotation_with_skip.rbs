@@ -77,15 +77,15 @@ module RuboCop
 
           def on_new_investigation: () -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_def: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def on_def: (RuboCop::AST::DefNode node) -> void
 
           alias on_defs on_def
 
           private
 
-          # @rbs node: Parser::AST::Node
-          def process: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::DefNode
+          def process: (RuboCop::AST::DefNode node) -> void
 
           # @rbs line: Integer
           def skip_or_override_annotation?: (Integer line) -> bool
@@ -107,8 +107,8 @@ module RuboCop
           def check_trailing_return: (Integer param_list_end_line) -> void
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: Parser::AST::Node
-          def method_parameter_list_end_line: (Parser::AST::Node node) -> Integer
+          # @rbs node: RuboCop::AST::DefNode
+          def method_parameter_list_end_line: (RuboCop::AST::DefNode node) -> Integer
         end
       end
     end

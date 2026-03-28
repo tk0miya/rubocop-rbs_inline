@@ -53,7 +53,7 @@ module RuboCop
 
           ATTR_METHODS: untyped
 
-          type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, Parser::AST::Node] }
+          type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, RuboCop::AST::Node] }
 
           attr_reader scope_stack: Array[scope]
 
@@ -63,29 +63,29 @@ module RuboCop
 
           def on_investigation_end: () -> void
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def on_class: (untyped _node) -> void
 
           alias on_module on_class
 
-          # @rbs node: Parser::AST::Node
-          def after_class: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::Node
+          def after_class: (RuboCop::AST::Node node) -> void
 
           alias after_module after_class
 
-          # @rbs node: Parser::AST::Node
-          def on_ivasgn: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::Node
+          def on_ivasgn: (RuboCop::AST::Node node) -> void
 
-          # @rbs node: Parser::AST::Node
-          def on_send: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
 
           private
 
-          # @rbs node: Parser::AST::Node
-          def attr_method?: (Parser::AST::Node node) -> bool
+          # @rbs node: RuboCop::AST::SendNode
+          def attr_method?: (RuboCop::AST::SendNode node) -> bool
 
-          # @rbs node: Parser::AST::Node
-          def register_attr_ivars: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::SendNode
+          def register_attr_ivars: (RuboCop::AST::SendNode node) -> void
 
           def push_scope: () -> void
 
@@ -93,8 +93,8 @@ module RuboCop
 
           def current_scope: () -> scope
 
-          # @rbs node: Parser::AST::Node
-          def collect_typed_ivars_for_scope: (Parser::AST::Node node) -> void
+          # @rbs node: RuboCop::AST::Node
+          def collect_typed_ivars_for_scope: (RuboCop::AST::Node node) -> void
 
           def collect_ivar_type_annotations: () -> Hash[Integer, Symbol]
 

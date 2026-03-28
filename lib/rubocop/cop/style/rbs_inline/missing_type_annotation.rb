@@ -135,7 +135,7 @@ module RuboCop
 
           MethodEntry = Data.define(
             :name,       #: Symbol
-            :node,       #: Parser::AST::Node
+            :node,       #: RuboCop::AST::Node
             :visibility  #: visibility
           )
 
@@ -154,7 +154,7 @@ module RuboCop
             super
           end
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def on_class(_node) #: void
             visibility_stack.push(:public)
             unannotated_methods_stack.push([])
@@ -163,7 +163,7 @@ module RuboCop
           alias on_module on_class
           alias on_sclass on_class
 
-          # @rbs _node: Parser::AST::Node
+          # @rbs _node: RuboCop::AST::Node
           def after_class(_node) #: void
             check_method_entries
             visibility_stack.pop
@@ -173,7 +173,7 @@ module RuboCop
           alias after_module after_class
           alias after_sclass after_class
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def on_def(node) #: void
             current_method_entries << MethodEntry.new(
               name: node.method_name, node:, visibility: current_visibility(node)
@@ -182,7 +182,7 @@ module RuboCop
 
           alias on_defs on_def
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def on_send(node) #: void
             return unless node.receiver.nil?
 
@@ -201,7 +201,7 @@ module RuboCop
             unannotated_methods_stack.last
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def on_visibility_modifier(node) #: void
             if node.arguments.empty?
               visibility_stack[-1] = node.method_name
@@ -213,7 +213,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def on_attribute_method(node) #: void
             node.arguments.each do |arg|
               next unless arg.sym_type? || arg.str_type?
@@ -224,7 +224,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::Node
           def current_visibility(node) #: visibility
             if node.parent&.send_type? && VISIBILITY_MODIFIERS.include?(node.parent.method_name)
               # method definition with visibility (ex. private def foo)
@@ -253,7 +253,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_def(node) #: void
             line = node.location.line
             return if skip_annotation?(line)
@@ -275,14 +275,14 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_method_type_signature(node) #: void
             return if find_method_type_signature_comments(node.location.line)
 
             add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_MESSAGE)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_method_type_signature_or_return_annotation_style(node) #: void
             if method_has_arguments?(node)
               check_method_type_signature(node)
@@ -291,7 +291,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_method_type_signature_or_return_annotation(node) #: void
             return if find_method_type_signature_comments(node.location.line)
             return if find_trailing_comment(method_parameter_list_end_line(node))
@@ -299,7 +299,7 @@ module RuboCop
             add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_method_parameters_in_doc_style(node) #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
             line = node.location.line
             param_annotations = find_doc_style_param_annotations(line)
@@ -317,21 +317,21 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_return_type_in_doc_style(node) #: void
             return if find_doc_style_return_annotation(node.location.line)
 
             add_offense(offense_range_for_def(node), message: DOC_STYLE_RETURN_MESSAGE)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def check_return_type_in_return_annotation(node) #: void
             return if find_trailing_comment(method_parameter_list_end_line(node))
 
             add_offense(offense_range_for_def(node), message: DOC_STYLE_TRAILING_RETURN_MESSAGE)
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::SendNode
           def check_attribute_method(node) #: void
             return if annotated_attribute_method?(node.location.line)
 
@@ -339,20 +339,20 @@ module RuboCop
           end
 
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def method_parameter_list_end_line(node) #: Integer
             args_node_for(node).location.end&.line || node.location.line
           end
 
-          # @rbs node: Parser::AST::Node
-          def args_node_for(node) #: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
+          def args_node_for(node) #: RuboCop::AST::Node
             case node.type
             when :defs then node.children[2]
             else node.children[1]
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def method_has_arguments?(node) #: bool
             args_node_for(node).children.any?
           end
@@ -386,7 +386,7 @@ module RuboCop
           end
 
           # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.
-          # @rbs argument: Parser::AST::Node
+          # @rbs argument: RuboCop::AST::Node
           # @rbs name: String
           def param_candidate_names(argument, name) #: Array[String]?
             case argument.type
@@ -398,7 +398,7 @@ module RuboCop
           end
 
           # Returns the display name for a parameter node, used in offense messages.
-          # @rbs argument: Parser::AST::Node
+          # @rbs argument: RuboCop::AST::Node
           def param_display_name(argument) #: String
             name = argument.children[0].to_s
             case argument.type
@@ -409,7 +409,7 @@ module RuboCop
             end
           end
 
-          # @rbs node: Parser::AST::Node
+          # @rbs node: RuboCop::AST::DefNode
           def offense_range_for_def(node) #: Parser::Source::Range
             range_between(
               node.location.keyword.begin_pos,
