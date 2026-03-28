@@ -4,7 +4,7 @@ module LintRoller
   end
 
   class Context
-    attr_accessor engine: Symbol
+    attr_accessor engine: Symbol?
   end
 
   class Plugin

@@ -1,7 +1,7 @@
 module Parser
   module Source
     class Buffer
-      def line_range: (Integer line) -> Range
+      def line_range: (Integer) -> ::Range[Integer]
     end
 
     class Comment
