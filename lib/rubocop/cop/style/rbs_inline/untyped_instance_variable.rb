@@ -48,6 +48,7 @@ module RuboCop
         #   end
         #
         class UntypedInstanceVariable < Base
+          include ASTUtils
           include CommentParser
           include RangeHelp
 
@@ -129,13 +130,13 @@ module RuboCop
           end
 
           def current_scope #: scope
-            scope_stack.last
+            scope_stack.last || raise
           end
 
           # @rbs node: RuboCop::AST::Node
           def collect_typed_ivars_for_scope(node) #: void
             class_start = node.location.line
-            class_end = node.location.end&.line || class_start
+            class_end = end_line(node, default: class_start)
             ivar_type_annotations.reject! do |line, name|
               current_scope[:typed_ivars] << name if line.between?(class_start, class_end)
             end
@@ -156,7 +157,7 @@ module RuboCop
               next if current_scope[:typed_ivars].include?(name)
 
               bare_name = name.to_s.delete_prefix('@')
-              add_offense(node.location.name, message: format(MSG, name:, bare_name:))
+              add_offense(name_location(node), message: format(MSG, name:, bare_name:))
             end
           end
         end

@@ -170,7 +170,11 @@ module RuboCop
             end
           end
 
-          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
+          # @rbs annotation:
+          #   RBS::Inline::AST::Annotations::VarType |
+          #   RBS::Inline::AST::Annotations::BlockType |
+          #   RBS::Inline::AST::Annotations::SplatParamType |
+          #   RBS::Inline::AST::Annotations::DoubleSplatParamType
           def add_offense_for_doc_style_param(annotation) #: void
             range = annotation_range(annotation) or return
             add_offense(range, message: MSG_DOC_STYLE_PARAM) do |corrector|
@@ -180,7 +184,7 @@ module RuboCop
           end
 
           # @rbs type: Symbol
-          # @rbs value: Object
+          # @rbs value: untyped
           def add_offense_for_return(type, value) #: void
             case type
             when :method_type_signature

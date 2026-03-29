@@ -45,6 +45,8 @@ module RuboCop
         #     end
         #   end
         class UntypedInstanceVariable < Base
+          include ASTUtils
+
           include CommentParser
 
           include RangeHelp

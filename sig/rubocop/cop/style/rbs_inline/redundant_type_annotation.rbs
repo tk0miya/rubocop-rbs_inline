@@ -121,12 +121,16 @@ module RuboCop
           # @rbs comments: Array[Parser::Source::Comment]
           def add_offense_for_method_type_signature: (Array[Parser::Source::Comment] comments) -> void
 
-          # @rbs annotation: RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType
-          def add_offense_for_doc_style_param: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType annotation) -> void
+          # @rbs annotation:
+          #   RBS::Inline::AST::Annotations::VarType |
+          #   RBS::Inline::AST::Annotations::BlockType |
+          #   RBS::Inline::AST::Annotations::SplatParamType |
+          #   RBS::Inline::AST::Annotations::DoubleSplatParamType
+          def add_offense_for_doc_style_param: (RBS::Inline::AST::Annotations::VarType | RBS::Inline::AST::Annotations::BlockType | RBS::Inline::AST::Annotations::SplatParamType | RBS::Inline::AST::Annotations::DoubleSplatParamType annotation) -> void
 
           # @rbs type: Symbol
-          # @rbs value: Object
-          def add_offense_for_return: (Symbol type, Object value) -> void
+          # @rbs value: untyped
+          def add_offense_for_return: (Symbol type, untyped value) -> void
 
           # @rbs comment: Parser::Source::Comment
           def add_offense_for_trailing_return: (Parser::Source::Comment comment) -> void

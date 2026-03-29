@@ -1,0 +1,28 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/ast_utils.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        module ASTUtils
+          # @rbs node: RuboCop::AST::Node
+          # @rbs default: Integer
+          def end_line: (RuboCop::AST::Node node, default: Integer) -> Integer
+
+          # @rbs node: RuboCop::AST::Node
+          def name_location: (RuboCop::AST::Node node) -> untyped
+
+          # @rbs node: RuboCop::AST::Node
+          def source!: (RuboCop::AST::Node node) -> String
+
+          # : (RuboCop::AST::SymbolNode) -> Symbol
+          # : (RuboCop::AST::StrNode) -> Symbol
+          # : (RuboCop::AST::Node) -> Symbol?
+          def value_to_sym: (RuboCop::AST::SymbolNode) -> Symbol
+                          | (RuboCop::AST::StrNode) -> Symbol
+                          | (RuboCop::AST::Node) -> Symbol?
+        end
+      end
+    end
+  end
+end

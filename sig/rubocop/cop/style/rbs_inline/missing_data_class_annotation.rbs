@@ -20,6 +20,8 @@ module RuboCop
         #     :visibility  #: Symbol
         #   )
         class MissingDataClassAnnotation < Base
+          include ASTUtils
+
           include RangeHelp
 
           include SourceCodeHelper
