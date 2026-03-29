@@ -37,7 +37,7 @@ module RuboCop
               next if valid_rbs_inline_comment?(matched[:keyword])
 
               add_offense(invalid_location_for(comment, matched)) do |corrector|
-                corrector.replace(keyword_range(comment, matched), corrected_keyword(matched[:keyword]))
+                corrector.replace(keyword_range(comment, matched), corrected_keyword(matched[:keyword])) # steep:ignore
               end
             end
           end
@@ -58,15 +58,15 @@ module RuboCop
           # @rbs matched: MatchData
           def invalid_location_for(comment, matched) #: Parser::Source::Range
             range = comment.source_range
-            range_between(range.begin_pos + matched[:prefix].length, range.end_pos)
+            range_between(range.begin_pos + matched[:prefix].length, range.end_pos) # steep:ignore
           end
 
           # @rbs comment: Parser::Source::Comment
           # @rbs matched: MatchData
           def keyword_range(comment, matched) #: Parser::Source::Range
             range = comment.source_range
-            keyword_begin = range.begin_pos + matched[:prefix].length
-            range_between(keyword_begin, keyword_begin + matched[:keyword].length)
+            keyword_begin = range.begin_pos + matched[:prefix].length # steep:ignore
+            range_between(keyword_begin, keyword_begin + matched[:keyword].length) # steep:ignore
           end
 
           # @rbs keyword: String

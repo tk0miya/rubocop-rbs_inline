@@ -151,7 +151,7 @@ module RuboCop
             node.arguments.filter_map do |arg|
               case arg
               when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
-                arg.value.to_sym
+                arg.value.to_sym # steep:ignore
               end
             end
           end

@@ -67,7 +67,7 @@ module RuboCop
 
           def find_insert_position: () -> Integer
 
-          def find_last_comment_in_first_block: () -> Parser::Source::Comment
+          def find_last_comment_in_first_block: () -> Parser::Source::Comment?
 
           def style: () -> Symbol
 

@@ -1,0 +1,19 @@
+# Override incorrect type definitions from .gem_rbs_collection
+
+module Parser
+  module Source
+    class Range
+      def self.new: (Buffer source_buffer, Integer begin_pos, Integer end_pos) -> instance
+    end
+
+    class Buffer
+      # Override: collection says Range[Integer] but it actually returns Parser::Source::Range
+      def line_range: (Integer line) -> ::Parser::Source::Range
+    end
+
+    class Map
+      attr_reader end: ::Parser::Source::Range?
+      attr_reader name: ::Parser::Source::Range?
+    end
+  end
+end

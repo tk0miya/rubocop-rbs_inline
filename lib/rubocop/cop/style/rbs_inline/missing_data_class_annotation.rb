@@ -44,7 +44,7 @@ module RuboCop
           def data_define?(node) #: bool
             return false unless node.method_name == :define
 
-            node.receiver.is_a?(RuboCop::AST::ConstNode) && node.receiver.short_name == :Data
+            node.receiver.is_a?(RuboCop::AST::ConstNode) && node.receiver.short_name == :Data # steep:ignore
           end
 
           # @rbs arg: RuboCop::AST::Node
@@ -80,7 +80,9 @@ module RuboCop
                 add_offense(arg)
               else
                 replacement = build_multiline_replacement(node)
-                add_offense(arg) { |corrector| corrector.replace(node.loc.begin.join(node.loc.end), replacement) }
+                add_offense(arg) do |corrector|
+                  corrector.replace((node.loc.begin || raise).join(node.loc.end || raise), replacement)
+                end
                 corrected = true
               end
             end
@@ -89,7 +91,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def longest_argname(node) #: String
             last_index = node.arguments.size - 1
-            args = node.arguments.each_with_index.map { |a, i| i < last_index ? "#{a.source}," : a.source }
+            args = node.arguments.each_with_index.map { |a, i| i < last_index ? "#{a.source}," : a.source.to_s }
             args.max_by(&:length) || ''
           end
 
@@ -102,7 +104,7 @@ module RuboCop
             args_source = node.arguments.each_with_index.map do |arg, i|
               comma = i < last_index ? ',' : ''
               prefix = "#{base_indent}  #{arg.source}#{comma}"
-              padding = ' ' * (longest.length - arg.source.length - comma.length + 2)
+              padding = ' ' * (longest.length - arg.source.length - comma.length + 2) # steep:ignore
               data_attribute?(arg) ? "#{prefix}#{padding}#: untyped" : prefix
             end.join("\n")
 
@@ -151,7 +153,7 @@ module RuboCop
             last_arg = node.arguments.last
             max_end_col = node.arguments.map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
-              arg.location.column + arg.source.length + comma_length
+              arg.location.column + arg.source.length + comma_length # steep:ignore
             end.max || 0 # steep:ignore
 
             max_end_col + 2

@@ -93,7 +93,7 @@ module RuboCop
             first_comment = comment.comments.first or return false
             line_number = first_comment.location.start_line
             line = processed_source.lines[line_number - 1] or return false
-            !line[0, first_comment.location.start_column].strip.empty?
+            !line[0, first_comment.location.start_column].strip.empty? # steep:ignore
           end
 
           # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
@@ -164,7 +164,7 @@ module RuboCop
 
           # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
           def skip_only_annotation?(comment) #: bool
-            annotations = []
+            annotations = [] #: Array[untyped]
             comment.each_annotation { |a| annotations << a }
             annotations.any? && annotations.all?(RBS::Inline::AST::Annotations::Skip)
           end

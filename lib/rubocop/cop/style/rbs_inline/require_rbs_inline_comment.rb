@@ -110,15 +110,17 @@ module RuboCop
             return 0 unless first_comment&.source_range&.first_line == 1
 
             last_comment_in_block = find_last_comment_in_first_block
+            return 0 unless last_comment_in_block
+
             last_comment_in_block.source_range.end_pos + 1
           end
 
-          def find_last_comment_in_first_block #: Parser::Source::Comment
+          def find_last_comment_in_first_block #: Parser::Source::Comment?
             comments = processed_source.comments
             last_idx = 0
 
-            comments.each_cons(2).with_index do |(current, following), idx|
-              break unless current.source_range.last_line + 1 == following.source_range.first_line
+            comments.each_cons(2).with_index do |(current, following), idx| # steep:ignore
+              break unless current.source_range.last_line + 1 == following.source_range.first_line # steep:ignore
 
               last_idx = idx + 1
             end

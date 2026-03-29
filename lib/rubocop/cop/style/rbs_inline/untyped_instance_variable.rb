@@ -129,7 +129,7 @@ module RuboCop
           end
 
           def current_scope #: scope
-            scope_stack.last
+            scope_stack.last || raise
           end
 
           # @rbs node: RuboCop::AST::Node

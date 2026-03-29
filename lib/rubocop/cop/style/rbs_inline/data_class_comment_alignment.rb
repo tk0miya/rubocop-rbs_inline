@@ -46,7 +46,7 @@ module RuboCop
           def data_define?(node) #: bool
             return false unless node.method_name == :define
 
-            node.receiver.is_a?(RuboCop::AST::ConstNode) && node.receiver.short_name == :Data
+            node.receiver.is_a?(RuboCop::AST::ConstNode) && node.receiver.short_name == :Data # steep:ignore
           end
 
           # @rbs arg: RuboCop::AST::Node
@@ -77,12 +77,12 @@ module RuboCop
             return if annotated.size < 2
 
             expected_col = annotation_column(node)
-            annotated.each do |arg, comment|
-              actual_col = comment.location.column
+            annotated.each do |arg, comment| # steep:ignore
+              actual_col = comment.location.column # steep:ignore
               next if actual_col == expected_col
 
-              add_offense(comment.source_range) do |corrector|
-                correct_alignment(corrector, arg, comment, expected_col)
+              add_offense(comment.source_range) do |corrector| # steep:ignore
+                correct_alignment(corrector, arg, comment, expected_col) # steep:ignore
               end
             end
           end
@@ -98,7 +98,7 @@ module RuboCop
             last_arg = node.arguments.last
             max_end_col = node.arguments.map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
-              arg.location.column + arg.source.length + comma_length
+              arg.location.column + arg.source.length + comma_length # steep:ignore
             end.max || 0 # steep:ignore
 
             max_end_col + 2
@@ -111,7 +111,7 @@ module RuboCop
           def correct_alignment(corrector, arg, comment, expected_col) #: void # rubocop:disable Metrics/AbcSize
             line = arg.location.line
             line_source = source_code_at(line)
-            content_end_col = line_source[...comment.location.column].rstrip.length
+            content_end_col = line_source[...comment.location.column].rstrip.length # steep:ignore
             padding = [expected_col - content_end_col, 1].max || raise
 
             line_begin = processed_source.buffer.line_range(line).begin_pos

@@ -123,7 +123,7 @@ module RuboCop
 
             case preferred_style
             when :method_type_signature
-              param_annotations.each { add_offense_for_doc_style_param(_1) }
+              param_annotations.each { add_offense_for_doc_style_param(_1) } # steep:ignore
             when :doc_style, :doc_style_and_return_annotation
               add_offense_for_method_type_signature(method_type_signature_comments)
             end
@@ -184,11 +184,11 @@ module RuboCop
           def add_offense_for_return(type, value) #: void
             case type
             when :method_type_signature
-              add_offense_for_method_type_signature(value)
+              add_offense_for_method_type_signature(value) # steep:ignore
             when :doc_style_and_return_annotation
-              add_offense_for_trailing_return(value)
+              add_offense_for_trailing_return(value) # steep:ignore
             when :doc_style
-              add_offense_for_doc_style_return(value)
+              add_offense_for_doc_style_return(value) # steep:ignore
             end
           end
 

@@ -4,9 +4,21 @@ module RuboCop
       def on_new_investigation: () -> void
       def on_investigation_end: () -> void
     end
+  end
+end
 
-    module RangeHelp
-      def range_between: (Integer start_pos, Integer end_pos) -> Parser::Source::Range
+module RuboCop
+  module Cop
+    module ConfigurableEnforcedStyle
+      def unexpected_style_detected: (Symbol style) -> void
+    end
+  end
+end
+
+module RuboCop
+  module AST
+    class ProcessedSource
+      def lines: () -> Array[String]
     end
   end
 end
