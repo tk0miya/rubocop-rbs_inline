@@ -85,11 +85,11 @@ module RuboCop
           end
 
           def pop_attributes_scope #: Set[Symbol]
-            attributes_scope_stack.pop
+            attributes_scope_stack.pop || raise
           end
 
           def current_attributes_scope #: Set[Symbol]
-            attributes_scope_stack.last
+            attributes_scope_stack.last || raise
           end
 
           def collect_ivar_annotations #: Hash[Integer, RBS::Inline::AST::Annotations::IvarType]
@@ -149,7 +149,10 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def attribute_names_from(node) #: Array[Symbol]
             node.arguments.filter_map do |arg|
-              arg.value.to_sym if arg.sym_type? || arg.str_type?
+              case arg
+              when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
+                arg.value.to_sym
+              end
             end
           end
         end

@@ -139,7 +139,7 @@ module RuboCop
             line = arg.location.line
             line_source = source_code_at(line)
             content_end_col = line_source.rstrip.length
-            padding = [annotation_column(node) - content_end_col, 1].max
+            padding = [annotation_column(node) - content_end_col, 1].max || raise
             line_begin = processed_source.buffer.line_range(line).begin_pos
             insert_pos = line_begin + content_end_col
 
