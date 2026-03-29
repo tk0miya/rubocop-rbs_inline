@@ -72,7 +72,7 @@ module RuboCop
             comments.reject do |comment|
               if (match = comment.text.match(/\A#(\s+)@rbs!(\s+|\Z)/))
                 in_embedded = true
-                indent = match[1].size
+                indent = match[1].to_s.size
                 line = comment.loc.line
                 true
               elsif in_embedded && comment.loc.line == line + 1 &&
