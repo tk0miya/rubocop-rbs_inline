@@ -1,8 +1,0 @@
-module Parser
-  module Source
-    class Range
-      attr_reader begin_pos: Integer
-      attr_reader end_pos: Integer
-    end
-  end
-end
