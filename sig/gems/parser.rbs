@@ -1,0 +1,13 @@
+module Parser
+  module Source
+    class Buffer
+      def line_range: (Integer line) -> Range
+                    | ...
+    end
+
+    class Range
+      def initialize: (Buffer buffer, Integer begin_pos, Integer end_pos) -> void
+                    | ...
+    end
+  end
+end

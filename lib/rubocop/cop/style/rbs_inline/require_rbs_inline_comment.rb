@@ -117,13 +117,14 @@ module RuboCop
             comments = processed_source.comments
             last_idx = 0
 
-            comments.each_cons(2).with_index do |(current, following), idx|
+            comments.each_cons(2).with_index do |pair, idx|
+              current, following = pair #: [Parser::Source::Comment, Parser::Source::Comment]
               break unless current.source_range.last_line + 1 == following.source_range.first_line
 
               last_idx = idx + 1
             end
 
-            comments[last_idx]
+            comments[last_idx] || raise
           end
 
           def style #: Symbol

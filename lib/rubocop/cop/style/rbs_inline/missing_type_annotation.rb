@@ -116,6 +116,7 @@ module RuboCop
         #   attr_reader :name #: String
         #
         class MissingTypeAnnotation < Base # rubocop:disable Metrics/ClassLength
+          include ASTUtils
           include CommentParser
           include ConfigurableEnforcedStyle
           include RangeHelp
@@ -204,14 +205,10 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def on_visibility_modifier(node) #: void
             if node.arguments.empty?
-              visibility_stack[-1] = node.method_name
+              visibility = node.method_name #: visibility
+              visibility_stack[-1] = visibility
             else
-              names = node.arguments.filter_map do |arg|
-                case arg
-                when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
-                  arg.value.to_sym
-                end
-              end
+              names = node.arguments.filter_map { value_to_sym(_1) }
               current_method_entries.map! do |entry|
                 names.include?(entry.name) ? entry.with(visibility: node.method_name) : entry
               end
@@ -221,20 +218,19 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def on_attribute_method(node) #: void
             node.arguments.each do |arg|
-              case arg
-              when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
-                current_method_entries << MethodEntry.new(
-                  name: arg.value.to_sym, node:, visibility: current_visibility(node)
-                )
-              end
+              name = value_to_sym(arg)
+              current_method_entries << MethodEntry.new(name:, node:, visibility: current_visibility(node)) if name
             end
           end
 
           # @rbs node: RuboCop::AST::Node
           def current_visibility(node) #: visibility
             # method definition with visibility (ex. private def foo)
-            if node.parent&.send_type? && VISIBILITY_MODIFIERS.include?(node.parent.method_name)
-              return node.parent.method_name
+            case (parent = node.parent)
+            when RuboCop::AST::SendNode
+              if VISIBILITY_MODIFIERS.include?(parent.method_name)
+                return parent.method_name #: visibility
+              end
             end
 
             visibility_stack.last || raise
@@ -251,10 +247,11 @@ module RuboCop
             current_method_entries.each do |entry|
               next unless target_node?(entry.visibility)
 
-              if entry.node.def_type? || entry.node.defs_type?
-                check_def(entry.node)
-              else
-                check_attribute_method(entry.node)
+              case (node = entry.node)
+              when RuboCop::AST::DefNode
+                check_def(node)
+              when RuboCop::AST::SendNode
+                check_attribute_method(node)
               end
             end
           end
@@ -306,10 +303,14 @@ module RuboCop
           end
 
           # @rbs node: RuboCop::AST::DefNode
-          def check_method_parameters_in_doc_style(node) #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+          def check_method_parameters_in_doc_style(node) #: void # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
             line = node.location.line
             param_annotations = find_doc_style_param_annotations(line)
-            annotated_names = param_annotations ? param_annotations.map { doc_style_annotation_name(_1) } : []
+            annotated_names = if param_annotations
+                                param_annotations.map { doc_style_annotation_name(_1) }
+                              else
+                                [] #: Array[String]
+                              end
 
             args_node_for(node).children.each do |argument|
               name = argument.children[0]&.to_s
@@ -347,7 +348,8 @@ module RuboCop
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: RuboCop::AST::DefNode
           def method_parameter_list_end_line(node) #: Integer
-            args_node_for(node).location.end&.line || node.location.line
+            args_node = args_node_for(node)
+            end_line(args_node, default: node.location.line)
           end
 
           # @rbs node: RuboCop::AST::DefNode
@@ -417,10 +419,8 @@ module RuboCop
 
           # @rbs node: RuboCop::AST::DefNode
           def offense_range_for_def(node) #: Parser::Source::Range
-            range_between(
-              node.location.keyword.begin_pos,
-              node.location.name.end_pos
-            )
+            end_pos = node.location.name&.end_pos || raise
+            range_between(node.location.keyword.begin_pos, end_pos)
           end
         end
       end

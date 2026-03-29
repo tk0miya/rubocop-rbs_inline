@@ -27,6 +27,8 @@ module RuboCop
         class RedundantInstanceVariableAnnotation < Base
           extend AutoCorrector
 
+          include ASTUtils
+
           include CommentParser
 
           include RangeHelp

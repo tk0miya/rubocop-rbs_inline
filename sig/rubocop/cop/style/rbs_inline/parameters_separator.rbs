@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       module RbsInline
-        # IRB::Inline expects annotations comments for parameters are separeted with `:`or allows annotation comments.
+        # IRB::Inline expects annotations comments for parameters are separated with `:`or allows annotation comments.
         # This cop checks for comments that do not match the expected pattern.
         #
         # @example

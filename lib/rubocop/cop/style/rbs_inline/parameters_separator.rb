@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       module RbsInline
-        # IRB::Inline expects annotations comments for parameters are separeted with `:`or allows annotation comments.
+        # IRB::Inline expects annotations comments for parameters are separated with `:`or allows annotation comments.
         # This cop checks for comments that do not match the expected pattern.
         #
         # @example
@@ -37,7 +37,8 @@ module RuboCop
               next if valid_rbs_inline_comment?(matched[:keyword])
 
               add_offense(invalid_location_for(comment, matched)) do |corrector|
-                corrector.replace(keyword_range(comment, matched), corrected_keyword(matched[:keyword]))
+                keyword = matched[:keyword] || raise
+                corrector.replace(keyword_range(comment, matched), corrected_keyword(keyword))
               end
             end
           end
@@ -58,15 +59,19 @@ module RuboCop
           # @rbs matched: MatchData
           def invalid_location_for(comment, matched) #: Parser::Source::Range
             range = comment.source_range
-            range_between(range.begin_pos + matched[:prefix].length, range.end_pos)
+            prefix = matched[:prefix] || raise
+            range_between(range.begin_pos + prefix.length, range.end_pos)
           end
 
           # @rbs comment: Parser::Source::Comment
           # @rbs matched: MatchData
           def keyword_range(comment, matched) #: Parser::Source::Range
+            prefix = matched[:prefix] || raise
+            keyword = matched[:keyword] || raise
+
             range = comment.source_range
-            keyword_begin = range.begin_pos + matched[:prefix].length
-            range_between(keyword_begin, keyword_begin + matched[:keyword].length)
+            keyword_begin = range.begin_pos + prefix.length
+            range_between(keyword_begin, keyword_begin + keyword.length)
           end
 
           # @rbs keyword: String

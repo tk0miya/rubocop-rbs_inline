@@ -26,6 +26,7 @@ module RuboCop
         #   )
         #
         class DataClassCommentAlignment < Base
+          include ASTUtils
           include RangeHelp
           include SourceCodeHelper
           extend AutoCorrector
@@ -46,7 +47,12 @@ module RuboCop
           def data_define?(node) #: bool
             return false unless node.method_name == :define
 
-            node.receiver.is_a?(RuboCop::AST::ConstNode) && node.receiver.short_name == :Data
+            case (r = node.receiver)
+            when RuboCop::AST::ConstNode
+              r.short_name == :Data
+            else
+              false
+            end
           end
 
           # @rbs arg: RuboCop::AST::Node
@@ -72,7 +78,7 @@ module RuboCop
           def check_annotation_alignment(node) #: void
             annotated = data_attributes(node).filter_map do |arg|
               comment = inline_type_comment(arg.location.line)
-              [arg, comment] if comment
+              [arg, comment] if comment #: [RuboCop::AST::Node, Parser::Source::Comment]
             end
             return if annotated.size < 2
 
@@ -98,7 +104,7 @@ module RuboCop
             last_arg = node.arguments.last
             max_end_col = node.arguments.map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
-              arg.location.column + arg.source.length + comma_length
+              arg.location.column + source!(arg).length + comma_length
             end.max || 0 # steep:ignore
 
             max_end_col + 2
@@ -111,7 +117,8 @@ module RuboCop
           def correct_alignment(corrector, arg, comment, expected_col) #: void # rubocop:disable Metrics/AbcSize
             line = arg.location.line
             line_source = source_code_at(line)
-            content_end_col = line_source[...comment.location.column].rstrip.length
+            source = line_source[...comment.location.column] || raise
+            content_end_col = source.rstrip.length
             padding = [expected_col - content_end_col, 1].max || raise
 
             line_begin = processed_source.buffer.line_range(line).begin_pos

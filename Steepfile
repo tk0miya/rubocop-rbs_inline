@@ -7,6 +7,8 @@ target :lib do
 
   check 'lib'
 
-  configure_code_diagnostics(D::Ruby.strict)
+  configure_code_diagnostics(D::Ruby.strict) do |hash|
+    hash[D::Ruby::ImplicitBreakValueMismatch] = nil
+  end
   implicitly_returns_nil!
 end

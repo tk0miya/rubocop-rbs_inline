@@ -29,6 +29,7 @@ module RuboCop
         #
         class RedundantInstanceVariableAnnotation < Base
           extend AutoCorrector
+          include ASTUtils
           include CommentParser
           include RangeHelp
           include SourceCodeHelper
@@ -63,7 +64,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::Node
           def after_class(node) #: void
             start_line = node.location.line
-            end_line = node.location.end&.line || start_line
+            end_line = end_line(node, default: start_line)
             attributes = pop_attributes_scope
             check_offenses(start_line, end_line, attributes)
           end
@@ -148,12 +149,7 @@ module RuboCop
 
           # @rbs node: RuboCop::AST::SendNode
           def attribute_names_from(node) #: Array[Symbol]
-            node.arguments.filter_map do |arg|
-              case arg
-              when RuboCop::AST::SymbolNode, RuboCop::AST::StrNode
-                arg.value.to_sym
-              end
-            end
+            node.arguments.filter_map { value_to_sym(_1) }
           end
         end
       end
