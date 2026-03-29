@@ -63,7 +63,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::Node
           def after_class(node) #: void
             start_line = node.location.line
-            end_line = node.location.end&.line || start_line
+            end_line = node.location.end&.line || start_line # steep:ignore NoMethod
             attributes = pop_attributes_scope
             check_offenses(start_line, end_line, attributes)
           end

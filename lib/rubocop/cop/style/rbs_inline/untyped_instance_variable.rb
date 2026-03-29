@@ -135,7 +135,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::Node
           def collect_typed_ivars_for_scope(node) #: void
             class_start = node.location.line
-            class_end = node.location.end&.line || class_start
+            class_end = node.location.end&.line || class_start # steep:ignore NoMethod
             ivar_type_annotations.reject! do |line, name|
               current_scope[:typed_ivars] << name if line.between?(class_start, class_end)
             end
@@ -156,7 +156,7 @@ module RuboCop
               next if current_scope[:typed_ivars].include?(name)
 
               bare_name = name.to_s.delete_prefix('@')
-              add_offense(node.location.name, message: format(MSG, name:, bare_name:))
+              add_offense(node.location.name, message: format(MSG, name:, bare_name:)) # steep:ignore NoMethod
             end
           end
         end

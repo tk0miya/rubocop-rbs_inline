@@ -11,9 +11,5 @@ module Parser
       def line_range: (Integer line) -> ::Parser::Source::Range
     end
 
-    class Map
-      attr_reader end: ::Parser::Source::Range?
-      attr_reader name: ::Parser::Source::Range?
-    end
   end
 end

@@ -191,7 +191,7 @@ module RuboCop
                         when :defs then node.children[2]
                         else raise
                         end
-            args_node.location.end&.line || node.location.line
+            args_node.location.end&.line || node.location.line # steep:ignore NoMethod
           end
         end
       end

@@ -348,7 +348,7 @@ module RuboCop
           # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
           # @rbs node: RuboCop::AST::DefNode
           def method_parameter_list_end_line(node) #: Integer
-            args_node_for(node).location.end&.line || node.location.line
+            args_node_for(node).location.end&.line || node.location.line # steep:ignore NoMethod
           end
 
           # @rbs node: RuboCop::AST::DefNode
@@ -419,8 +419,8 @@ module RuboCop
           # @rbs node: RuboCop::AST::DefNode
           def offense_range_for_def(node) #: Parser::Source::Range
             range_between(
-              (node.location.keyword || raise).begin_pos,
-              (node.location.name || raise).end_pos
+              (node.location.keyword || raise).begin_pos, # steep:ignore NoMethod
+              (node.location.name || raise).end_pos # steep:ignore NoMethod
             )
           end
         end
