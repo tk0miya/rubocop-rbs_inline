@@ -1,33 +1,3 @@
-module RuboCop
-  module AST
-    class ProcessedSource
-      def lines: () -> Array[String]
-    end
-  end
-end
-
-module RuboCop
-  module Cop
-    class Base
-      def on_new_investigation: () -> void
-      def on_investigation_end: () -> void
-    end
-
-    module ConfigurableEnforcedStyle
-        def unexpected_style_detected: (Symbol) -> void
-    end
-  end
-end
-
-module RuboCop
-  module Ext
-    module Comment
-      def source: () -> String
-      def source_range: () -> Parser::Source::Range
-    end
-  end
-end
-
 module Parser
   module Source
     class Comment
