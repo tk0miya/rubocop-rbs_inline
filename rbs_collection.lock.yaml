@@ -6,19 +6,15 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
-- name: dbm
-  version: '0'
-  source:
-    type: stdlib
 - name: diff-lcs
   version: '1.5'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: fileutils
@@ -34,7 +30,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: logger
@@ -54,7 +50,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: parser
@@ -62,27 +58,19 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: prism
   version: 1.9.0
   source:
     type: rubygems
-- name: pstore
-  version: '0'
-  source:
-    type: stdlib
-- name: psych
-  version: '0'
-  source:
-    type: stdlib
 - name: rainbow
   version: '3.0'
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rake
@@ -90,7 +78,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rbs
@@ -110,7 +98,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop
@@ -118,7 +106,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop-ast
@@ -126,7 +114,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 05072d1c182dd90824d483ae33f3513f1f243522
+    revision: d1139840c691d4d0e9231915d4f4ffb4a7a21838
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: strscan
@@ -134,10 +122,6 @@ gems:
   source:
     type: stdlib
 - name: tsort
-  version: '0'
-  source:
-    type: stdlib
-- name: yaml
   version: '0'
   source:
     type: stdlib
