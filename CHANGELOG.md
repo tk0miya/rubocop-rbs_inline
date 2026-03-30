@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.4 (2026-03-30)
+
+### Internal
+
+- Extracted `ASTUtils` module to consolidate shared AST helper methods across cops.
+- Removed duplicate RBS type definitions from `sig/gems` and fixed hidden type errors.
+- Fixed node type annotations to use `RuboCop::AST::Node` instead of `Parser::AST::Node`.
+- Removed binstubs; use `bundle exec` instead.
 ## 1.5.3 (2026-03-02)
 
 ### Enhancements
