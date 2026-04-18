@@ -21,6 +21,7 @@ jobs:
           steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
           steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: |
+          gh pr edit "$PR_URL" --add-label "auto-merge"
           gh pr review --approve "$PR_URL"
           gh pr merge --auto --merge "$PR_URL"
         env:
@@ -38,6 +39,7 @@ jobs:
           private-key: ${{ secrets.PR_AUTO_MERGER_PRIVATE_KEY }}
       - name: Approve a PR
         run: |
+          gh pr edit "$PR_URL" --add-label "auto-merge"
           gh pr review --approve "$PR_URL"
           gh pr merge --auto --merge "$PR_URL"
         env:
