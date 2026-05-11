@@ -161,7 +161,7 @@ module RuboCop
             max_end_col = node.arguments.map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
               arg.location.column + source!(arg).length + comma_length
-            end.max || 0 # steep:ignore
+            end.max || 0
 
             max_end_col + 2
           end
