@@ -2,6 +2,6 @@
 
 module RuboCop
   module RbsInline
-    VERSION = '1.5.4'
+    VERSION = '1.5.5'
   end
 end
