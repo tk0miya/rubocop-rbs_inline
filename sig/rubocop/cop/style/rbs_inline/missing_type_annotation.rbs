@@ -246,6 +246,9 @@ module RuboCop
           # @rbs line: Integer
           def skip_annotation?: (Integer line) -> bool
 
+          # @rbs line: Integer
+          def rbs_method_type_annotation?: (Integer line) -> bool
+
           # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.
           # @rbs argument: RuboCop::AST::Node
           # @rbs name: String
