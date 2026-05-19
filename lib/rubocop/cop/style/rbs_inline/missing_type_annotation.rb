@@ -281,6 +281,7 @@ module RuboCop
           # @rbs node: RuboCop::AST::DefNode
           def check_method_type_signature(node) #: void
             return if find_method_type_signature_comments(node.location.line)
+            return if rbs_method_type_annotation?(node.location.line)
 
             add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_MESSAGE)
           end
@@ -298,6 +299,7 @@ module RuboCop
           def check_method_type_signature_or_return_annotation(node) #: void
             return if find_method_type_signature_comments(node.location.line)
             return if find_trailing_comment(method_parameter_list_end_line(node))
+            return if rbs_method_type_annotation?(node.location.line)
 
             add_offense(offense_range_for_def(node), message: METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE)
           end
@@ -391,6 +393,14 @@ module RuboCop
             return false unless annotation
 
             annotation.comments.any? { |c| c.location.slice.match?(/\A#\s+@rbs\s+(skip|override)\b/) }
+          end
+
+          # @rbs line: Integer
+          def rbs_method_type_annotation?(line) #: bool
+            annotation = find_leading_annotation(line)
+            return false unless annotation
+
+            annotation.each_annotation.any?(RBS::Inline::AST::Annotations::Method)
           end
 
           # Returns acceptable annotation name variants for the parameter, or nil for unrecognized types.

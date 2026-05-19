@@ -70,6 +70,28 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
+    context 'when method has @rbs method type signature annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs (String) -> String
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs generic method type signature annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs [T < Parser::AST::Node] (T) -> T
+          def bar(node)
+            node
+          end
+        RUBY
+      end
+    end
+
     context 'when singleton method has no annotation' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -261,6 +283,19 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           def greet(name) #: String
+                    ^^^^ Missing `@rbs name:` annotation.
+          ^^^^^^^^^ Missing `@rbs return:` annotation.
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs method type signature annotation' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          # @rbs (String) -> String
+          def greet(name)
                     ^^^^ Missing `@rbs name:` annotation.
           ^^^^^^^^^ Missing `@rbs return:` annotation.
             "Hello, \#{name}"
@@ -832,6 +867,28 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
       end
     end
 
+    context 'when method has @rbs method type signature annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs (String) -> String
+          def greet(name)
+            "Hello, \#{name}"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has @rbs generic method type signature annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs [T < Parser::AST::Node] (T) -> T
+          def bar(node)
+            node
+          end
+        RUBY
+      end
+    end
+
     context 'when method has no arguments and no annotation' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -870,6 +927,17 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
           # @rbs return: String
           def greet
           ^^^^^^^^^ Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`).
+            "Hello"
+          end
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments and @rbs method type signature annotation' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # @rbs () -> String
+          def greet
             "Hello"
           end
         RUBY

@@ -51,6 +51,8 @@ module RuboCop
             return true if RBS_INLINE_KEYWORDS.include?(matched)
             return true if RBS_INLINE_REGEXP_KEYWORDS.any? { |regexp| matched =~ regexp }
             return true if matched.end_with?(':')
+            # method type signature, e.g. `# @rbs (Integer) -> String` or `# @rbs [T] (T) -> T`
+            return true if matched.start_with?('(', '[')
 
             false
           end

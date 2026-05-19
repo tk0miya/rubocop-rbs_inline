@@ -58,4 +58,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
       # @rbs class String
     RUBY
   end
+
+  it 'does not register an offense for method type signature annotations' do
+    expect_no_offenses(<<~RUBY)
+      # @rbs (Integer) -> String
+      # @rbs () -> void
+      # @rbs [T] (T) -> T
+      # @rbs [T < Parser::AST::Node] (T) -> T
+    RUBY
+  end
 end
