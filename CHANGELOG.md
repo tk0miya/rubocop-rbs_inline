@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.5 (2026-05-19)
+
+### Bug Fixes
+
+- **Style/RbsInline/ParametersSeparator**: No longer reports false positives for `# @rbs` method type signature annotations such as `# @rbs (Type) -> ReturnType` or `# @rbs [T] (T) -> T`.
+- **Style/RbsInline/MissingTypeAnnotation**: Recognizes `# @rbs` method type signature annotations (e.g. `# @rbs (Type) -> ReturnType`) as satisfying the `method_type_signature` and `method_type_signature_or_return_annotation` styles.
+
 ## 1.5.4 (2026-03-30)
 
 ### Internal
