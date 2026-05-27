@@ -13,6 +13,8 @@ jobs:
         with:
           app-id: ${{ vars.PR_AUTO_MERGER_APP_ID }}
           private-key: ${{ secrets.PR_AUTO_MERGER_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
       - name: Approve a PR
         run: |
           gh pr review --approve "$PR_URL"
