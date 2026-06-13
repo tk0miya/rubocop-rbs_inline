@@ -16,7 +16,7 @@ GEM
     ffi (1.17.1)
     ffi (1.17.1-x86_64-darwin)
     fileutils (1.7.3)
-    json (2.19.8)
+    json (2.19.9)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     listen (3.9.0)
@@ -72,9 +72,10 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.9.0)
+    rubocop-rspec (3.10.1)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
+      regexp_parser (>= 2.0)
+      rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     steep (2.0.0)
@@ -112,7 +113,7 @@ DEPENDENCIES
   rubocop (~> 1.87)
   rubocop-rake (~> 0.7)
   rubocop-rbs_inline!
-  rubocop-rspec (~> 3.9)
+  rubocop-rspec (~> 3.10)
   steep
 
 BUNDLED WITH
