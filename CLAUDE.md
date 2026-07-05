@@ -20,7 +20,8 @@ bundle exec rake rubocop:autocorrect       # safe autocorrect
 bundle exec rake rubocop:autocorrect_all   # all autocorrect
 
 # Type check
-bundle exec rake rbs:check                 # runs steep check
+bundle exec rake steep                     # runs steep check
+bundle exec rake rbs:validate              # validates RBS signatures
 
 # Default rake task (runs specs, rubocop, and type check)
 bundle exec rake
