@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.0 (2026-07-05)
+
+### Changes
+
+- All cops now exclude `spec/**/*` and `test/**/*` by default. Override with `Exclude: []` per cop to lint annotations in test code.
+
+### Bug Fixes
+
+- **Style/RbsInline/UntypedInstanceVariable**: No longer reports a false positive for class instance variables (assigned inside `class << self` or `def self.foo`) that have a `# @rbs self.@name: Type` annotation.
+
 ## 1.5.5 (2026-05-19)
 
 ### Bug Fixes
