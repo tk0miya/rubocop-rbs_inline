@@ -8,6 +8,8 @@ module RuboCop
         #
         # Instance variables must either have a `# @rbs @ivar: Type` annotation
         # or be covered by a typed `attr_reader/writer/accessor` declaration.
+        # Class-level (singleton) instance variables, assigned inside `class << self`
+        # or `def self.x`, must be annotated with `# @rbs self.@ivar: Type` instead.
         #
         # Only instance variables that are **assigned** within the class/module are checked.
         # Read-only references are ignored because the variable may be defined in a parent class.
@@ -44,6 +46,15 @@ module RuboCop
         #       @baz
         #     end
         #   end
+        #
+        #   # good (class-level ivar annotated with `self.@`)
+        #   class Foo
+        #     # @rbs self.@instance: Foo
+        #
+        #     def self.instance
+        #       @instance ||= new
+        #     end
+        #   end
         class UntypedInstanceVariable < Base
           include ASTUtils
 
@@ -51,15 +62,19 @@ module RuboCop
 
           include RangeHelp
 
-          MSG: ::String
+          MSG_IVAR: ::String
+
+          MSG_CIVAR: ::String
 
           ATTR_METHODS: untyped
 
-          type scope = { typed_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, RuboCop::AST::Node] }
+          type scope = { typed_ivars: Set[Symbol], typed_class_ivars: Set[Symbol], assigned_ivars: Hash[Symbol, RuboCop::AST::Node], assigned_class_ivars: Hash[Symbol, RuboCop::AST::Node], singleton_depth: Integer }
 
           attr_reader scope_stack: Array[scope]
 
           attr_reader ivar_type_annotations: Hash[Integer, Symbol]
+
+          attr_reader civar_type_annotations: Hash[Integer, Symbol]
 
           def on_new_investigation: () -> void
 
@@ -74,6 +89,16 @@ module RuboCop
           def after_class: (RuboCop::AST::Node node) -> void
 
           alias after_module after_class
+
+          # @rbs _node: RuboCop::AST::Node
+          def on_sclass: (untyped _node) -> void
+
+          alias on_defs on_sclass
+
+          # @rbs _node: RuboCop::AST::Node
+          def after_sclass: (untyped _node) -> void
+
+          alias after_defs after_sclass
 
           # @rbs node: RuboCop::AST::Node
           def on_ivasgn: (RuboCop::AST::Node node) -> void
@@ -95,12 +120,22 @@ module RuboCop
 
           def current_scope: () -> scope
 
+          def singleton_context?: () -> bool
+
           # @rbs node: RuboCop::AST::Node
           def collect_typed_ivars_for_scope: (RuboCop::AST::Node node) -> void
 
-          def collect_ivar_type_annotations: () -> Hash[Integer, Symbol]
+          def collect_ivar_type_annotations: () -> [ Hash[Integer, Symbol], Hash[Integer, Symbol] ]
+
+          # @rbs ann: RBS::Inline::AST::Annotations::IvarType
+          def annotation_line: (RBS::Inline::AST::Annotations::IvarType ann) -> Integer
 
           def report_offenses: () -> void
+
+          # @rbs assigned: Hash[Symbol, RuboCop::AST::Node]
+          # @rbs typed: Set[Symbol]
+          # @rbs message_template: String
+          def report_untyped: (Hash[Symbol, RuboCop::AST::Node] assigned, Set[Symbol] typed, String message_template) -> void
         end
       end
     end
