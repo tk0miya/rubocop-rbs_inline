@@ -49,7 +49,7 @@ module RuboCop
           def valid_rbs_inline_comment?(matched) #: bool
             return true if matched.nil?
             return true if RBS_INLINE_KEYWORDS.include?(matched)
-            return true if RBS_INLINE_REGEXP_KEYWORDS.any? { |regexp| matched =~ regexp }
+            return true if RBS_INLINE_REGEXP_KEYWORDS.any? { matched =~ _1 }
             return true if matched.end_with?(':')
             # method type signature, e.g. `# @rbs (Integer) -> String` or `# @rbs [T] (T) -> T`
             return true if matched.start_with?('(', '[')

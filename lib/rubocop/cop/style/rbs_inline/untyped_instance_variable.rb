@@ -90,8 +90,8 @@ module RuboCop
           end
 
           def on_investigation_end #: void
-            ivar_type_annotations.each_value { |name| current_scope[:typed_ivars] << name }
-            civar_type_annotations.each_value { |name| current_scope[:typed_class_ivars] << name }
+            ivar_type_annotations.each_value { current_scope[:typed_ivars] << _1 }
+            civar_type_annotations.each_value { current_scope[:typed_class_ivars] << _1 }
             report_offenses
             pop_scope
           end
@@ -196,7 +196,7 @@ module RuboCop
           def collect_ivar_type_annotations #: [Hash[Integer, Symbol], Hash[Integer, Symbol]]
             ivar = {} #: Hash[Integer, Symbol]
             civar = {} #: Hash[Integer, Symbol]
-            parsed_comments.flat_map { |r| r.each_annotation.to_a }.each do |ann|
+            parsed_comments.flat_map { _1.each_annotation.to_a }.each do |ann|
               next unless ann.is_a?(RBS::Inline::AST::Annotations::IvarType)
 
               if ann.class_instance

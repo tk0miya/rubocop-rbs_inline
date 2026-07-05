@@ -392,7 +392,7 @@ module RuboCop
             annotation = find_leading_annotation(line)
             return false unless annotation
 
-            annotation.comments.any? { |c| c.location.slice.match?(/\A#\s+@rbs\s+(skip|override)\b/) }
+            annotation.comments.any? { _1.location.slice.match?(/\A#\s+@rbs\s+(skip|override)\b/) }
           end
 
           # @rbs line: Integer

@@ -49,7 +49,7 @@ module RuboCop
 
               # Exclude trailing inline comments (e.g., `def method = value #: Type`)
               # by verifying all comment lines contain only whitespace before '#'
-              r.comments.all? { |c| processed_source.buffer.source_line(c.location.start_line).match?(/\A\s*#/) }
+              r.comments.all? { processed_source.buffer.source_line(_1.location.start_line).match?(/\A\s*#/) }
             end
           end
 
@@ -60,8 +60,8 @@ module RuboCop
             return unless leading_annotation
 
             annotation_lines = leading_annotation.comments
-                                                 .select { |c| c.location.slice.start_with?('#:') }
-                                                 .map { |c| c.location.start_line }
+                                                 .select { _1.location.slice.start_with?('#:') }
+                                                 .map { _1.location.start_line }
             return if annotation_lines.empty?
 
             comments = processed_source.comments.select do |c|
