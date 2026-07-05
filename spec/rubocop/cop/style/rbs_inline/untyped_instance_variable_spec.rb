@@ -317,6 +317,141 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
+  context 'with class-level (singleton) instance variables' do
+    it 'does not register an offense with @rbs self.@ivar annotation inside `class << self`' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          # @rbs self.@instance: Foo
+
+          class << self
+            def instance
+              @instance ||= new
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with @rbs self.@ivar annotation inside `def self.x`' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          # @rbs self.@instance: Foo
+
+          def self.instance
+            @instance ||= new
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a class-level ivar assignment without annotation' do
+      expect_offense(<<~RUBY)
+        class Foo
+          class << self
+            def instance
+              @instance ||= new
+              ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Class instance variable `@instance` is not typed. Add `# @rbs self.@instance: Type` or use `attr_* :instance #: Type`.
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a class-level ivar assignment in `def self.x` without annotation' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def self.instance
+            @instance ||= new
+            ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Class instance variable `@instance` is not typed. Add `# @rbs self.@instance: Type` or use `attr_* :instance #: Type`.
+          end
+        end
+      RUBY
+    end
+
+    it 'distinguishes class-level from instance-level annotations' do
+      expect_offense(<<~RUBY)
+        class Foo
+          # @rbs @instance: Foo
+
+          def self.instance
+            @instance ||= new
+            ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Class instance variable `@instance` is not typed. Add `# @rbs self.@instance: Type` or use `attr_* :instance #: Type`.
+          end
+        end
+      RUBY
+    end
+
+    it 'does not confuse instance-level assignment inside instance methods with class-level annotation' do
+      expect_offense(<<~RUBY)
+        class Foo
+          # @rbs self.@instance: Foo
+
+          def initialize
+            @instance = self
+            ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@instance` is not typed. Add `# @rbs @instance: Type` or use `attr_* :instance #: Type`.
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when `class << self` attr_* declares the ivar' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          class << self
+            attr_accessor :instance  #: Foo?
+
+            def build
+              @instance ||= new
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not treat instance-level attr_* as covering a class-level ivar' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_accessor :instance  #: Foo?
+
+          def self.build
+            @instance ||= new
+            ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Class instance variable `@instance` is not typed. Add `# @rbs self.@instance: Type` or use `attr_* :instance #: Type`.
+          end
+        end
+      RUBY
+    end
+
+    it 'does not treat class-level attr_* as covering an instance-level ivar' do
+      expect_offense(<<~RUBY)
+        class Foo
+          class << self
+            attr_accessor :instance  #: Foo?
+          end
+
+          def initialize
+            @instance = self
+            ^^^^^^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@instance` is not typed. Add `# @rbs @instance: Type` or use `attr_* :instance #: Type`.
+          end
+        end
+      RUBY
+    end
+
+    it 'treats nested class inside `class << self` as a fresh (non-singleton) context' do
+      expect_offense(<<~RUBY)
+        class Foo
+          class << self
+            class Bar
+              def initialize
+                @baz = 1
+                ^^^^ Style/RbsInline/UntypedInstanceVariable: Instance variable `@baz` is not typed. Add `# @rbs @baz: Type` or use `attr_* :baz #: Type`.
+              end
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'with mixed typed and untyped ivars' do
     it 'only reports the untyped ivar assignment' do
       expect_offense(<<~RUBY)
