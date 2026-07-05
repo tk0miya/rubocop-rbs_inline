@@ -166,7 +166,7 @@ module RuboCop
           # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
           def skip_only_annotation?(comment) #: bool
             annotations = [] #: Array[RBS::Inline::AST::Annotations::t]
-            comment.each_annotation { |a| annotations << a }
+            comment.each_annotation { annotations << _1 }
             annotations.any? && annotations.all?(RBS::Inline::AST::Annotations::Skip)
           end
 

@@ -54,7 +54,7 @@ module RuboCop
           def check_variable_comment(comment) #: void
             return unless comment.text.match?(VARIABLE_COMMENT_PATTERN)
 
-            last_comment_line = find_last_consecutive_comment(comment) { |c| c.text.match?(VARIABLE_COMMENT_PATTERN) }
+            last_comment_line = find_last_consecutive_comment(comment) { _1.text.match?(VARIABLE_COMMENT_PATTERN) }
             next_line_number = last_comment_line.loc.line + 1
 
             return if blank_line?(next_line_number)

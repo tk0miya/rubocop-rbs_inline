@@ -1,4 +1,5 @@
 plugins:
+  - rubocop-numbered-params
   - rubocop-rake
   - rubocop-rspec
   - rubocop-rbs_inline

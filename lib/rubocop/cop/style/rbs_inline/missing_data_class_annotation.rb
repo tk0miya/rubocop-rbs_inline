@@ -123,7 +123,7 @@ module RuboCop
             data_attributes(node).each do |arg|
               next if inline_type_annotation?(arg.location.line)
 
-              add_offense(arg) { |corrector| correct_multiline(corrector, node, arg) }
+              add_offense(arg) { correct_multiline(_1, node, arg) }
             end
           end
 
