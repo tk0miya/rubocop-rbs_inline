@@ -3,9 +3,9 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
   let(:config) { RuboCop::Config.new }
 
-  context 'when an annotation comment found above the instance method definition' do
-    context 'when the comment annotates to unknown argument' do
-      it 'registers an offense' do
+  context "when an annotation comment found above the instance method definition" do
+    context "when the comment annotates to unknown argument" do
+      it "registers an offense" do
         expect_offense(<<~RUBY)
           # Comments including multibyte characters: あいうえお
 
@@ -18,8 +18,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
       end
     end
 
-    context 'when the comment annotates to known arguments' do
-      it 'does not register an offense' do
+    context "when the comment annotates to known arguments" do
+      it "does not register an offense" do
         expect_no_offenses(<<~RUBY)
           # Comments including multibyte characters: あいうえお
           # @rbs @arg1: String
@@ -43,8 +43,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
       end
     end
 
-    context 'when the comment annotates to the instance variable' do
-      it 'registers an offense' do
+    context "when the comment annotates to the instance variable" do
+      it "registers an offense" do
         expect_offense(<<~RUBY)
           # Comments including multibyte characters: あいうえお
 
@@ -58,9 +58,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
     end
   end
 
-  context 'when an annotation comment found above the singleton method definition' do
-    context 'when the comment annotates to unknown argument' do
-      it 'registers an offense' do
+  context "when an annotation comment found above the singleton method definition" do
+    context "when the comment annotates to unknown argument" do
+      it "registers an offense" do
         expect_offense(<<~RUBY)
           # Comments including multibyte characters: あいうえお
 
@@ -73,8 +73,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
       end
     end
 
-    context 'when the comment annotates to known arguments' do
-      it 'does not register an offense' do
+    context "when the comment annotates to known arguments" do
+      it "does not register an offense" do
         expect_no_offenses(<<~RUBY)
           # Comments including multibyte characters: あいうえお
           # @rbs @arg1: String
@@ -96,8 +96,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
     end
   end
 
-  context 'when an independent annotation comment found' do
-    it 'registers an offense' do
+  context "when an independent annotation comment found" do
+    it "registers an offense" do
       expect_offense(<<~RUBY)
         # Comments including multibyte characters: あいうえお
 

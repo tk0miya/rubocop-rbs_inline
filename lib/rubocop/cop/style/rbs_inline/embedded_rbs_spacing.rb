@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'source_code_helper'
-require_relative 'comment_parser'
+require_relative "source_code_helper"
+require_relative "comment_parser"
 
 module RuboCop
   module Cop
@@ -30,7 +30,7 @@ module RuboCop
           include SourceCodeHelper
           include CommentParser
 
-          MSG = '`@rbs!` comment must be followed by a blank line.'
+          MSG = "`@rbs!` comment must be followed by a blank line."
 
           def on_new_investigation #: void
             check_embedded_rbs_spacing

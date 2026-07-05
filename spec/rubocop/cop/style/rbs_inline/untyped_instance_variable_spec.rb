@@ -3,8 +3,8 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config do
   let(:config) { RuboCop::Config.new }
 
-  context 'when instance variable has no type annotation' do
-    it 'does not register an offense for an ivar read (may be defined in parent class)' do
+  context "when instance variable has no type annotation" do
+    it "does not register an offense for an ivar read (may be defined in parent class)" do
       expect_no_offenses(<<~RUBY)
         class Foo
           def bar
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for an ivar assignment inside a method' do
+    it "registers an offense for an ivar assignment inside a method" do
       expect_offense(<<~RUBY)
         class Foo
           def bar
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for multiple untyped ivar assignments' do
+    it "registers an offense for multiple untyped ivar assignments" do
       expect_offense(<<~RUBY)
         class Foo
           def bar
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for an ivar assignment in a module' do
+    it "registers an offense for an ivar assignment in a module" do
       expect_offense(<<~RUBY)
         module Foo
           def bar
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for an ivar in ||= expression' do
+    it "registers an offense for an ivar in ||= expression" do
       expect_offense(<<~RUBY)
         class Foo
           def bar
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for an ivar in initialize' do
+    it "registers an offense for an ivar in initialize" do
       expect_offense(<<~RUBY)
         class Foo
           def initialize
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'reports each ivar only once even if assigned multiple times' do
+    it "reports each ivar only once even if assigned multiple times" do
       expect_offense(<<~RUBY)
         class Foo
           def bar
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when ivar is only read (not assigned)' do
+    it "does not register an offense when ivar is only read (not assigned)" do
       expect_no_offenses(<<~RUBY)
         class Foo
           def bar
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when attr_reader has no inline type comment' do
+    it "does not register an offense when attr_reader has no inline type comment" do
       expect_no_offenses(<<~RUBY)
         class Foo
           attr_reader :baz
@@ -113,8 +113,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'when instance variable has a @rbs annotation' do
-    it 'does not register an offense with @rbs @ivar annotation' do
+  context "when instance variable has a @rbs annotation" do
+    it "does not register an offense with @rbs @ivar annotation" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs @baz: Integer
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with @rbs annotation for assignment' do
+    it "does not register an offense with @rbs annotation for assignment" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs @baz: Integer
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with multiple @rbs annotations' do
+    it "does not register an offense with multiple @rbs annotations" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs @baz: Integer
@@ -153,8 +153,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'when instance variable is covered by typed attr_*' do
-    it 'does not register an offense with attr_reader and inline type' do
+  context "when instance variable is covered by typed attr_*" do
+    it "does not register an offense with attr_reader and inline type" do
       expect_no_offenses(<<~RUBY)
         class Foo
           attr_reader :baz  #: Integer
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with attr_writer and inline type' do
+    it "does not register an offense with attr_writer and inline type" do
       expect_no_offenses(<<~RUBY)
         class Foo
           attr_writer :baz  #: Integer
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with attr_accessor and inline type' do
+    it "does not register an offense with attr_accessor and inline type" do
       expect_no_offenses(<<~RUBY)
         class Foo
           attr_accessor :baz  #: Integer
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with multiple attrs and inline types' do
+    it "does not register an offense with multiple attrs and inline types" do
       expect_no_offenses(<<~RUBY)
         class Foo
           attr_reader :baz, :qux  #: Integer
@@ -204,8 +204,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'with nested classes' do
-    it 'registers an offense when only inner class annotates the ivar but outer assigns it' do
+  context "with nested classes" do
+    it "registers an offense when only inner class annotates the ivar but outer assigns it" do
       expect_offense(<<~RUBY)
         class Outer
           class Inner
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for the inner class ivar when only outer is annotated' do
+    it "registers an offense for the inner class ivar when only outer is annotated" do
       expect_offense(<<~RUBY)
         class Outer
           # @rbs @baz: Integer
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when each class annotates its own ivars' do
+    it "does not register an offense when each class annotates its own ivars" do
       expect_no_offenses(<<~RUBY)
         class Outer
           # @rbs @baz: Integer
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when inner class ivar is typed and outer has none' do
+    it "does not register an offense when inner class ivar is typed and outer has none" do
       expect_no_offenses(<<~RUBY)
         class Outer
           class Inner
@@ -273,7 +273,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense for read-only ivar in outer class' do
+    it "does not register an offense for read-only ivar in outer class" do
       expect_no_offenses(<<~RUBY)
         class Outer
           class Inner
@@ -288,8 +288,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'with top-level methods (no class)' do
-    it 'registers an offense for ivar assignments outside any class' do
+  context "with top-level methods (no class)" do
+    it "registers an offense for ivar assignments outside any class" do
       expect_offense(<<~RUBY)
         def bar
           @baz = 1
@@ -298,7 +298,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense for ivar reads outside any class' do
+    it "does not register an offense for ivar reads outside any class" do
       expect_no_offenses(<<~RUBY)
         def bar
           @baz
@@ -306,7 +306,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when top-level ivar has @rbs annotation' do
+    it "does not register an offense when top-level ivar has @rbs annotation" do
       expect_no_offenses(<<~RUBY)
         # @rbs @baz: Integer
 
@@ -317,8 +317,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'with class-level (singleton) instance variables' do
-    it 'does not register an offense with @rbs self.@ivar annotation inside `class << self`' do
+  context "with class-level (singleton) instance variables" do
+    it "does not register an offense with @rbs self.@ivar annotation inside `class << self`" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs self.@instance: Foo
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense with @rbs self.@ivar annotation inside `def self.x`' do
+    it "does not register an offense with @rbs self.@ivar annotation inside `def self.x`" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs self.@instance: Foo
@@ -344,7 +344,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for a class-level ivar assignment without annotation' do
+    it "registers an offense for a class-level ivar assignment without annotation" do
       expect_offense(<<~RUBY)
         class Foo
           class << self
@@ -357,7 +357,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'registers an offense for a class-level ivar assignment in `def self.x` without annotation' do
+    it "registers an offense for a class-level ivar assignment in `def self.x` without annotation" do
       expect_offense(<<~RUBY)
         class Foo
           def self.instance
@@ -368,7 +368,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'distinguishes class-level from instance-level annotations' do
+    it "distinguishes class-level from instance-level annotations" do
       expect_offense(<<~RUBY)
         class Foo
           # @rbs @instance: Foo
@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not confuse instance-level assignment inside instance methods with class-level annotation' do
+    it "does not confuse instance-level assignment inside instance methods with class-level annotation" do
       expect_offense(<<~RUBY)
         class Foo
           # @rbs self.@instance: Foo
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not register an offense when `class << self` attr_* declares the ivar' do
+    it "does not register an offense when `class << self` attr_* declares the ivar" do
       expect_no_offenses(<<~RUBY)
         class Foo
           class << self
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not treat instance-level attr_* as covering a class-level ivar' do
+    it "does not treat instance-level attr_* as covering a class-level ivar" do
       expect_offense(<<~RUBY)
         class Foo
           attr_accessor :instance  #: Foo?
@@ -421,7 +421,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'does not treat class-level attr_* as covering an instance-level ivar' do
+    it "does not treat class-level attr_* as covering an instance-level ivar" do
       expect_offense(<<~RUBY)
         class Foo
           class << self
@@ -436,7 +436,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
       RUBY
     end
 
-    it 'treats nested class inside `class << self` as a fresh (non-singleton) context' do
+    it "treats nested class inside `class << self` as a fresh (non-singleton) context" do
       expect_offense(<<~RUBY)
         class Foo
           class << self
@@ -452,8 +452,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config 
     end
   end
 
-  context 'with mixed typed and untyped ivars' do
-    it 'only reports the untyped ivar assignment' do
+  context "with mixed typed and untyped ivars" do
+    it "only reports the untyped ivar assignment" do
       expect_offense(<<~RUBY)
         class Foo
           # @rbs @baz: Integer

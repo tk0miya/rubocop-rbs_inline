@@ -3,8 +3,8 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
   let(:config) { RuboCop::Config.new }
 
-  context 'when code contains `#:` style annotation comments' do
-    it 'registers an offense when using invalid annotation comments' do
+  context "when code contains `#:` style annotation comments" do
+    it "registers an offense when using invalid annotation comments" do
       expect_offense(<<~RUBY)
         # () -> void
         ^^^^^^^^^^^^ Style/RbsInline/InvalidComment: Invalid RBS annotation comment found.
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
       RUBY
     end
 
-    it 'does not register an offense when using valid annotation comments' do
+    it "does not register an offense when using valid annotation comments" do
       expect_no_offenses(<<~RUBY)
         #: () -> void
         # a comment not related to types
@@ -31,8 +31,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
     end
   end
 
-  context 'when code contains `# @rbs` style annotation comments' do
-    it 'registers an offense when using invalid annotation comments' do
+  context "when code contains `# @rbs` style annotation comments" do
+    it "registers an offense when using invalid annotation comments" do
       expect_offense(<<~RUBY)
         # rbs return: String
         ^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/InvalidComment: Invalid RBS annotation comment found.
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
       RUBY
     end
 
-    it 'does not register an offense when valid annotation comments' do
+    it "does not register an offense when valid annotation comments" do
       expect_no_offenses(<<~RUBY)
         # @rbs return: String
         # @rbs inherits String

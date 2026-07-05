@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -58,15 +58,15 @@ module RuboCop
         #     end
         #   end
         #
-        class UntypedInstanceVariable < Base # rubocop:disable Metrics/ClassLength
+        class UntypedInstanceVariable < Base
           include ASTUtils
           include CommentParser
           include RangeHelp
 
-          MSG_IVAR = 'Instance variable `%<name>s` is not typed. ' \
-                     'Add `# @rbs %<name>s: Type` or use `attr_* :%<bare_name>s #: Type`.'
-          MSG_CIVAR = 'Class instance variable `%<name>s` is not typed. ' \
-                      'Add `# @rbs self.%<name>s: Type` or use `attr_* :%<bare_name>s #: Type`.'
+          MSG_IVAR = "Instance variable `%<name>s` is not typed. " \
+                     "Add `# @rbs %<name>s: Type` or use `attr_* :%<bare_name>s #: Type`."
+          MSG_CIVAR = "Class instance variable `%<name>s` is not typed. " \
+                      "Add `# @rbs self.%<name>s: Type` or use `attr_* :%<bare_name>s #: Type`."
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
 
@@ -225,7 +225,7 @@ module RuboCop
             assigned.each do |name, node|
               next if typed.include?(name)
 
-              bare_name = name.to_s.delete_prefix('@')
+              bare_name = name.to_s.delete_prefix("@")
               add_offense(name_location(node), message: format(message_template, name:, bare_name:))
             end
           end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'source_code_helper'
-require_relative 'comment_parser'
+require_relative "source_code_helper"
+require_relative "comment_parser"
 
 module RuboCop
   module Cop
@@ -61,8 +61,8 @@ module RuboCop
           include SourceCodeHelper
           include CommentParser
 
-          MSG = 'Method-related `@rbs` annotation must be immediately before a method definition.'
-          MSG_WITH_BLANK_LINE = 'Remove blank line between method annotation and method definition.'
+          MSG = "Method-related `@rbs` annotation must be immediately before a method definition."
+          MSG_WITH_BLANK_LINE = "Remove blank line between method annotation and method definition."
           METHOD_DEFINITION_PATTERN =
             /\A(?:(?:private|protected|public|private_class_method|module_function)\s+)?def\s/ #: Regexp
 
@@ -115,7 +115,7 @@ module RuboCop
               when RBS::Inline::AST::Annotations::VarType
                 # VarType includes both parameter types and variable types (@ivar, @@cvar)
                 # Only consider it method-related if it's a parameter annotation (name doesn't start with @)
-                return true unless annotation.name.start_with?('@')
+                return true unless annotation.name.start_with?("@")
               when RBS::Inline::AST::Annotations::ReturnType,
                    RBS::Inline::AST::Annotations::BlockType,
                    RBS::Inline::AST::Annotations::Override,

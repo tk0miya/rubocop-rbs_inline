@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -121,13 +121,13 @@ module RuboCop
           include ConfigurableEnforcedStyle
           include RangeHelp
 
-          METHOD_TYPE_SIGNATURE_MESSAGE = 'Missing annotation comment (e.g., `#: (Type) -> ReturnType`).'
+          METHOD_TYPE_SIGNATURE_MESSAGE = "Missing annotation comment (e.g., `#: (Type) -> ReturnType`)."
           METHOD_TYPE_SIGNATURE_OR_RETURN_ANNOTATION_MESSAGE =
-            'Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`).'
-          DOC_STYLE_PARAM_MESSAGE = 'Missing `@rbs %<name>s:` annotation.'
-          DOC_STYLE_RETURN_MESSAGE = 'Missing `@rbs return:` annotation.'
-          DOC_STYLE_TRAILING_RETURN_MESSAGE = 'Missing trailing return type annotation (e.g., `#: void`).'
-          ATTRIBUTE_METHOD_MESSAGE = 'Missing inline type annotation (e.g., `#: Type`).'
+            "Missing type annotation (e.g., `#: -> ReturnType` or trailing `#: ReturnType`)."
+          DOC_STYLE_PARAM_MESSAGE = "Missing `@rbs %<name>s:` annotation."
+          DOC_STYLE_RETURN_MESSAGE = "Missing `@rbs return:` annotation."
+          DOC_STYLE_TRAILING_RETURN_MESSAGE = "Missing trailing return type annotation (e.g., `#: void`)."
+          ATTRIBUTE_METHOD_MESSAGE = "Missing inline type annotation (e.g., `#: Type`)."
 
           ATTR_METHODS = %i[attr_reader attr_writer attr_accessor].freeze
           VISIBILITY_MODIFIERS = %i[public protected private].freeze
@@ -238,7 +238,7 @@ module RuboCop
 
           # @rbs visibility: visibility
           def target_node?(visibility) #: bool
-            return true if cop_config['Visibility'] == 'all'
+            return true if cop_config["Visibility"] == "all"
 
             visibility == :public
           end
@@ -316,7 +316,7 @@ module RuboCop
 
             args_node_for(node).children.each do |argument|
               name = argument.children[0]&.to_s
-              next if name.nil? || name.start_with?('_')
+              next if name.nil? || name.start_with?("_")
 
               candidates = param_candidate_names(argument, name)
               next unless candidates
@@ -379,9 +379,9 @@ module RuboCop
             when RBS::Inline::AST::Annotations::BlockType
               "&#{annotation.name}"
             when RBS::Inline::AST::Annotations::SplatParamType
-              annotation.name ? "*#{annotation.name}" : '*'
+              annotation.name ? "*#{annotation.name}" : "*"
             when RBS::Inline::AST::Annotations::DoubleSplatParamType
-              annotation.name ? "**#{annotation.name}" : '**'
+              annotation.name ? "**#{annotation.name}" : "**"
             else
               annotation.name.to_s
             end
@@ -409,9 +409,9 @@ module RuboCop
           def param_candidate_names(argument, name) #: Array[String]?
             case argument.type
             when :arg, :optarg, :kwarg, :kwoptarg then [name]
-            when :restarg then ["*#{name}", '*']
-            when :kwrestarg then ["**#{name}", '**']
-            when :blockarg then ['&', "&#{name}"]
+            when :restarg then ["*#{name}", "*"]
+            when :kwrestarg then ["**#{name}", "**"]
+            when :blockarg then ["&", "&#{name}"]
             end
           end
 

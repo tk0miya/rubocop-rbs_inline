@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidTypes, :config do
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `#bad_method`' do
+  it "registers an offense when using `#bad_method`" do
     expect_offense(<<~RUBY)
       # Comments including multibyte characters: あいうえお
 
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidTypes, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `#good_method`' do
+  it "does not register an offense when using `#good_method`" do
     expect_no_offenses(<<~RUBY)
       # Comments including multibyte characters: あいうえお
 

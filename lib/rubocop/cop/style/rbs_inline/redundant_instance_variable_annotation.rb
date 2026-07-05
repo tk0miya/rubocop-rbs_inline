@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -34,7 +34,7 @@ module RuboCop
           include RangeHelp
           include SourceCodeHelper
 
-          MSG = 'Redundant instance variable type annotation. `attr_*` already declares the type inline.'
+          MSG = "Redundant instance variable type annotation. `attr_*` already declares the type inline."
           ATTRIBUTE_METHODS = %i[attr_reader attr_writer attr_accessor].freeze #: Array[Symbol]
 
           attr_reader :attributes_scope_stack #: Array[Set[Symbol]]

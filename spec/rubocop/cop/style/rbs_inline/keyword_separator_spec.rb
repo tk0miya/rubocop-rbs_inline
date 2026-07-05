@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::KeywordSeparator, :config do
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `:` after keyword outside a method definition' do
+  it "registers an offense when using `:` after keyword outside a method definition" do
     expect_offense(<<~RUBY)
       # @rbs inherits: String
                      ^ Style/RbsInline/KeywordSeparator: Do not use `:` after the keyword.
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::KeywordSeparator, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `#good_method`' do
+  it "does not register an offense when using `#good_method`" do
     expect_no_offenses(<<~RUBY)
       # @rbs inherits String
       # @rbs override
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::KeywordSeparator, :config do
     RUBY
   end
 
-  it 'does not register an offense when a keyword is used as a parameter name before a method definition' do
+  it "does not register an offense when a keyword is used as a parameter name before a method definition" do
     expect_no_offenses(<<~RUBY)
       # @rbs override: Hash[String, untyped]
       def meth(override); end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::KeywordSeparator, :config do
     RUBY
   end
 
-  it 'registers an offense when override/skip use `:` without a type even before a method definition' do
+  it "registers an offense when override/skip use `:` without a type even before a method definition" do
     expect_offense(<<~RUBY)
       # @rbs skip:
                  ^ Style/RbsInline/KeywordSeparator: Do not use `:` after the keyword.
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::KeywordSeparator, :config do
     RUBY
   end
 
-  it 'does not register an offense when keyword annotations appear at both class and method level' do
+  it "does not register an offense when keyword annotations appear at both class and method level" do
     expect_no_offenses(<<~RUBY)
       # @rbs inherits Bar
       class Foo

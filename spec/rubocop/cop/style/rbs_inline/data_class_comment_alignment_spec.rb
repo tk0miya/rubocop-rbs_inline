@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :config do
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense and corrects an annotation that is too close' do
+  it "registers an offense and corrects an annotation that is too close" do
     expect_offense(<<~RUBY)
       MethodEntry = Data.define(
         :name, #: Symbol
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'registers an offense and corrects an annotation that is too far' do
+  it "registers an offense and corrects an annotation that is too far" do
     expect_offense(<<~RUBY)
       MethodEntry = Data.define(
         :name,           #: Symbol
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'registers offenses and corrects multiple misaligned annotations' do
+  it "registers offenses and corrects multiple misaligned annotations" do
     expect_offense(<<~RUBY)
       MethodEntry = Data.define(
         :name, #: Symbol
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense when all annotations are already aligned' do
+  it "does not register an offense when all annotations are already aligned" do
     expect_no_offenses(<<~RUBY)
       MethodEntry = Data.define(
         :name,       #: Symbol
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense when there are no annotations' do
+  it "does not register an offense when there are no annotations" do
     expect_no_offenses(<<~RUBY)
       MethodEntry = Data.define(
         :name,
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense when only one attribute has an annotation' do
+  it "does not register an offense when only one attribute has an annotation" do
     expect_no_offenses(<<~RUBY)
       AggregatedResult = Data.define(
         :results,
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense when there is only one attribute with an annotation' do
+  it "does not register an offense when there is only one attribute with an annotation" do
     expect_no_offenses(<<~RUBY)
       Foo = Data.define(
         :bar  #: String
@@ -99,13 +99,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense for folded Data.define' do
+  it "does not register an offense for folded Data.define" do
     expect_no_offenses(<<~RUBY)
       MethodEntry = Data.define(:name, :node, :visibility)
     RUBY
   end
 
-  it 'does not register an offense for attributes folded inside parentheses' do
+  it "does not register an offense for attributes folded inside parentheses" do
     expect_no_offenses(<<~RUBY)
       MethodEntry = Data.define(
         :name, :node, :visibility
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'does not register an offense for other method calls named define' do
+  it "does not register an offense for other method calls named define" do
     expect_no_offenses(<<~RUBY)
       Foo.define(
         :name, #: Symbol
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
     RUBY
   end
 
-  it 'handles splat arguments correctly' do
+  it "handles splat arguments correctly" do
     expect_offense(<<~RUBY)
       Data.define(
         :foo, #: Integer

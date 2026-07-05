@@ -19,7 +19,7 @@ module RuboCop
           include CommentParser
           include RangeHelp
 
-          MSG = 'Do not use `:` after the keyword.'
+          MSG = "Do not use `:` after the keyword."
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
@@ -49,7 +49,7 @@ module RuboCop
 
           def on_investigation_end #: void
             processed_source.comments.each do |comment|
-              matched = comment.text.match(/\A#\s+@rbs\s+(#{RBS_INLINE_KEYWORDS.join('|')}):/)
+              matched = comment.text.match(/\A#\s+@rbs\s+(#{RBS_INLINE_KEYWORDS.join("|")}):/)
               next unless matched
               next if valid_method_annotation?(comment)
 
@@ -86,7 +86,7 @@ module RuboCop
           # followed by `:` but no type.
           # @rbs comment: Parser::Source::Comment
           def no_argument_keyword_without_type?(comment) #: bool
-            comment.text.match?(/\A#\s+@rbs\s+(#{NO_ARGUMENT_KEYWORDS.join('|')}):\s*\z/)
+            comment.text.match?(/\A#\s+@rbs\s+(#{NO_ARGUMENT_KEYWORDS.join("|")}):\s*\z/)
           end
 
           # @rbs comment: Parser::Source::Comment
