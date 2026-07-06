@@ -6,7 +6,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: diff-lcs
@@ -14,7 +14,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: fileutils
@@ -30,7 +30,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: logger
@@ -38,7 +38,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: monitor
@@ -54,7 +54,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: parser
@@ -62,7 +62,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: prism
@@ -74,7 +74,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rake
@@ -82,7 +82,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rbs
@@ -102,7 +102,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop
@@ -110,7 +110,7 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
 - name: rubocop-ast
@@ -118,9 +118,13 @@ gems:
   source:
     type: git
     name: ruby/gem_rbs_collection
-    revision: 5689759efdc7875d533e8e5b2376b4ab89472e36
+    revision: ea56a88d1c0ac98e79f8ea5bb19a139da768ba10
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: rubocop-numbered-params
+  version: 1.0.0
+  source:
+    type: rubygems
 - name: strscan
   version: '0'
   source:
