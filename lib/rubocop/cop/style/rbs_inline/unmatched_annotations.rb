@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -17,12 +17,12 @@ module RuboCop
         #   # @rbs arg: String
         #   def method(arg); end
         #
-        class UnmatchedAnnotations < Base # rubocop:disable Metrics/ClassLength
+        class UnmatchedAnnotations < Base
           include CommentParser
           include RangeHelp
           include SourceCodeHelper
 
-          MSG = 'target parameter not found.'
+          MSG = "target parameter not found."
 
           def on_new_investigation #: void
             super
@@ -77,7 +77,7 @@ module RuboCop
           end
 
           # @rbs node: RuboCop::AST::DefNode
-          def arguments_for(node) #: Array[String] # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+          def arguments_for(node) #: Array[String] # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
             args_for(node).children.flat_map do |argument| # rubocop:disable Metrics/BlockLength
               name = argument.children[0]&.to_s
               case argument.type
@@ -85,24 +85,24 @@ module RuboCop
                 [name]
               when :restarg
                 if name
-                  ["*#{name}", '*']
+                  ["*#{name}", "*"]
                 else
-                  ['*']
+                  ["*"]
                 end
               when :kwrestarg
                 if name
-                  ["**#{name}", '**']
+                  ["**#{name}", "**"]
                 else
-                  ['**']
+                  ["**"]
                 end
               when :blockarg
                 if name
-                  ['&', "&#{name}"]
+                  ["&", "&#{name}"]
                 else
-                  ['&', '&block']
+                  ["&", "&block"]
                 end
               when :forward_arg
-                ['...']
+                ["..."]
               else
                 raise
               end
@@ -128,7 +128,7 @@ module RuboCop
             when RBS::Inline::AST::Annotations::BlockType
               "&#{annotation.name}"
             when RBS::Inline::AST::Annotations::ReturnType
-              'return'
+              "return"
             else
               annotation.name.to_s
             end
@@ -141,7 +141,7 @@ module RuboCop
           def add_offense_for(annotation) #: void # rubocop:disable Metrics/AbcSize
             name = annotation_name(annotation)
             loc = annotation.source.comments.first&.location or raise
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
+            source = processed_source.buffer.source.dup.force_encoding("ASCII")
             text = source[loc.start_offset...loc.end_offset] or raise
             comment = text.force_encoding(processed_source.buffer.source.encoding)
             start_offset = loc.start_offset + (comment.index(name) || 0)

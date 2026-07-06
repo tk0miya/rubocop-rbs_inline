@@ -46,8 +46,8 @@ module RuboCop
           include RangeHelp
           extend AutoCorrector
 
-          MSG_MISSING = 'Missing `# rbs_inline:` magic comment.'
-          MSG_FORBIDDEN = 'Remove `# rbs_inline:` magic comment.'
+          MSG_MISSING = "Missing `# rbs_inline:` magic comment."
+          MSG_FORBIDDEN = "Remove `# rbs_inline:` magic comment."
 
           def on_new_investigation #: void
             return if processed_source.buffer.source.empty?
@@ -128,7 +128,7 @@ module RuboCop
           end
 
           def style #: Symbol
-            cop_config['EnforcedStyle']&.to_sym || :always
+            cop_config["EnforcedStyle"]&.to_sym || :always
           end
 
           def first_line_range #: Parser::Source::Range

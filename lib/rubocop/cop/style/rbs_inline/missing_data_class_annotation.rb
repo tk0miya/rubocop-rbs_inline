@@ -20,13 +20,13 @@ module RuboCop
         #     :visibility  #: Symbol
         #   )
         #
-        class MissingDataClassAnnotation < Base # rubocop:disable Metrics/ClassLength
+        class MissingDataClassAnnotation < Base
           include ASTUtils
           include RangeHelp
           include SourceCodeHelper
           extend AutoCorrector
 
-          MSG = 'Missing inline type annotation for Data attribute (e.g., `#: Type`).'
+          MSG = "Missing inline type annotation for Data attribute (e.g., `#: Type`)."
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send(node) #: void
@@ -99,7 +99,7 @@ module RuboCop
           def longest_argname(node) #: String
             last_index = node.arguments.size - 1
             args = node.arguments.each_with_index.map { |a, i| i < last_index ? "#{a.source}," : a.source.to_s }
-            args.max_by(&:length) || ''
+            args.max_by(&:length) || ""
           end
 
           # @rbs node: RuboCop::AST::SendNode
@@ -109,9 +109,9 @@ module RuboCop
             longest = longest_argname(node)
 
             args_source = node.arguments.each_with_index.map do |arg, i|
-              comma = i < last_index ? ',' : ''
+              comma = i < last_index ? "," : ""
               prefix = "#{base_indent}  #{arg.source}#{comma}"
-              padding = ' ' * (longest.length - source!(arg).length - comma.length + 2)
+              padding = " " * (longest.length - source!(arg).length - comma.length + 2)
               data_attribute?(arg) ? "#{prefix}#{padding}#: untyped" : prefix
             end.join("\n")
 
@@ -134,7 +134,7 @@ module RuboCop
             existing_comment = find_regular_comment(arg.location.line)
 
             if existing_comment
-              comment_text = existing_comment.text.sub(/\A#\s*/, '')
+              comment_text = existing_comment.text.sub(/\A#\s*/, "")
               corrector.replace(existing_comment.source_range, "#: untyped -- #{comment_text}")
             else
               insert_annotation(corrector, node, arg)
@@ -152,7 +152,7 @@ module RuboCop
             line_begin = processed_source.buffer.line_range(line).begin_pos
             insert_pos = line_begin + content_end_col
 
-            corrector.insert_before(range_between(insert_pos, insert_pos), "#{' ' * padding}#: untyped")
+            corrector.insert_before(range_between(insert_pos, insert_pos), "#{" " * padding}#: untyped")
           end
 
           # @rbs node: RuboCop::AST::SendNode

@@ -23,7 +23,7 @@ module RuboCop
           extend AutoCorrector
           include RangeHelp
 
-          MSG = 'Use `:` as a separator between parameter name and type.'
+          MSG = "Use `:` as a separator between parameter name and type."
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
@@ -50,9 +50,9 @@ module RuboCop
             return true if matched.nil?
             return true if RBS_INLINE_KEYWORDS.include?(matched)
             return true if RBS_INLINE_REGEXP_KEYWORDS.any? { matched =~ _1 }
-            return true if matched.end_with?(':')
+            return true if matched.end_with?(":")
             # method type signature, e.g. `# @rbs (Integer) -> String` or `# @rbs [T] (T) -> T`
-            return true if matched.start_with?('(', '[')
+            return true if matched.start_with?("(", "[")
 
             false
           end
@@ -78,7 +78,7 @@ module RuboCop
 
           # @rbs keyword: String
           def corrected_keyword(keyword) #: String
-            "#{keyword.delete_prefix(':')}:"
+            "#{keyword.delete_prefix(":")}:"
           end
         end
       end

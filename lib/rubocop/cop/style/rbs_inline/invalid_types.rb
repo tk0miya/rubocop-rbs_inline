@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -27,7 +27,7 @@ module RuboCop
           include RBS::Inline::AST::Annotations
           include RBS::Inline::AST::Members
 
-          MSG = 'Invalid annotation found.'
+          MSG = "Invalid annotation found."
 
           def on_new_investigation #: void
             parse_comments.each do |result|

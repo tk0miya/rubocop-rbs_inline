@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline/annotation_parser/tokenizer'
+require "rbs/inline/annotation_parser/tokenizer"
 
 module RuboCop
   module Cop
@@ -22,11 +22,11 @@ module RuboCop
         class InvalidComment < Base
           extend AutoCorrector
 
-          MSG = 'Invalid RBS annotation comment found.'
+          MSG = "Invalid RBS annotation comment found."
 
           # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
           RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
-          RBS_INLINE_KEYWORD_PATTERN = RBS_INLINE_KEYWORDS.join('|') #: String
+          RBS_INLINE_KEYWORD_PATTERN = RBS_INLINE_KEYWORDS.join("|") #: String
 
           SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
 
@@ -56,10 +56,10 @@ module RuboCop
           # @rbs text: String
           def corrected_text(text) #: String?
             case text
-            when MISSING_HASH_COLON then text.sub(/\A#\s+/, '#: ')
-            when SPACE_BEFORE_COLON then text.sub(/\A#\s+:\s*/, '#: ')
-            when MIXED_ANNOTATION   then text.sub(/\A#:\s+/, '# ')
-            when MISSING_AT_SIGN    then text.sub(/\A#\s*rbs\s+/, '# @rbs ')
+            when MISSING_HASH_COLON then text.sub(/\A#\s+/, "#: ")
+            when SPACE_BEFORE_COLON then text.sub(/\A#\s+:\s*/, "#: ")
+            when MIXED_ANNOTATION   then text.sub(/\A#:\s+/, "# ")
+            when MISSING_AT_SIGN    then text.sub(/\A#\s*rbs\s+/, "# @rbs ")
             end
           end
 

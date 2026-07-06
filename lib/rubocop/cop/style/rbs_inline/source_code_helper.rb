@@ -12,7 +12,7 @@ module RuboCop
           # Convert byte offset to character offset
           # @rbs byte_offset: Integer
           def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding('ASCII')
+            source = processed_source.buffer.source.dup.force_encoding("ASCII")
             text = source[...byte_offset] or raise
             text.force_encoding(processed_source.buffer.source.encoding).size
           rescue StandardError
@@ -31,7 +31,7 @@ module RuboCop
 
           # @rbs line_number: Integer
           def source_code_at(line_number) #: String
-            processed_source.buffer.source.lines[line_number - 1] || ''
+            processed_source.buffer.source.lines[line_number - 1] || ""
           end
 
           # @rbs line_number: Integer

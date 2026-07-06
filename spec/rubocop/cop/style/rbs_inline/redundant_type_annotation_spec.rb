@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config do
-  context 'when EnforcedStyle is method_type_signature' do
+  context "when EnforcedStyle is method_type_signature" do
     let(:config) do
       RuboCop::Config.new(
-        'Style/RbsInline/RedundantTypeAnnotation' => {
-          'EnforcedStyle' => 'method_type_signature',
-          'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation]
+        "Style/RbsInline/RedundantTypeAnnotation" => {
+          "EnforcedStyle" => "method_type_signature",
+          "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation]
         }
       )
     end
 
-    context 'with parameter type redundancy' do
-      context 'when both #: with params and # @rbs param: are present' do
-        it 'registers an offense on the # @rbs param: annotation' do
+    context "with parameter type redundancy" do
+      context "when both #: with params and # @rbs param: are present" do
+        it "registers an offense on the # @rbs param: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -30,8 +30,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both #: with params and # @rbs param: are present on a singleton method' do
-        it 'registers an offense on the # @rbs param: annotation' do
+      context "when both #: with params and # @rbs param: are present on a singleton method" do
+        it "registers an offense on the # @rbs param: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -48,8 +48,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when multiple # @rbs param: annotations are present' do
-        it 'registers an offense on each # @rbs param: annotation' do
+      context "when multiple # @rbs param: annotations are present" do
+        it "registers an offense on each # @rbs param: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -68,8 +68,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when # @rbs &block: and #: with block are present' do
-        it 'registers an offense on the # @rbs &block: annotation' do
+      context "when # @rbs &block: and #: with block are present" do
+        it "registers an offense on the # @rbs &block: annotation" do
           expect_offense(<<~RUBY)
             # @rbs &block: () -> void
             ^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -86,8 +86,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only #: with params is present' do
-        it 'does not register an offense' do
+      context "when only #: with params is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> void
             def method(a)
@@ -96,8 +96,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only # @rbs param: is present' do
-        it 'does not register an offense' do
+      context "when only # @rbs param: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs a: Integer
             def method(a) #: void
@@ -107,9 +107,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with return type redundancy' do
-      context 'when both annotation #: and inline #: are present' do
-        it 'registers an offense on the inline #: annotation' do
+    context "with return type redundancy" do
+      context "when both annotation #: and inline #: are present" do
+        it "registers an offense on the inline #: annotation" do
           expect_offense(<<~RUBY)
             #: () -> String
             def method(arg) #: String
@@ -125,8 +125,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both @rbs return and annotation #: are present' do
-        it 'registers an offense on the @rbs return annotation' do
+      context "when both @rbs return and annotation #: are present" do
+        it "registers an offense on the @rbs return annotation" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -143,8 +143,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when @rbs return, annotation #:, and inline #: are all present' do
-        it 'registers offenses on both @rbs return and inline #:' do
+      context "when @rbs return, annotation #:, and inline #: are all present" do
+        it "registers offenses on both @rbs return and inline #:" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -162,8 +162,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only annotation #: is present' do
-        it 'does not register an offense' do
+      context "when only annotation #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: () -> String
             def method(arg)
@@ -172,8 +172,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only inline #: is present' do
-        it 'does not register an offense' do
+      context "when only inline #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def method(arg) #: String
             end
@@ -181,8 +181,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only @rbs return is present' do
-        it 'does not register an offense' do
+      context "when only @rbs return is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs return: String
             def method(arg)
@@ -191,8 +191,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when consecutive methods each have an inline #: annotation' do
-        it 'does not register an offense' do
+      context "when consecutive methods each have an inline #: annotation" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def self.safe_autofixable?; true; end #: bool
             def self.unsafe_autofixable?; false; end #: bool
@@ -201,9 +201,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with combined parameter and return type redundancy' do
-      context 'when # @rbs param:, # @rbs return:, and #: are present' do
-        it 'registers offenses on both @rbs annotations' do
+    context "with combined parameter and return type redundancy" do
+      context "when # @rbs param:, # @rbs return:, and #: are present" do
+        it "registers offenses on both @rbs annotations" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -223,9 +223,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with overload type signatures (2+ #: lines)' do
-      context 'when overload #: annotations are present with # @rbs param:' do
-        it 'registers an offense on the # @rbs param: annotation' do
+    context "with overload type signatures (2+ #: lines)" do
+      context "when overload #: annotations are present with # @rbs param:" do
+        it "registers an offense on the # @rbs param: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -244,8 +244,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only overload #: annotations are present' do
-        it 'does not register an offense' do
+      context "when only overload #: annotations are present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> void
             #: (String) -> String
@@ -256,8 +256,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'when no annotations are present' do
-      it 'does not register an offense' do
+    context "when no annotations are present" do
+      it "does not register an offense" do
         expect_no_offenses(<<~RUBY)
           def method(a)
           end
@@ -266,19 +266,19 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
     end
   end
 
-  context 'when EnforcedStyle is doc_style' do
+  context "when EnforcedStyle is doc_style" do
     let(:config) do
       RuboCop::Config.new(
-        'Style/RbsInline/RedundantTypeAnnotation' => {
-          'EnforcedStyle' => 'doc_style',
-          'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation]
+        "Style/RbsInline/RedundantTypeAnnotation" => {
+          "EnforcedStyle" => "doc_style",
+          "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation]
         }
       )
     end
 
-    context 'with parameter type redundancy' do
-      context 'when both #: with params and # @rbs param: are present' do
-        it 'registers an offense on the #: annotation' do
+    context "with parameter type redundancy" do
+      context "when both #: with params and # @rbs param: are present" do
+        it "registers an offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             #: (Integer) -> void
@@ -295,8 +295,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both #: with params and # @rbs param: are present on a singleton method' do
-        it 'registers an offense on the #: annotation' do
+      context "when both #: with params and # @rbs param: are present on a singleton method" do
+        it "registers an offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             #: (Integer) -> void
@@ -313,8 +313,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when multiple # @rbs param: annotations and #: are present' do
-        it 'registers an offense on the #: annotation' do
+      context "when multiple # @rbs param: annotations and #: are present" do
+        it "registers an offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             # @rbs b: String
@@ -333,8 +333,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only #: with params is present' do
-        it 'does not register an offense' do
+      context "when only #: with params is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> void
             def method(a)
@@ -343,8 +343,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only # @rbs param: is present' do
-        it 'does not register an offense' do
+      context "when only # @rbs param: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs a: Integer
             def method(a) #: void
@@ -354,9 +354,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with return type redundancy' do
-      context 'when both @rbs return and inline #: are present' do
-        it 'registers an offense on the inline #: annotation' do
+    context "with return type redundancy" do
+      context "when both @rbs return and inline #: are present" do
+        it "registers an offense on the inline #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             def method(arg) #: String
@@ -372,8 +372,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both @rbs return and annotation #: are present' do
-        it 'registers an offense on the annotation #:' do
+      context "when both @rbs return and annotation #: are present" do
+        it "registers an offense on the annotation #:" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             #: () -> String
@@ -390,8 +390,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when @rbs return, annotation #:, and inline #: are all present' do
-        it 'registers offenses on both annotation #: and inline #:' do
+      context "when @rbs return, annotation #:, and inline #: are all present" do
+        it "registers offenses on both annotation #: and inline #:" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             #: () -> String
@@ -409,8 +409,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only @rbs return is present' do
-        it 'does not register an offense' do
+      context "when only @rbs return is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs return: String
             def method(arg)
@@ -419,8 +419,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only inline #: is present' do
-        it 'does not register an offense' do
+      context "when only inline #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def method(arg) #: String
             end
@@ -428,8 +428,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only annotation #: is present' do
-        it 'does not register an offense' do
+      context "when only annotation #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: () -> String
             def method(arg)
@@ -438,8 +438,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when consecutive methods each have an inline #: annotation' do
-        it 'does not register an offense' do
+      context "when consecutive methods each have an inline #: annotation" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def self.safe_autofixable?; true; end #: bool
             def self.unsafe_autofixable?; false; end #: bool
@@ -448,9 +448,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with combined parameter and return type redundancy' do
-      context 'when # @rbs param:, # @rbs return:, and #: are present' do
-        it 'registers offense on the #: annotation' do
+    context "with combined parameter and return type redundancy" do
+      context "when # @rbs param:, # @rbs return:, and #: are present" do
+        it "registers offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             # @rbs return: String
@@ -470,9 +470,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with overload type signatures (2+ #: lines)' do
-      context 'when overload #: annotations and # @rbs param: are present' do
-        it 'registers an offense on the # @rbs param: annotation (not the #:)' do
+    context "with overload type signatures (2+ #: lines)" do
+      context "when overload #: annotations and # @rbs param: are present" do
+        it "registers an offense on the # @rbs param: annotation (not the #:)" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -491,8 +491,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when overload #: annotations and # @rbs return: are present' do
-        it 'registers an offense on the # @rbs return: annotation (not the #:)' do
+      context "when overload #: annotations and # @rbs return: are present" do
+        it "registers an offense on the # @rbs return: annotation (not the #:)" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -511,8 +511,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only overload #: annotations are present' do
-        it 'does not register an offense' do
+      context "when only overload #: annotations are present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> void
             #: (String) -> String
@@ -523,8 +523,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'when no annotations are present' do
-      it 'does not register an offense' do
+    context "when no annotations are present" do
+      it "does not register an offense" do
         expect_no_offenses(<<~RUBY)
           def method(a)
           end
@@ -533,19 +533,19 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
     end
   end
 
-  context 'when EnforcedStyle is doc_style_and_return_annotation' do
+  context "when EnforcedStyle is doc_style_and_return_annotation" do
     let(:config) do
       RuboCop::Config.new(
-        'Style/RbsInline/RedundantTypeAnnotation' => {
-          'EnforcedStyle' => 'doc_style_and_return_annotation',
-          'SupportedStyles' => %w[method_type_signature doc_style doc_style_and_return_annotation]
+        "Style/RbsInline/RedundantTypeAnnotation" => {
+          "EnforcedStyle" => "doc_style_and_return_annotation",
+          "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation]
         }
       )
     end
 
-    context 'with parameter type redundancy' do
-      context 'when both #: with params and # @rbs param: are present' do
-        it 'registers an offense on the #: annotation' do
+    context "with parameter type redundancy" do
+      context "when both #: with params and # @rbs param: are present" do
+        it "registers an offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             #: (Integer) -> String
@@ -562,8 +562,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both #: with params and # @rbs param: are present on a singleton method' do
-        it 'registers an offense on the #: annotation' do
+      context "when both #: with params and # @rbs param: are present on a singleton method" do
+        it "registers an offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             #: (Integer) -> String
@@ -580,8 +580,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only #: with params is present' do
-        it 'does not register an offense' do
+      context "when only #: with params is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> String
             def method(a)
@@ -590,8 +590,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only # @rbs param: is present' do
-        it 'does not register an offense' do
+      context "when only # @rbs param: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs a: Integer
             def method(a) #: String
@@ -601,9 +601,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with return type redundancy' do
-      context 'when both @rbs return and inline #: are present' do
-        it 'registers an offense on the @rbs return annotation' do
+    context "with return type redundancy" do
+      context "when both @rbs return and inline #: are present" do
+        it "registers an offense on the @rbs return annotation" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -618,8 +618,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when both annotation #: and inline #: are present' do
-        it 'registers an offense on the annotation #:' do
+      context "when both annotation #: and inline #: are present" do
+        it "registers an offense on the annotation #:" do
           expect_offense(<<~RUBY)
             #: () -> String
             ^^^^^^^^^^^^^^^ Redundant method type signature.
@@ -634,8 +634,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when @rbs return, annotation #:, and inline #: are all present' do
-        it 'registers offenses on both @rbs return and annotation #:' do
+      context "when @rbs return, annotation #:, and inline #: are all present" do
+        it "registers offenses on both @rbs return and annotation #:" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -652,8 +652,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only @rbs return is present' do
-        it 'does not register an offense' do
+      context "when only @rbs return is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             # @rbs return: String
             def method(arg)
@@ -662,8 +662,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only inline #: is present' do
-        it 'does not register an offense' do
+      context "when only inline #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def method(arg) #: String
             end
@@ -671,8 +671,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only annotation #: is present' do
-        it 'does not register an offense' do
+      context "when only annotation #: is present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: () -> String
             def method(arg)
@@ -681,8 +681,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when consecutive methods each have an inline #: annotation' do
-        it 'does not register an offense' do
+      context "when consecutive methods each have an inline #: annotation" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             def self.safe_autofixable?; true; end #: bool
             def self.unsafe_autofixable?; false; end #: bool
@@ -690,9 +690,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'with multi-line parameter list and inline #: on closing ) line' do
-        context 'when @rbs return and inline #: on ) line are present' do
-          it 'registers an offense on the @rbs return annotation' do
+      context "with multi-line parameter list and inline #: on closing ) line" do
+        context "when @rbs return and inline #: on ) line are present" do
+          it "registers an offense on the @rbs return annotation" do
             expect_offense(<<~RUBY)
               # @rbs return: String
               ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -711,8 +711,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           end
         end
 
-        context 'when only inline #: on ) line is present' do
-          it 'does not register an offense' do
+        context "when only inline #: on ) line is present" do
+          it "does not register an offense" do
             expect_no_offenses(<<~RUBY)
               def method(
                 arg
@@ -724,9 +724,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with combined parameter and return type redundancy' do
-      context 'when # @rbs param:, # @rbs return:, and inline #: are present' do
-        it 'registers offense on the @rbs return annotation' do
+    context "with combined parameter and return type redundancy" do
+      context "when # @rbs param:, # @rbs return:, and inline #: are present" do
+        it "registers offense on the @rbs return annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             # @rbs return: String
@@ -743,8 +743,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when # @rbs param:, #:, and inline #: are present' do
-        it 'registers offense on the #: annotation' do
+      context "when # @rbs param:, #:, and inline #: are present" do
+        it "registers offense on the #: annotation" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             #: (Integer) -> String
@@ -762,9 +762,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'with overload type signatures (2+ #: lines)' do
-      context 'when overload #: annotations and # @rbs param: are present' do
-        it 'registers an offense on the # @rbs param: annotation (not the #:)' do
+    context "with overload type signatures (2+ #: lines)" do
+      context "when overload #: annotations and # @rbs param: are present" do
+        it "registers an offense on the # @rbs param: annotation (not the #:)" do
           expect_offense(<<~RUBY)
             # @rbs a: Integer
             ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
@@ -783,8 +783,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when overload #: annotations and trailing inline #: are present' do
-        it 'registers an offense on the trailing inline #: annotation' do
+      context "when overload #: annotations and trailing inline #: are present" do
+        it "registers an offense on the trailing inline #: annotation" do
           expect_offense(<<~RUBY)
             #: (Integer) -> void
             #: (String) -> String
@@ -802,8 +802,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when overload #: annotations and # @rbs return: are present' do
-        it 'registers an offense on the # @rbs return: annotation (not the #:)' do
+      context "when overload #: annotations and # @rbs return: are present" do
+        it "registers an offense on the # @rbs return: annotation (not the #:)" do
           expect_offense(<<~RUBY)
             # @rbs return: String
             ^^^^^^^^^^^^^^^^^^^^^ Redundant `@rbs return` annotation.
@@ -822,8 +822,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
         end
       end
 
-      context 'when only overload #: annotations are present' do
-        it 'does not register an offense' do
+      context "when only overload #: annotations are present" do
+        it "does not register an offense" do
           expect_no_offenses(<<~RUBY)
             #: (Integer) -> void
             #: (String) -> String
@@ -834,8 +834,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
       end
     end
 
-    context 'when no annotations are present' do
-      it 'does not register an offense' do
+    context "when no annotations are present" do
+      it "does not register an offense" do
         expect_no_offenses(<<~RUBY)
           def method(a)
           end

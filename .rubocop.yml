@@ -1,8 +1,4 @@
-plugins:
-  - rubocop-numbered-params
-  - rubocop-rake
-  - rubocop-rspec
-  - rubocop-rbs_inline
+# NOTE: Rules are sorted in ASCII order.
 
 AllCops:
   NewCops: enable
@@ -11,43 +7,56 @@ AllCops:
     - bin/**/*
     - vendor/**/*
 
+plugins:
+  - rubocop-numbered-params
+  - rubocop-rake
+  - rubocop-rbs_inline
+  - rubocop-rspec
+
+# Layout
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
+  AllowSteepAnnotation: true
+
 Layout/LineLength:
   Max: 120
 
+# Metrics
 Metrics/AbcSize:
   Max: 20
 
 Metrics/BlockLength:
   Exclude:
-    - spec/**/*_spec.rb
+    - "spec/**/*_spec.rb"
+
+Metrics/ClassLength:
+  Max: 200
 
 Metrics/MethodLength:
-  Max: 20
+  Max: 30
 
+# Naming
 Naming/FileName:
   Exclude:
-    - lib/rubocop-rbs_inline.rb
+    - "lib/rubocop-rbs_inline.rb"
 
+# RSpec
 RSpec/ExampleLength:
-  Max: 20
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
 
 RSpec/NestedGroups:
   Max: 5
 
-Style/Documentation:
-  Enabled: false
-
-Style/HashSyntax:
-  EnforcedShorthandSyntax: always
-
-# for RBS::Inline
-Layout/LeadingCommentSpace:
-  Enabled: false
-
-Style/CommentedKeyword:
-  Enabled: false
-
-# rubocop-rbs_inline configuration
+# RbsInline
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
 
@@ -56,3 +65,22 @@ Style/RbsInline/RedundantTypeAnnotation:
 
 Style/RbsInline/RequireRbsInlineComment:
   EnforcedStyle: never
+
+# Style
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: always
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes

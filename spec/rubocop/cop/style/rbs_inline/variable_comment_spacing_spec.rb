@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config do
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when @rbs @ivar comment is directly followed by code' do
+  it "registers an offense when @rbs @ivar comment is directly followed by code" do
     expect_offense(<<~RUBY)
       # @rbs @ivar: Integer
       def method
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'registers an offense when @rbs @@cvar comment is directly followed by code' do
+  it "registers an offense when @rbs @@cvar comment is directly followed by code" do
     expect_offense(<<~RUBY)
       # @rbs @@cvar: Float
       def method
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'registers an offense when @rbs self.@civar comment is directly followed by code' do
+  it "registers an offense when @rbs self.@civar comment is directly followed by code" do
     expect_offense(<<~RUBY)
       # @rbs self.@civar: String
       def method
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'registers an offense when multiple variable comments are directly followed by code' do
+  it "registers an offense when multiple variable comments are directly followed by code" do
     expect_offense(<<~RUBY)
       # @rbs @ivar: Integer
       # @rbs @@cvar: Float
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'does not register an offense when @rbs @ivar comment is followed by a blank line' do
+  it "does not register an offense when @rbs @ivar comment is followed by a blank line" do
     expect_no_offenses(<<~RUBY)
       # @rbs @ivar: Integer
 
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'does not register an offense when multiple variable comments are followed by a blank line' do
+  it "does not register an offense when multiple variable comments are followed by a blank line" do
     expect_no_offenses(<<~RUBY)
       # @rbs @ivar: Integer
       # @rbs @@cvar: Float
@@ -91,13 +91,13 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'does not register an offense when @rbs variable comment is at the end of file' do
+  it "does not register an offense when @rbs variable comment is at the end of file" do
     expect_no_offenses(<<~RUBY)
       # @rbs @ivar: Integer
     RUBY
   end
 
-  it 'registers an offense when @rbs variable comment is followed by a class definition' do
+  it "registers an offense when @rbs variable comment is followed by a class definition" do
     expect_offense(<<~RUBY)
       # @rbs @ivar: Integer
       class Foo
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'does not register an offense with multiple variable comment blocks properly spaced' do
+  it "does not register an offense with multiple variable comment blocks properly spaced" do
     expect_no_offenses(<<~RUBY)
       # @rbs @ivar1: Integer
 
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'does not register an offense for non-variable @rbs comments' do
+  it "does not register an offense for non-variable @rbs comments" do
     expect_no_offenses(<<~RUBY)
       # @rbs return: Integer
       def method
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  it 'registers an offense when variable comment is followed by module definition' do
+  it "registers an offense when variable comment is followed by module definition" do
     expect_offense(<<~RUBY)
       # @rbs @@config: Hash[Symbol, untyped]
       module Config
@@ -151,8 +151,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     RUBY
   end
 
-  context 'with consecutive @rbs variable comments and other @rbs comments' do
-    it 'registers an offense when @rbs variable is followed by method annotation without blank line' do
+  context "with consecutive @rbs variable comments and other @rbs comments" do
+    it "registers an offense when @rbs variable is followed by method annotation without blank line" do
       expect_offense(<<~RUBY)
         # @rbs @ivar: Integer
         # @rbs return: String
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
       RUBY
     end
 
-    it 'does not register an offense when @rbs variable is followed by blank line before method annotation' do
+    it "does not register an offense when @rbs variable is followed by blank line before method annotation" do
       expect_no_offenses(<<~RUBY)
         # @rbs @ivar: Integer
 
@@ -178,8 +178,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
     end
   end
 
-  context 'with class definitions' do
-    it 'registers an offense when variable comments inside class are directly followed by method' do
+  context "with class definitions" do
+    it "registers an offense when variable comments inside class are directly followed by method" do
       expect_offense(<<~RUBY)
         class Foo
           # @rbs @ivar: Integer
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::VariableCommentSpacing, :config d
       RUBY
     end
 
-    it 'does not register an offense when properly spaced inside class' do
+    it "does not register an offense when properly spaced inside class" do
       expect_no_offenses(<<~RUBY)
         class Foo
           # @rbs @ivar: Integer

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -57,21 +57,21 @@ module RuboCop
         #   def method(a)
         #   end
         #
-        class RedundantAnnotationWithSkip < Base # rubocop:disable Metrics/ClassLength
+        class RedundantAnnotationWithSkip < Base
           extend AutoCorrector
           include CommentParser
           include RangeHelp
           include SourceCodeHelper
 
-          MSG_METHOD_TYPE_SIGNATURE = 'Redundant method type signature. ' \
-                                      '`@rbs skip` and `@rbs override` skip RBS generation.'
-          MSG_DOC_STYLE_ANNOTATION = 'Redundant `@rbs` annotation. ' \
-                                     '`@rbs skip` and `@rbs override` skip RBS generation.'
-          MSG_TRAILING_RETURN = 'Redundant trailing return type annotation. ' \
-                                '`@rbs skip` and `@rbs override` skip RBS generation.'
-          MSG_DUPLICATE_SKIP = 'Duplicate `@rbs skip` annotation.'
-          MSG_DUPLICATE_OVERRIDE = 'Duplicate `@rbs override` annotation.'
-          MSG_CONFLICTING_SKIP_OVERRIDE = '`@rbs skip` and `@rbs override` cannot both be specified.'
+          MSG_METHOD_TYPE_SIGNATURE = "Redundant method type signature. " \
+                                      "`@rbs skip` and `@rbs override` skip RBS generation."
+          MSG_DOC_STYLE_ANNOTATION = "Redundant `@rbs` annotation. " \
+                                     "`@rbs skip` and `@rbs override` skip RBS generation."
+          MSG_TRAILING_RETURN = "Redundant trailing return type annotation. " \
+                                "`@rbs skip` and `@rbs override` skip RBS generation."
+          MSG_DUPLICATE_SKIP = "Duplicate `@rbs skip` annotation."
+          MSG_DUPLICATE_OVERRIDE = "Duplicate `@rbs override` annotation."
+          MSG_CONFLICTING_SKIP_OVERRIDE = "`@rbs skip` and `@rbs override` cannot both be specified."
 
           def on_new_investigation #: void
             super

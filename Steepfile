@@ -3,9 +3,9 @@
 D = Steep::Diagnostic
 
 target :lib do
-  signature 'sig'
+  signature "sig"
 
-  check 'lib'
+  check "lib"
 
   configure_code_diagnostics(D::Ruby.strict) do |hash|
     hash[D::Ruby::ImplicitBreakValueMismatch] = nil

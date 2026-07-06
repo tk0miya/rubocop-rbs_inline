@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'source_code_helper'
-require_relative 'comment_parser'
+require_relative "source_code_helper"
+require_relative "comment_parser"
 
 module RuboCop
   module Cop
@@ -35,7 +35,7 @@ module RuboCop
           include SourceCodeHelper
           include CommentParser
 
-          MSG = '`@rbs` variable comment must be followed by a blank line.'
+          MSG = "`@rbs` variable comment must be followed by a blank line."
           VARIABLE_COMMENT_PATTERN = /\A#\s+@rbs\s+(?:self\.)?@@?[a-zA-Z_]/
 
           def on_new_investigation #: void

@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when using `#bad_method`' do
+  it "registers an offense when using `#bad_method`" do
     expect_offense(<<~RUBY)
       # @rbs param String
              ^^^^^^^^^^^^ Style/RbsInline/ParametersSeparator: Use `:` as a separator between parameter name and type.
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `#good_method`' do
+  it "does not register an offense when using `#good_method`" do
     expect_no_offenses(<<~RUBY)
       # @rbs param: String
       # @rbs &block: String
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::ParametersSeparator, :config do
     RUBY
   end
 
-  it 'does not register an offense for method type signature annotations' do
+  it "does not register an offense for method type signature annotations" do
     expect_no_offenses(<<~RUBY)
       # @rbs (Integer) -> String
       # @rbs () -> void

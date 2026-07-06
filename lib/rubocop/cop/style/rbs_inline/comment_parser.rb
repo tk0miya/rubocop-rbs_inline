@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
-require_relative 'source_code_helper'
+require_relative "source_code_helper"
 
 module RuboCop
   module Cop
@@ -60,7 +60,7 @@ module RuboCop
             return unless leading_annotation
 
             annotation_lines = leading_annotation.comments
-                                                 .select { _1.location.slice.start_with?('#:') }
+                                                 .select { _1.location.slice.start_with?("#:") }
                                                  .map { _1.location.start_line }
             return if annotation_lines.empty?
 

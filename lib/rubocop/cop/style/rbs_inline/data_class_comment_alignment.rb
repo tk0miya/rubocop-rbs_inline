@@ -31,7 +31,7 @@ module RuboCop
           include SourceCodeHelper
           extend AutoCorrector
 
-          MSG = 'Misaligned inline type annotation for Data attribute.'
+          MSG = "Misaligned inline type annotation for Data attribute."
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send(node) #: void
@@ -125,7 +125,7 @@ module RuboCop
             replace_start = line_begin + content_end_col
             replace_end = line_begin + comment.location.column
 
-            corrector.replace(range_between(replace_start, replace_end), ' ' * padding)
+            corrector.replace(range_between(replace_start, replace_end), " " * padding)
           end
         end
       end

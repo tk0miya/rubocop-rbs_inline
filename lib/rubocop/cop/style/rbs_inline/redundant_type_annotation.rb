@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rbs/inline'
+require "rbs/inline"
 
 module RuboCop
   module Cop
@@ -86,10 +86,10 @@ module RuboCop
           include RangeHelp
           include SourceCodeHelper
 
-          MSG_DOC_STYLE_PARAM = 'Redundant `@rbs` parameter annotation.'
-          MSG_DOC_STYLE_RETURN = 'Redundant `@rbs return` annotation.'
-          MSG_TRAILING_RETURN = 'Redundant trailing return type annotation.'
-          MSG_METHOD_TYPE_SIGNATURE = 'Redundant method type signature.'
+          MSG_DOC_STYLE_PARAM = "Redundant `@rbs` parameter annotation."
+          MSG_DOC_STYLE_RETURN = "Redundant `@rbs return` annotation."
+          MSG_TRAILING_RETURN = "Redundant trailing return type annotation."
+          MSG_METHOD_TYPE_SIGNATURE = "Redundant method type signature."
 
           def on_new_investigation #: void
             super
