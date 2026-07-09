@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug Fixes
+
+- Restored honor for department-level `Style/RbsInline: Exclude:` configuration in user's `.rubocop.yml`. Since 1.6.0, per-cop `Exclude` defaults masked the user setting; the default `spec/**/*` and `test/**/*` exclusion is now declared at the department level with `inherit_mode: merge`, so user-supplied paths are added instead of replaced.
+
 ## 1.6.0 (2026-07-05)
 
 ### Changes
