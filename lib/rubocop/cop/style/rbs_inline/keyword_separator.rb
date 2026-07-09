@@ -15,6 +15,7 @@ module RuboCop
         #   # @rbs module-self String
         #
         class KeywordSeparator < Base
+          prepend FileFilter
           extend AutoCorrector
           include CommentParser
           include RangeHelp

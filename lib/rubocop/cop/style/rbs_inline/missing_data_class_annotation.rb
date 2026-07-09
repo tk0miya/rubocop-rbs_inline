@@ -21,6 +21,7 @@ module RuboCop
         #   )
         #
         class MissingDataClassAnnotation < Base
+          prepend FileFilter
           include ASTUtils
           include RangeHelp
           include SourceCodeHelper

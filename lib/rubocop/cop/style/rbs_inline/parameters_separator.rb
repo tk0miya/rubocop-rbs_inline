@@ -20,6 +20,7 @@ module RuboCop
         #   # good
         #   # @rbs %a{pure}
         class ParametersSeparator < Base
+          prepend FileFilter
           extend AutoCorrector
           include RangeHelp
 

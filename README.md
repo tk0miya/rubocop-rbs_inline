@@ -442,13 +442,32 @@ end
 
 Enforces presence or absence of `# rbs_inline:` magic comment for consistency.
 
-**Configuration:** `EnforcedStyle` (default: `always`)
-- `always`: Requires `# rbs_inline: enabled` or `# rbs_inline: disabled`
-- `never`: Forbids `# rbs_inline: enabled` (allows `# rbs_inline: disabled`)
+**Configuration:**
 
-**Examples (EnforcedStyle: always):**
+- `Mode`
+  - `opt_in`: Requires `# rbs_inline: enabled` on every file. Matches RBS::Inline's opt-in mode.
+  - `opt_out`: Forbids `# rbs_inline: enabled`. Matches RBS::Inline's opt-out mode.
+  - When unset, the legacy `EnforcedStyle` value is used and the file filter for other cops is disabled. This fallback exists only for backward compatibility and will be removed in the next major release.
+- `AllowMissingComment` (default: `false`)
+  - When `Mode: opt_in`, set this to `true` to skip enforcement of the magic comment on individual files. Useful for gradual adoption where only some files carry `# rbs_inline: enabled`. Other cops still respect the shared `Mode` and only report on files that opt in.
+
+The `EnforcedStyle` parameter (`always` / `never`) is deprecated in favor of `Mode` and will be removed in the next major release.
+
+**Examples (Mode: opt_in):**
 ```ruby
 # bad
+class Foo
+end
+
+# good
+# rbs_inline: enabled
+class Foo
+end
+```
+
+**Examples (Mode: opt_in, AllowMissingComment: true):**
+```ruby
+# good - the magic comment is not enforced per file
 class Foo
 end
 
@@ -541,6 +560,27 @@ Style/RbsInline/RedundantTypeAnnotation:
 # Only require annotations on public methods
 Style/RbsInline/MissingTypeAnnotation:
   Visibility: public
+```
+
+### Restricting checks to opt-in files
+
+If your project uses RBS::Inline's opt-in mode (files carry `# rbs_inline: enabled`), you can tell every cop in this gem to check only those files by setting `Mode: opt_in` at the department level:
+
+```yaml
+Style/RbsInline:
+  Mode: opt_in
+```
+
+Under this setting, files without `# rbs_inline: enabled` (and files with `# rbs_inline: disabled`) are skipped by all `Style/RbsInline/*` cops. `Mode: opt_out` (or leaving it unset for now) checks every file, matching the legacy behavior.
+
+For gradual adoption where only some files should carry the magic comment, combine `Mode: opt_in` with `AllowMissingComment: true` on the `RequireRbsInlineComment` cop:
+
+```yaml
+Style/RbsInline:
+  Mode: opt_in
+
+Style/RbsInline/RequireRbsInlineComment:
+  AllowMissingComment: true
 ```
 
 See [config/default.yml](config/default.yml) for all available configuration options.

@@ -3,6 +3,7 @@
 require_relative "style/rbs_inline/ast_utils"
 require_relative "style/rbs_inline/source_code_helper"
 require_relative "style/rbs_inline/comment_parser"
+require_relative "style/rbs_inline/file_filter"
 require_relative "style/rbs_inline/data_class_comment_alignment"
 require_relative "style/rbs_inline/data_define_with_block"
 require_relative "style/rbs_inline/embedded_rbs_spacing"

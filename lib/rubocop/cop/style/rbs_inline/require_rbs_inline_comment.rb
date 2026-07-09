@@ -10,7 +10,7 @@ module RuboCop
         # opt-out (processes all files by default). This cop enforces consistency in which
         # mode your codebase uses.
         #
-        # @example EnforcedStyle: always (default)
+        # @example Mode: opt_in
         #   # bad
         #   # (no rbs_inline comment)
         #   class Foo
@@ -26,7 +26,12 @@ module RuboCop
         #   class Foo
         #   end
         #
-        # @example EnforcedStyle: never
+        # @example Mode: opt_in, AllowMissingComment: true
+        #   # good - the cop does not enforce the magic comment
+        #   class Foo
+        #   end
+        #
+        # @example Mode: opt_out
         #   # bad
         #   # rbs_inline: enabled
         #   class Foo
@@ -49,16 +54,28 @@ module RuboCop
           MSG_MISSING = "Missing `# rbs_inline:` magic comment."
           MSG_FORBIDDEN = "Remove `# rbs_inline:` magic comment."
 
+          # @rbs self.@enforced_style_deprecation_warned: bool
+
+          @enforced_style_deprecation_warned = false # rubocop:disable Style/RbsInline/UntypedInstanceVariable
+
+          def self.enforced_style_deprecation_warned? #: bool
+            @enforced_style_deprecation_warned == true
+          end
+
+          def self.mark_enforced_style_deprecation_warned! #: void
+            @enforced_style_deprecation_warned = true
+          end
+
           def on_new_investigation #: void
+            warn_deprecated_enforced_style
             return if processed_source.buffer.source.empty?
 
             magic_comment = find_rbs_inline_magic_comment
             return if disabled?(magic_comment)
 
-            if style == :always
-              check_always_style(magic_comment)
-            elsif style == :never
-              check_never_style(magic_comment)
+            case effective_mode
+            when :opt_in then check_opt_in(magic_comment)
+            when :opt_out then check_opt_out(magic_comment)
             end
           end
 
@@ -76,12 +93,10 @@ module RuboCop
           end
 
           # @rbs magic_comment: Parser::Source::Comment?
-          def check_always_style(magic_comment) #: void
-            # disabled is already filtered out by early return
-            # magic_comment is either nil or enabled
+          def check_opt_in(magic_comment) #: void
             return if magic_comment
+            return if allow_missing_comment?
 
-            # Insert after the first comment block or at the beginning of the file
             insert_position = find_insert_position
             add_offense(first_line_range, message: MSG_MISSING) do |corrector|
               insert_range = Parser::Source::Range.new(processed_source.buffer, insert_position, insert_position)
@@ -90,23 +105,17 @@ module RuboCop
           end
 
           # @rbs magic_comment: Parser::Source::Comment?
-          def check_never_style(magic_comment) #: void
-            # disabled is already filtered out by early return
-            # magic_comment is either nil or enabled
+          def check_opt_out(magic_comment) #: void
             return unless magic_comment
 
             add_offense(magic_comment.source_range, message: MSG_FORBIDDEN) do |corrector|
-              # Remove the entire line including newline
               range = range_with_surrounding_space(magic_comment.source_range, side: :right, newlines: true)
               corrector.remove(range)
             end
           end
 
           def find_insert_position #: Integer
-            # Find the end of the first comment block (e.g., magic comments)
-            # and insert after it
             first_comment = processed_source.comments.first
-            # If the first comment doesn't exist or doesn't start at line 1, insert at the beginning
             return 0 unless first_comment&.source_range&.first_line == 1
 
             last_comment_in_block = find_last_comment_in_first_block
@@ -127,13 +136,31 @@ module RuboCop
             comments[last_idx] || raise
           end
 
-          def style #: Symbol
-            cop_config["EnforcedStyle"]&.to_sym || :always
+          def effective_mode #: Symbol
+            mode = cop_config["Mode"]&.to_sym
+            return mode if %i[opt_in opt_out].include?(mode)
+
+            cop_config["EnforcedStyle"]&.to_sym == :never ? :opt_out : :opt_in
+          end
+
+          def allow_missing_comment? #: bool
+            cop_config["AllowMissingComment"] == true
+          end
+
+          def warn_deprecated_enforced_style #: void
+            return if self.class.enforced_style_deprecation_warned?
+            return if cop_config["EnforcedStyle"].nil?
+
+            self.class.mark_enforced_style_deprecation_warned!
+            Kernel.warn(
+              "[rubocop-rbs_inline] Style/RbsInline/RequireRbsInlineComment.EnforcedStyle is deprecated. " \
+              "Please migrate to `Style/RbsInline: Mode: opt_in` (was `EnforcedStyle: always`) or " \
+              "`Style/RbsInline: Mode: opt_out` (was `EnforcedStyle: never`). " \
+              "EnforcedStyle will be removed in the next major version."
+            )
           end
 
           def first_line_range #: Parser::Source::Range
-            # Find the first line of actual code (not comment-only lines)
-            # If there's no AST (e.g., file with only comments), use the first line
             first_line = processed_source.ast&.source_range&.first_line || 1
             processed_source.buffer.line_range(first_line)
           end

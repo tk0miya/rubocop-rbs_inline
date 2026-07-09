@@ -3,6 +3,78 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
   let(:config) { RuboCop::Config.new }
 
+  context "when Mode is opt_in" do
+    let(:config) do
+      RuboCop::Config.new("Style/RbsInline/InvalidComment" => {
+                            "Mode" => "opt_in"
+                          })
+    end
+
+    it "registers an offense in a file with `# rbs_inline: enabled`" do
+      expect_offense(<<~RUBY)
+        # rbs_inline: enabled
+        # () -> void
+        ^^^^^^^^^^^^ Invalid RBS annotation comment found.
+      RUBY
+    end
+
+    it "does not register an offense in a file without `# rbs_inline: enabled`" do
+      expect_no_offenses(<<~RUBY)
+        # () -> void
+      RUBY
+    end
+
+    it "does not register an offense in a file with `# rbs_inline: disabled`" do
+      expect_no_offenses(<<~RUBY)
+        # rbs_inline: disabled
+        # () -> void
+      RUBY
+    end
+  end
+
+  context "when Mode is opt_out" do
+    let(:config) do
+      RuboCop::Config.new("Style/RbsInline/InvalidComment" => {
+                            "Mode" => "opt_out"
+                          })
+    end
+
+    it "registers an offense in a file without magic comment" do
+      expect_offense(<<~RUBY)
+        # () -> void
+        ^^^^^^^^^^^^ Invalid RBS annotation comment found.
+      RUBY
+    end
+
+    it "registers an offense in a file with `# rbs_inline: disabled`" do
+      expect_offense(<<~RUBY)
+        # rbs_inline: disabled
+        # () -> void
+        ^^^^^^^^^^^^ Invalid RBS annotation comment found.
+      RUBY
+    end
+  end
+
+  context "when Mode is set at the department level" do
+    let(:config) do
+      RuboCop::Config.new("Style/RbsInline" => { "Mode" => "opt_in" })
+    end
+
+    it "inherits Mode from Style/RbsInline department" do
+      expect_no_offenses(<<~RUBY)
+        # () -> void
+      RUBY
+    end
+
+    it "registers an offense when magic comment is present" do
+      expect_offense(<<~RUBY)
+        # rbs_inline: enabled
+        # () -> void
+        ^^^^^^^^^^^^ Invalid RBS annotation comment found.
+      RUBY
+    end
+  end
+
   context "when code contains `#:` style annotation comments" do
     it "registers an offense when using invalid annotation comments" do
       expect_offense(<<~RUBY)

@@ -20,6 +20,7 @@ module RuboCop
         #   # @rbs param: String
         #
         class InvalidComment < Base
+          prepend FileFilter
           extend AutoCorrector
 
           MSG = "Invalid RBS annotation comment found."
