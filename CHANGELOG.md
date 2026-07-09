@@ -11,6 +11,10 @@
 
 - **Style/RbsInline/RequireRbsInlineComment**: `EnforcedStyle` is deprecated in favor of `Mode`. Existing configs continue to work with a warning; migrate `EnforcedStyle: always` to `Mode: opt_in` and `EnforcedStyle: never` to `Mode: opt_out`. `EnforcedStyle` will be removed in the next major version, along with the "no filtering when `Mode` is unset" fallback — the default will become `Mode: opt_in`.
 
+### Bug Fixes
+
+- Restored honor for department-level `Style/RbsInline: Exclude:` configuration in user's `.rubocop.yml`. Since 1.6.0, per-cop `Exclude` defaults masked the user setting; the default `spec/**/*` and `test/**/*` exclusion is now declared at the department level with `inherit_mode: merge`, so user-supplied paths are added instead of replaced.
+
 ## 1.6.0 (2026-07-05)
 
 ### Changes
