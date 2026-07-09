@@ -30,6 +30,18 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::InvalidComment, :config do
         # () -> void
       RUBY
     end
+
+    it "recognizes the magic comment when it is not at the top of the file" do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+        # encoding: utf-8
+
+        # rbs_inline: enabled
+
+        # () -> void
+        ^^^^^^^^^^^^ Invalid RBS annotation comment found.
+      RUBY
+    end
   end
 
   context "when Mode is opt_out" do

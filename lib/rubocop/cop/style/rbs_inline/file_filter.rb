@@ -11,13 +11,13 @@ module RuboCop
         # When `Mode` is `opt_out`, or when it is not set (legacy default), all files
         # are checked as usual.
         #
-        # This module is designed to be `prepend`ed to a cop so that it can suppress
-        # offense reporting no matter which callback (`on_new_investigation`, `on_send`,
-        # etc.) the cop uses to detect issues.
+        # This module is designed to be `prepend`ed to a cop so that it can short-circuit
+        # the cop's heavy work (annotation parsing via `parse_comments`) and suppress any
+        # residual offense reporting for files that should be skipped.
         #
         # @rbs module-self RuboCop::Cop::Base
         module FileFilter
-          MAGIC_COMMENT_ENABLED = /\A# rbs_inline: enabled\R?\z/ #: Regexp
+          MAGIC_COMMENT_ENABLED = /^# rbs_inline: enabled[ \t]*$/ #: Regexp
 
           # @rbs @rbs_inline_skip_file: bool
 
@@ -43,8 +43,11 @@ module RuboCop
             end
           end
 
+          # Look for the `# rbs_inline: enabled` magic comment directly in the raw source.
+          # This avoids materializing / iterating `processed_source.comments`; the pragma
+          # is a line-anchored literal so a single regex scan is sufficient.
           def rbs_inline_enabled? #: bool
-            processed_source.comments.any? { _1.text.match?(MAGIC_COMMENT_ENABLED) }
+            processed_source.raw_source.match?(MAGIC_COMMENT_ENABLED)
           end
         end
       end
