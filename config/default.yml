@@ -1,66 +1,50 @@
+Style/RbsInline:
+  inherit_mode:
+    merge:
+      - Exclude
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
 Style/RbsInline/DataClassCommentAlignment:
   Description: "Checks that `#:` inline type annotations in `Data.define` blocks are aligned."
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/DataDefineWithBlock:
   Description: "Checks for `Data.define` calls with a block, which RBS::Inline does not parse."
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/EmbeddedRbsSpacing:
   Description: 'Checks that `@rbs!` comments (embedded RBS) are followed by a blank line.'
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/InvalidComment:
   Description: "Checks the rbs-inline annotation comment is valid."
   Enabled: true
   VersionAdded: "1.0.0"
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/InvalidTypes:
   Description: "Checks the rbs-inline annotation comment uses valid types."
   Enabled: true
   VersionAdded: "1.0.0"
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/KeywordSeparator:
   Description: "Checks the rbs-inline annotation comment does not use a separator after the keywords."
   Enabled: true
   VersionAdded: "1.0.0"
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/MethodCommentSpacing:
   Description: 'Checks that method-related `@rbs` annotations are placed immediately before method definitions.'
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/MissingDataClassAnnotation:
   Description: "Checks that `Data.define` attributes have inline type annotations."
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/MissingTypeAnnotation:
   Description: "Checks that method definitions and attr_* declarations have RBS inline type annotations."
@@ -73,34 +57,22 @@ Style/RbsInline/MissingTypeAnnotation:
     - method_type_signature
     - method_type_signature_or_return_annotation
   Visibility: all
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/ParametersSeparator:
   Description: "Checks the rbs-inline annotation comment uses a separator to parameters"
   Enabled: true
   VersionAdded: "1.0.0"
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/RedundantAnnotationWithSkip:
   Description: "Checks for redundant type annotations when `@rbs skip` or `@rbs override` is present."
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/RedundantInstanceVariableAnnotation:
   Description: "Checks for redundant `@rbs` instance variable type annotation when `attr_*` with an inline type annotation is already defined."
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/RedundantTypeAnnotation:
   Description: "Checks for redundant type annotations when multiple type specifications exist for the same method definition."
@@ -112,9 +84,6 @@ Style/RbsInline/RedundantTypeAnnotation:
     - method_type_signature
     - doc_style
     - doc_style_and_return_annotation
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/RequireRbsInlineComment:
   Description: "Checks the presence or absence of `# rbs_inline: enabled` magic comment."
@@ -124,30 +93,18 @@ Style/RbsInline/RequireRbsInlineComment:
   SupportedStyles:
     - always
     - never
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."
   Enabled: true
   VersionAdded: "1.0.0"
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/UntypedInstanceVariable:
   Description: "Checks that instance variables in classes/modules have RBS type annotations."
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
 
 Style/RbsInline/VariableCommentSpacing:
   Description: 'Checks that `@rbs` variable comments are followed by a blank line.'
   Enabled: true
   VersionAdded: '1.5.0'
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
