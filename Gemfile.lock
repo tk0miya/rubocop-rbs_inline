@@ -69,7 +69,7 @@ GEM
     rubocop-ast (1.50.0)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-numbered-params (1.0.0)
+    rubocop-numbered-params (1.0.1)
       lint_roller (~> 1.0)
       rubocop (>= 1.72.1)
     rubocop-rake (0.7.1)
