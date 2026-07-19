@@ -56,6 +56,7 @@ module RuboCop
         #   end
         #
         class MethodCommentSpacing < Base
+          prepend FileFilter
           extend AutoCorrector
           include RangeHelp
           include SourceCodeHelper

@@ -9,7 +9,12 @@ module RuboCop
         module CommentParser : RuboCop::Cop::Base
           attr_reader parsed_comments: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
-          # Parse comments from the source code
+          @rbs_inline_skip_file: bool?
+
+          # Parse comments from the source code.
+          # Short-circuits when the file is filtered out by `Style/RbsInline.Mode` so
+          # cops relying on `parse_comments` skip the (expensive) rbs-inline annotation
+          # parse for files that will not be checked anyway.
           def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 
           # Find the last comment in a consecutive block starting from start_comment

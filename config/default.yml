@@ -89,7 +89,10 @@ Style/RbsInline/RequireRbsInlineComment:
   Description: "Checks the presence or absence of `# rbs_inline: enabled` magic comment."
   Enabled: true
   VersionAdded: "1.5.0"
-  EnforcedStyle: always
+  AllowMissingComment: false
+  # `EnforcedStyle` is deprecated in favor of `Style/RbsInline.Mode`; kept only so
+  # existing configs do not raise "unsupported parameter" warnings during migration.
+  EnforcedStyle: ~
   SupportedStyles:
     - always
     - never

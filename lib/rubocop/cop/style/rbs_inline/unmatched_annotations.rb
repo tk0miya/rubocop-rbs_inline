@@ -18,6 +18,7 @@ module RuboCop
         #   def method(arg); end
         #
         class UnmatchedAnnotations < Base
+          prepend FileFilter
           include CommentParser
           include RangeHelp
           include SourceCodeHelper

@@ -10,7 +10,7 @@ module RuboCop
         # opt-out (processes all files by default). This cop enforces consistency in which
         # mode your codebase uses.
         #
-        # @example EnforcedStyle: always (default)
+        # @example Mode: opt_in
         #   # bad
         #   # (no rbs_inline comment)
         #   class Foo
@@ -26,7 +26,12 @@ module RuboCop
         #   class Foo
         #   end
         #
-        # @example EnforcedStyle: never
+        # @example Mode: opt_in, AllowMissingComment: true
+        #   # good - the cop does not enforce the magic comment
+        #   class Foo
+        #   end
+        #
+        # @example Mode: opt_out
         #   # bad
         #   # rbs_inline: enabled
         #   class Foo
@@ -50,6 +55,12 @@ module RuboCop
 
           MSG_FORBIDDEN: ::String
 
+          self.@enforced_style_deprecation_warned: bool
+
+          def self.enforced_style_deprecation_warned?: () -> bool
+
+          def self.mark_enforced_style_deprecation_warned!: () -> void
+
           def on_new_investigation: () -> void
 
           private
@@ -60,16 +71,20 @@ module RuboCop
           def disabled?: (Parser::Source::Comment? magic_comment) -> bool
 
           # @rbs magic_comment: Parser::Source::Comment?
-          def check_always_style: (Parser::Source::Comment? magic_comment) -> void
+          def check_opt_in: (Parser::Source::Comment? magic_comment) -> void
 
           # @rbs magic_comment: Parser::Source::Comment?
-          def check_never_style: (Parser::Source::Comment? magic_comment) -> void
+          def check_opt_out: (Parser::Source::Comment? magic_comment) -> void
 
           def find_insert_position: () -> Integer
 
           def find_last_comment_in_first_block: () -> Parser::Source::Comment
 
-          def style: () -> Symbol
+          def effective_mode: () -> Symbol
+
+          def allow_missing_comment?: () -> bool
+
+          def warn_deprecated_enforced_style: () -> void
 
           def first_line_range: () -> Parser::Source::Range
         end

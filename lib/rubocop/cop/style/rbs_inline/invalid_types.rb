@@ -21,6 +21,7 @@ module RuboCop
         #   def method(arg); end
         #
         class InvalidTypes < Base
+          prepend FileFilter
           include CommentParser
           include RangeHelp
           include SourceCodeHelper

@@ -13,8 +13,15 @@ module RuboCop
         module CommentParser
           attr_reader :parsed_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
-          # Parse comments from the source code
+          # @rbs @rbs_inline_skip_file: bool?
+
+          # Parse comments from the source code.
+          # Short-circuits when the file is filtered out by `Style/RbsInline.Mode` so
+          # cops relying on `parse_comments` skip the (expensive) rbs-inline annotation
+          # parse for files that will not be checked anyway.
           def parse_comments #: Array[RBS::Inline::AnnotationParser::ParsingResult]
+            return @parsed_comments = [] if @rbs_inline_skip_file
+
             parsed_result = Prism.parse(processed_source.buffer.source)
             @parsed_comments = RBS::Inline::AnnotationParser.parse(parsed_result.comments)
           end

@@ -116,6 +116,7 @@ module RuboCop
         #   attr_reader :name #: String
         #
         class MissingTypeAnnotation < Base # rubocop:disable Metrics/ClassLength
+          prepend FileFilter
           include ASTUtils
           include CommentParser
           include ConfigurableEnforcedStyle

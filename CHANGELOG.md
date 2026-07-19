@@ -2,6 +2,15 @@
 
 ## 1.6.1 (2026-07-10)
 
+### Enhancements
+
+- **Style/RbsInline**: All cops now respect a shared `Mode` setting that gates whether a file is checked at all. Setting `Mode: opt_in` in the department-level config (`Style/RbsInline: Mode: opt_in`) restricts every cop to files that carry a `# rbs_inline: enabled` magic comment; `Mode: opt_out` (or no setting) preserves the previous behavior of checking every file.
+- **Style/RbsInline/RequireRbsInlineComment**: Replaces `EnforcedStyle` with a `Mode` setting (`opt_in` / `opt_out`) that mirrors RBS::Inline's own mode terminology, and adds an `AllowMissingComment` option so gradual-adoption projects can keep the file filter without being forced to add a magic comment to every file.
+
+### Deprecations
+
+- **Style/RbsInline/RequireRbsInlineComment**: `EnforcedStyle` is deprecated in favor of `Mode`. Existing configs continue to work with a warning; migrate `EnforcedStyle: always` to `Mode: opt_in` and `EnforcedStyle: never` to `Mode: opt_out`. `EnforcedStyle` will be removed in the next major version, along with the "no filtering when `Mode` is unset" fallback — the default will become `Mode: opt_in`.
+
 ### Bug Fixes
 
 - Fixed user's `Style/RbsInline: Exclude:` configuration being ignored (regression from 1.6.0).

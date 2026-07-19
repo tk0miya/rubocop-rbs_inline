@@ -26,6 +26,7 @@ module RuboCop
         #   )
         #
         class DataClassCommentAlignment < Base
+          prepend FileFilter
           include ASTUtils
           include RangeHelp
           include SourceCodeHelper
