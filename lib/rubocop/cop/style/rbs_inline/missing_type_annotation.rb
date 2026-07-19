@@ -320,7 +320,7 @@ module RuboCop
 
               candidates = param_candidate_names(argument, name)
               next unless candidates
-              next if candidates.any? { annotated_names.include?(_1) }
+              next if candidates.intersect?(annotated_names)
 
               add_offense(argument, message: format(DOC_STYLE_PARAM_MESSAGE, name: param_display_name(argument)))
             end
