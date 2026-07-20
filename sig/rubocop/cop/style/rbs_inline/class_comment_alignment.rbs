@@ -1,0 +1,34 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/class_comment_alignment.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Shared behavior for cops that ensure `#:` inline type annotations on
+        # struct-like class attributes (`Data.define` / `Struct.new`) are aligned.
+        #
+        # The including cop matches the definition node (e.g. via `struct_like_class?`)
+        # and calls {#check_comment_alignment}.
+        #
+        # @rbs module-self RuboCop::Cop::Base
+        module ClassCommentAlignment : RuboCop::Cop::Base
+          include DataStructHelper
+
+          # @rbs node: RuboCop::AST::SendNode
+          def check_comment_alignment: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def check_annotation_alignment: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs arg: RuboCop::AST::Node
+          # @rbs comment: Parser::Source::Comment
+          # @rbs expected_col: Integer
+          def correct_alignment: (RuboCop::Cop::Corrector corrector, RuboCop::AST::Node arg, Parser::Source::Comment comment, Integer expected_col) -> void
+        end
+      end
+    end
+  end
+end

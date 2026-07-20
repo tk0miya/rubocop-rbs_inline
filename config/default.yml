@@ -46,6 +46,11 @@ Style/RbsInline/MissingDataClassAnnotation:
   Enabled: true
   VersionAdded: '1.5.0'
 
+Style/RbsInline/MissingStructClassAnnotation:
+  Description: "Checks that `Struct.new` attributes have inline type annotations."
+  Enabled: true
+  VersionAdded: '1.7.0'
+
 Style/RbsInline/MissingTypeAnnotation:
   Description: "Checks that method definitions and attr_* declarations have RBS inline type annotations."
   Enabled: true
@@ -93,6 +98,16 @@ Style/RbsInline/RequireRbsInlineComment:
   SupportedStyles:
     - always
     - never
+
+Style/RbsInline/StructClassCommentAlignment:
+  Description: "Checks that `#:` inline type annotations in `Struct.new` blocks are aligned."
+  Enabled: true
+  VersionAdded: '1.7.0'
+
+Style/RbsInline/StructNewWithBlock:
+  Description: "Checks for `Struct.new` calls with a block, which RBS::Inline does not parse."
+  Enabled: true
+  VersionAdded: '1.7.0'
 
 Style/RbsInline/UnmatchedAnnotations:
   Description: "Checks the rbs-inline annotation comment is surely matched."

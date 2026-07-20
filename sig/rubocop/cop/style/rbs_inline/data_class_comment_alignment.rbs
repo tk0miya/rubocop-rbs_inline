@@ -25,11 +25,7 @@ module RuboCop
         #     :visibility  #: Symbol
         #   )
         class DataClassCommentAlignment < Base
-          include ASTUtils
-
-          include RangeHelp
-
-          include SourceCodeHelper
+          include ClassCommentAlignment
 
           extend AutoCorrector
 
@@ -41,31 +37,7 @@ module RuboCop
           private
 
           # @rbs node: RuboCop::AST::SendNode
-          def data_define?: (RuboCop::AST::SendNode node) -> bool
-
-          # @rbs arg: RuboCop::AST::Node
-          def data_attribute?: (RuboCop::AST::Node arg) -> bool
-
-          # @rbs node: RuboCop::AST::SendNode
-          def data_attributes: (RuboCop::AST::SendNode node) -> Array[RuboCop::AST::Node]
-
-          # @rbs node: RuboCop::AST::SendNode
-          def folded_data_class?: (RuboCop::AST::SendNode node) -> bool
-
-          # @rbs node: RuboCop::AST::SendNode
-          def check_annotation_alignment: (RuboCop::AST::SendNode node) -> void
-
-          # @rbs line: Integer
-          def inline_type_comment: (Integer line) -> Parser::Source::Comment?
-
-          # @rbs node: RuboCop::AST::SendNode
-          def annotation_column: (RuboCop::AST::SendNode node) -> Integer
-
-          # @rbs corrector: RuboCop::Cop::Corrector
-          # @rbs arg: RuboCop::AST::Node
-          # @rbs comment: Parser::Source::Comment
-          # @rbs expected_col: Integer
-          def correct_alignment: (RuboCop::Cop::Corrector corrector, RuboCop::AST::Node arg, Parser::Source::Comment comment, Integer expected_col) -> void
+          def struct_like_class?: (RuboCop::AST::SendNode node) -> bool
         end
       end
     end

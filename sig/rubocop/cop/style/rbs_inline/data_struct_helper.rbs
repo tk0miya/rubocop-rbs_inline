@@ -1,0 +1,55 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/data_struct_helper.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Shared logic for cops that check inline type annotations on struct-like
+        # class definitions such as `Data.define` and `Struct.new`.
+        #
+        # Including cops decide which nodes to check by defining their own matcher
+        # (e.g. `struct_like_class?`); this module only provides helpers that operate
+        # on an already-matched definition node. Cops may override {#attr_argument?}
+        # when the set of attribute arguments differs from the default (e.g.
+        # `Struct.new` treats a leading string argument as the struct name rather than
+        # an attribute).
+        #
+        # @rbs module-self RuboCop::Cop::Base
+        module DataStructHelper : RuboCop::Cop::Base
+          include ASTUtils
+
+          include SourceCodeHelper
+
+          include RangeHelp
+
+          # @rbs arg: RuboCop::AST::Node
+          def attr_argument?: (RuboCop::AST::Node arg) -> bool
+
+          # @rbs node: RuboCop::AST::SendNode
+          def attr_arguments: (RuboCop::AST::SendNode node) -> Array[RuboCop::AST::Node]
+
+          # @rbs node: RuboCop::AST::SendNode
+          def folded?: (RuboCop::AST::SendNode node) -> bool
+
+          # @rbs line: Integer
+          def inline_type_annotation?: (Integer line) -> boolish
+
+          # @rbs line: Integer
+          def inline_type_comment: (Integer line) -> Parser::Source::Comment?
+
+          # @rbs line: Integer
+          def find_regular_comment: (Integer line) -> Parser::Source::Comment?
+
+          # @rbs node: RuboCop::AST::SendNode
+          def annotation_column: (RuboCop::AST::SendNode node) -> Integer
+
+          # @rbs node: RuboCop::AST::SendNode
+          def longest_argname: (RuboCop::AST::SendNode node) -> String
+
+          # @rbs node: RuboCop::AST::SendNode
+          def build_multiline_replacement: (RuboCop::AST::SendNode node) -> String
+        end
+      end
+    end
+  end
+end

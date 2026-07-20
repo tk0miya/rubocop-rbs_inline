@@ -1,0 +1,46 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/missing_struct_class_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Checks that `Struct.new` attributes have inline type annotations.
+        #
+        # Each attribute passed to `Struct.new` should have a trailing `#:` type
+        # annotation comment on the same line. A leading string argument (the struct
+        # name) and the `keyword_init:` keyword argument are not attributes and are
+        # ignored.
+        #
+        # @example
+        #   # bad
+        #   Point = Struct.new(:x, :y)
+        #
+        #   # good
+        #   Point = Struct.new(
+        #     :x,  #: Integer
+        #     :y   #: Integer
+        #   )
+        class MissingStructClassAnnotation < Base
+          include MissingClassAnnotation
+
+          extend AutoCorrector
+
+          MSG: ::String
+
+          # @rbs node: RuboCop::AST::SendNode
+          def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def struct_like_class?: (RuboCop::AST::SendNode node) -> bool
+
+          # `Struct.new` treats a leading string argument as the struct name, so only
+          # symbol arguments are attributes.
+          # @rbs arg: RuboCop::AST::Node
+          def attr_argument?: (RuboCop::AST::Node arg) -> bool
+        end
+      end
+    end
+  end
+end
