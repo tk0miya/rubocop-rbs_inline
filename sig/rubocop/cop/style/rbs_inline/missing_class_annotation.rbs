@@ -1,0 +1,41 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/missing_class_annotation.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Shared behavior for cops that ensure struct-like class attributes have
+        # inline type annotations (`Data.define` / `Struct.new`).
+        #
+        # The including cop matches the definition node (e.g. via `struct_like_class?`)
+        # and calls {#check_missing_annotations}.
+        #
+        # @rbs module-self RuboCop::Cop::Base
+        module MissingClassAnnotation : RuboCop::Cop::Base
+          include DataStructHelper
+
+          # @rbs node: RuboCop::AST::SendNode
+          def check_missing_annotations: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def add_offenses_for_folded: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs node: RuboCop::AST::SendNode
+          def check_multiline: (RuboCop::AST::SendNode node) -> void
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs node: RuboCop::AST::SendNode
+          # @rbs arg: RuboCop::AST::Node
+          def correct_multiline: (RuboCop::Cop::Corrector corrector, RuboCop::AST::SendNode node, RuboCop::AST::Node arg) -> void
+
+          # @rbs corrector: RuboCop::Cop::Corrector
+          # @rbs node: RuboCop::AST::SendNode
+          # @rbs arg: RuboCop::AST::Node
+          def insert_annotation: (RuboCop::Cop::Corrector corrector, RuboCop::AST::SendNode node, RuboCop::AST::Node arg) -> void
+        end
+      end
+    end
+  end
+end

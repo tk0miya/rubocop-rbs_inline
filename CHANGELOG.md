@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### New Features
+
+- **Style/RbsInline/MissingStructClassAnnotation**: New cop that checks each attribute passed to `Struct.new` has a trailing `#:` inline type annotation. Supports autocorrect.
+- **Style/RbsInline/StructClassCommentAlignment**: New cop that checks `#:` inline type annotations in a multiline `Struct.new` call are aligned. Supports autocorrect.
+- **Style/RbsInline/StructNewWithBlock**: New cop that checks for `Struct.new` calls with a block, which RBS::Inline does not parse.
+
 ## 1.6.1 (2026-07-10)
 
 ### Bug Fixes

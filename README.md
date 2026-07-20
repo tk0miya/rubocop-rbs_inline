@@ -198,6 +198,32 @@ MethodEntry = Data.define(
 )
 ```
 
+### Style/RbsInline/MissingStructClassAnnotation
+
+Checks that each attribute passed to `Struct.new` has a trailing `#:` inline type annotation on the same line.
+
+For folded `Struct.new` calls (where multiple attributes share a line), the cop will suggest rewriting as a multiline call so each attribute can be annotated individually. A leading string argument (the struct name) and the `keyword_init:` keyword argument are not attributes and are ignored.
+
+Supports autocorrect.
+
+**Examples:**
+```ruby
+# bad
+Point = Struct.new(:x, :y)
+
+# bad - missing annotation for :y
+Point = Struct.new(
+  :x,  #: Integer
+  :y
+)
+
+# good
+Point = Struct.new(
+  :x,  #: Integer
+  :y   #: Integer
+)
+```
+
 ### Style/RbsInline/MissingTypeAnnotation
 
 Enforces that method definitions and `attr_*` declarations have RBS inline type annotations.
@@ -455,6 +481,50 @@ end
 # good
 # rbs_inline: enabled
 class Foo
+end
+```
+
+### Style/RbsInline/StructClassCommentAlignment
+
+Checks that `#:` inline type annotations in a multiline `Struct.new` call are aligned to the same column. The expected column is determined by the longest attribute name (plus its trailing comma). Folded `Struct.new` calls (where multiple attributes share a line) are excluded.
+
+Supports autocorrect.
+
+**Examples:**
+```ruby
+# bad
+Point = Struct.new(
+  :x, #: Integer
+  :long_attr  #: Integer
+)
+
+# good
+Point = Struct.new(
+  :x,         #: Integer
+  :long_attr  #: Integer
+)
+```
+
+### Style/RbsInline/StructNewWithBlock
+
+Checks for `Struct.new` calls with a block. RBS::Inline does not parse block contents, so any methods defined inside the block will not be recognized for type checking. Instead, call `Struct.new` without a block and reopen the class separately to add methods.
+
+**Examples:**
+```ruby
+# bad
+User = Struct.new(:name, :role) do
+  def admin?
+    role == :admin
+  end
+end
+
+# good
+User = Struct.new(:name, :role)
+
+class User
+  def admin? #: bool
+    role == :admin
+  end
 end
 ```
 
