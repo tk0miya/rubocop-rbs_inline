@@ -156,7 +156,7 @@ module RuboCop
             last = comments.last or return
             range = first.loc.expression.join(last.loc.expression)
             add_offense(range, message: MSG_METHOD_TYPE_SIGNATURE) do |corrector|
-              unexpected_style_detected(:method_type_signature)
+              no_acceptable_style!
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
           end
@@ -169,7 +169,7 @@ module RuboCop
           def add_offense_for_doc_style_param(annotation) #: void
             range = annotation_range(annotation) or return
             add_offense(range, message: MSG_DOC_STYLE_PARAM) do |corrector|
-              unexpected_style_detected(:doc_style)
+              no_acceptable_style!
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
           end
@@ -190,7 +190,7 @@ module RuboCop
           # @rbs comment: Parser::Source::Comment
           def add_offense_for_trailing_return(comment) #: void
             add_offense(comment, message: MSG_TRAILING_RETURN) do |corrector|
-              unexpected_style_detected(:return_type_annotation)
+              no_acceptable_style!
               removal_range = range_with_surrounding_space(range: comment.loc.expression, side: :left, newlines: false)
               corrector.remove(removal_range)
             end
@@ -200,7 +200,7 @@ module RuboCop
           def add_offense_for_doc_style_return(annotation) #: void
             range = annotation_range(annotation) or return
             add_offense(range, message: MSG_DOC_STYLE_RETURN) do |corrector|
-              unexpected_style_detected(:doc_style)
+              no_acceptable_style!
               corrector.remove(range_by_whole_lines(range, include_final_newline: true))
             end
           end
