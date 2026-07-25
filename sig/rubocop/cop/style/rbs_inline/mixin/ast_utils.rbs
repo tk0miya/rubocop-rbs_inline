@@ -9,6 +9,14 @@ module RuboCop
           # @rbs default: Integer
           def end_line: (RuboCop::AST::Node node, default: Integer) -> Integer
 
+          # Returns the arguments node of a method definition.
+          # @rbs node: RuboCop::AST::DefNode
+          def args_node_for: (RuboCop::AST::DefNode node) -> RuboCop::AST::Node
+
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: RuboCop::AST::DefNode
+          def method_parameter_list_end_line: (RuboCop::AST::DefNode node) -> Integer
+
           # @rbs node: RuboCop::AST::Node
           def name_location: (RuboCop::AST::Node node) -> untyped
 
