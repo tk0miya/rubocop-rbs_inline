@@ -3,159 +3,181 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :config do
   let(:config) { RuboCop::Config.new }
 
-  it "registers an offense and corrects each attribute missing an inline type annotation" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new(
-        :x,
-        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :y,
-        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :z
-        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-      )
-    RUBY
+  context "with attributes missing inline type annotations" do
+    it "registers an offense and corrects each attribute" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new(
+          :x,
+          ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :y,
+          ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :z
+          ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: untyped
-        :y,  #: untyped
-        :z   #: untyped
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: untyped
+          :y,  #: untyped
+          :z   #: untyped
+        )
+      RUBY
+    end
   end
 
-  it "registers an offense and corrects folded Struct.new" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new(:x, :y, :z)
-                         ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-                             ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-                                 ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-    RUBY
+  context "with a folded Struct.new" do
+    it "registers an offense and corrects it" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new(:x, :y, :z)
+                           ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+                               ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+                                   ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: untyped
-        :y,  #: untyped
-        :z   #: untyped
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: untyped
+          :y,  #: untyped
+          :z   #: untyped
+        )
+      RUBY
+    end
   end
 
-  it "registers an offense and corrects only attributes without inline type annotations" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: Integer
-        :y,
-        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :z   #: Integer
-      )
-    RUBY
+  context "with a mix of annotated and unannotated attributes" do
+    it "registers an offense and corrects only attributes without inline type annotations" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: Integer
+          :y,
+          ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :z   #: Integer
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: Integer
-        :y,  #: untyped
-        :z   #: Integer
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: Integer
+          :y,  #: untyped
+          :z   #: Integer
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense when all attributes have inline type annotations" do
-    expect_no_offenses(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: Integer
-        :y   #: Integer
-      )
-    RUBY
+  context "when all attributes have inline type annotations" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: Integer
+          :y   #: Integer
+        )
+      RUBY
+    end
   end
 
-  it "preserves existing comments using -- syntax when correcting" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new(
-        :x,  # the x coordinate
-        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :y   #: Integer
-      )
-    RUBY
+  context "with existing comments using -- syntax" do
+    it "preserves existing comments using -- syntax when correcting" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new(
+          :x,  # the x coordinate
+          ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :y   #: Integer
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        :x,  #: untyped -- the x coordinate
-        :y   #: Integer
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          :x,  #: untyped -- the x coordinate
+          :y   #: Integer
+        )
+      RUBY
+    end
   end
 
-  it "does not treat a leading string argument (struct name) as an attribute" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new("Point", :x, :y)
-                                  ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-                                      ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-    RUBY
+  context "with a leading string argument (struct name)" do
+    it "does not treat it as an attribute" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new("Point", :x, :y)
+                                    ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+                                        ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        "Point",
-        :x,       #: untyped
-        :y        #: untyped
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          "Point",
+          :x,       #: untyped
+          :y        #: untyped
+        )
+      RUBY
+    end
   end
 
-  it "does not treat the keyword_init: keyword argument as an attribute" do
-    expect_offense(<<~RUBY)
-      Point = Struct.new(:x, :y, keyword_init: true)
-                         ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-                             ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-    RUBY
+  context "with the keyword_init: keyword argument" do
+    it "does not treat it as an attribute" do
+      expect_offense(<<~RUBY)
+        Point = Struct.new(:x, :y, keyword_init: true)
+                           ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+                               ^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Point = Struct.new(
-        :x,                 #: untyped
-        :y,                 #: untyped
-        keyword_init: true
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Point = Struct.new(
+          :x,                 #: untyped
+          :y,                 #: untyped
+          keyword_init: true
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense for Struct.new with no arguments" do
-    expect_no_offenses(<<~RUBY)
-      Empty = Struct.new
-    RUBY
+  context "with Struct.new with no arguments" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Empty = Struct.new
+      RUBY
+    end
   end
 
-  it "does not register an offense for other method calls named new" do
-    expect_no_offenses(<<~RUBY)
-      Foo.new(:name, :node)
-    RUBY
+  context "with other method calls named new" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Foo.new(:name, :node)
+      RUBY
+    end
   end
 
-  it "does not register an offense for Data.define" do
-    expect_no_offenses(<<~RUBY)
-      Foo = Data.define(:name, :node)
-    RUBY
+  context "with Data.define" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Foo = Data.define(:name, :node)
+      RUBY
+    end
   end
 
-  it "handles splat argument in Struct.new" do
-    expect_offense(<<~RUBY)
-      Struct.new(
-        :foo,
-        ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :bar,
-        ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        :baz,
-        ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
-        *QUX_QUUX
-      )
-    RUBY
+  context "with a splat argument in Struct.new" do
+    it "handles the splat argument" do
+      expect_offense(<<~RUBY)
+        Struct.new(
+          :foo,
+          ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :bar,
+          ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          :baz,
+          ^^^^ Style/RbsInline/MissingStructClassAnnotation: Missing inline type annotation for Struct attribute (e.g., `#: Type`).
+          *QUX_QUUX
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Struct.new(
-        :foo,      #: untyped
-        :bar,      #: untyped
-        :baz,      #: untyped
-        *QUX_QUUX
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Struct.new(
+          :foo,      #: untyped
+          :bar,      #: untyped
+          :baz,      #: untyped
+          *QUX_QUUX
+        )
+      RUBY
+    end
   end
 end

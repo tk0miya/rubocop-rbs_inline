@@ -519,21 +519,25 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
     end
 
     context "when method has inline #: comment" do
-      it "registers an offense when method has arguments" do
-        expect_offense(<<~RUBY)
-          def greet(name) #: String
-                    ^^^^ Missing `@rbs name:` annotation.
-            "Hello, \#{name}"
-          end
-        RUBY
+      context "when method has arguments" do
+        it "registers an offense" do
+          expect_offense(<<~RUBY)
+            def greet(name) #: String
+                      ^^^^ Missing `@rbs name:` annotation.
+              "Hello, \#{name}"
+            end
+          RUBY
+        end
       end
 
-      it "does not register an offense when method has no arguments" do
-        expect_no_offenses(<<~RUBY)
-          def greet #: String
-            "Hello"
-          end
-        RUBY
+      context "when method has no arguments" do
+        it "does not register an offense" do
+          expect_no_offenses(<<~RUBY)
+            def greet #: String
+              "Hello"
+            end
+          RUBY
+        end
       end
     end
 
