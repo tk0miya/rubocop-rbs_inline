@@ -28,6 +28,7 @@ module RuboCop
         class DataClassCommentAlignment < Base
           prepend FileFilter
           include ClassCommentAlignment
+          include DataClassMatcher
           extend AutoCorrector
 
           MSG = "Misaligned inline type annotation for Data attribute."
@@ -37,15 +38,6 @@ module RuboCop
             return unless struct_like_class?(node)
 
             check_comment_alignment(node)
-          end
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?(node) #: bool
-            return false unless node.method_name == :define
-
-            (r = node.receiver).is_a?(RuboCop::AST::ConstNode) && r.short_name == :Data
           end
         end
       end

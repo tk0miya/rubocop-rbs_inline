@@ -29,6 +29,7 @@ module RuboCop
         #
         class DataDefineWithBlock < Base
           prepend FileFilter
+          include DataClassMatcher
 
           MSG = "Do not use `Data.define` with a block. RBS::Inline does not parse block contents, " \
                 "so methods defined in the block will not be recognized. " \
@@ -42,15 +43,6 @@ module RuboCop
             return unless block_node&.block_type?
 
             add_offense(node)
-          end
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?(node) #: bool
-            return false unless node.method_name == :define
-
-            (r = node.receiver).is_a?(RuboCop::AST::ConstNode) && r.short_name == :Data
           end
         end
       end

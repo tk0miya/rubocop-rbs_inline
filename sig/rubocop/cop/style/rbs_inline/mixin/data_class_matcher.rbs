@@ -1,0 +1,18 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/mixin/data_class_matcher.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Matcher for `Data.define` calls, shared by the cops that check
+        # `Data.define` class definitions.
+        module DataClassMatcher
+          private
+
+          # @rbs node: RuboCop::AST::SendNode
+          def struct_like_class?: (RuboCop::AST::SendNode node) -> bool
+        end
+      end
+    end
+  end
+end

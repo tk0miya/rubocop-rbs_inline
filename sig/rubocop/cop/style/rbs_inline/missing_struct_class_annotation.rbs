@@ -25,22 +25,14 @@ module RuboCop
 
           include MissingClassAnnotation
 
+          include StructClassMatcher
+
           extend AutoCorrector
 
           MSG: ::String
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send: (RuboCop::AST::SendNode node) -> void
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?: (RuboCop::AST::SendNode node) -> bool
-
-          # `Struct.new` treats a leading string argument as the struct name, so only
-          # symbol arguments are attributes.
-          # @rbs arg: RuboCop::AST::Node
-          def attr_argument?: (RuboCop::AST::Node arg) -> bool
         end
       end
     end
