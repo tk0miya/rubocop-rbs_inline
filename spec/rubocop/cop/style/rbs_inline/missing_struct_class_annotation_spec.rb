@@ -107,8 +107,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :co
       expect_correction(<<~RUBY)
         Point = Struct.new(
           "Point",
-          :x,       #: untyped
-          :y        #: untyped
+          :x,  #: untyped
+          :y   #: untyped
         )
       RUBY
     end
@@ -124,8 +124,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :co
 
       expect_correction(<<~RUBY)
         Point = Struct.new(
-          :x,                 #: untyped
-          :y,                 #: untyped
+          :x,  #: untyped
+          :y,  #: untyped
           keyword_init: true
         )
       RUBY
@@ -172,9 +172,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :co
 
       expect_correction(<<~RUBY)
         Struct.new(
-          :foo,      #: untyped
-          :bar,      #: untyped
-          :baz,      #: untyped
+          :foo,  #: untyped
+          :bar,  #: untyped
+          :baz,  #: untyped
           *QUX_QUUX
         )
       RUBY

@@ -156,8 +156,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :confi
 
       expect_correction(<<~RUBY)
         Data.define(
-          :foo,      #: Integer
-          :bar,      #: String
+          :foo,  #: Integer
+          :bar,  #: String
           *QUX_QUUX
         )
       RUBY
