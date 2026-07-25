@@ -11,6 +11,7 @@
 
 - **Style/RbsInline/UnmatchedAnnotations**: Fixed a crash on method definitions taking a destructuring argument (ex. `def foo((a, b))`). The crash also aborted the inspection of the method definition, causing false positives on its valid annotations.
 - **Style/RbsInline/RequireRbsInlineComment**: Fixed a crash (`IndexError`) on a file whose leading comment block ends without a trailing newline. The offense is now reported and the magic comment is inserted on its own line.
+- **Style/RbsInline/RedundantTypeAnnotation**: Fixed `--auto-gen-config` generating an `EnforcedStyle` that does not resolve the offenses (including the unsupported `return_type_annotation`, which made RuboCop fail to start on the generated `.rubocop_todo.yml`). No style can make redundant annotations offense-free, so the offending files are now excluded instead.
 
 ### Deprecations
 

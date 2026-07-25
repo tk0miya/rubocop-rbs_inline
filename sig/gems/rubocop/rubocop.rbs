@@ -5,3 +5,11 @@ module Parser
     end
   end
 end
+
+module RuboCop
+  module Cop
+    module ConfigurableEnforcedStyle
+      def no_acceptable_style!: () -> void
+    end
+  end
+end
