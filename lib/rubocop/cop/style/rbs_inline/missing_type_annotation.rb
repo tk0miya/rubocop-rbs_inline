@@ -22,7 +22,8 @@ module RuboCop
         # - `all`: Checks all methods regardless of visibility (default)
         # - `public`: Only checks public methods and `attr_*` declarations
         #
-        # Methods annotated with `# @rbs skip` are always excluded from inspection.
+        # Methods annotated with `# @rbs skip` or `# @rbs override`, parameters with a leading
+        # `_`, and the `...` parameter are always excluded.
         #
         # @example EnforcedStyle: doc_style
         #   # bad

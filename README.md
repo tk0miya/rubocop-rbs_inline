@@ -255,7 +255,11 @@ Enforces that method definitions and `attr_*` declarations have RBS inline type 
   - `all`: Checks all methods regardless of visibility
   - `public`: Only checks public methods and `attr_*` declarations
 
-Methods annotated with `# @rbs skip` are always excluded.
+Always excluded, regardless of `EnforcedStyle`:
+
+- Methods annotated with `# @rbs skip` or `# @rbs override`.
+- Parameters whose name starts with `_`.
+- The `...` forward-all parameter.
 
 **Examples (EnforcedStyle: doc_style):**
 ```ruby
