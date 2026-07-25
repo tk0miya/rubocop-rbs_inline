@@ -5,7 +5,7 @@
 ### Enhancements
 
 - **Style/RbsInline**: Added a shared `Mode` setting (`opt_in` / `opt_out`) at the department level to filter which files each cop checks based on the `# rbs_inline: enabled` / `disabled` magic comment.
-- **Style/RbsInline/RequireRbsInlineComment**: Added `Mode` (`opt_in` / `opt_out`) and `AllowMissingComment` options. `AllowMissingComment` lets projects use rbs-inline on only some of their files while keeping the opt-in filter for the rest.
+- **Style/RbsInline/RequireRbsInlineComment**: Added the `AllowMissingComment` option, which lets projects use rbs-inline on only some of their files while keeping the opt-in filter for the rest.
 
 ### Bug fixes
 
@@ -15,7 +15,7 @@
 
 ### Deprecations
 
-- **Style/RbsInline/RequireRbsInlineComment**: `EnforcedStyle` is deprecated in favor of `Mode`. Migrate `always` → `Mode: opt_in`, `never` → `Mode: opt_out`. Will be removed in the next major version.
+- **Style/RbsInline/RequireRbsInlineComment**: `EnforcedStyle` is deprecated in favor of the department-level `Mode`. Migrate `always` → `Style/RbsInline: Mode: opt_in`, `never` → `Style/RbsInline: Mode: opt_out`. Will be removed in the next major version.
 
 ## 1.7.0 (2026-07-20)
 
