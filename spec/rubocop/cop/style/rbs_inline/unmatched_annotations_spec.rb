@@ -96,6 +96,27 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
     end
   end
 
+  context "when the method definition takes a destructuring argument" do
+    context "when the comment annotates to known arguments" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          # @rbs arg: String
+          def method((a, b), arg); end
+        RUBY
+      end
+    end
+
+    context "when the comment annotates to the destructuring argument" do
+      it "registers an offense" do
+        expect_offense(<<~RUBY)
+          # @rbs pair: [Integer, Integer]
+                 ^^^^ Style/RbsInline/UnmatchedAnnotations: target parameter not found.
+          def method((a, b)); end
+        RUBY
+      end
+    end
+  end
+
   context "when an independent annotation comment found" do
     it "registers an offense" do
       expect_offense(<<~RUBY)

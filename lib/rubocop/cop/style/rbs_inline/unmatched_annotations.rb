@@ -105,7 +105,9 @@ module RuboCop
               when :forward_arg
                 ["..."]
               else
-                raise
+                # Unnamed parameters (ex. destructuring arguments; `def foo((a, b))`) are not
+                # annotatable because RBS::Inline does not generate types for them.
+                []
               end
             end
           end
