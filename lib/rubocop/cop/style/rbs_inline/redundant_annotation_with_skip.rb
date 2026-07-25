@@ -60,6 +60,7 @@ module RuboCop
         class RedundantAnnotationWithSkip < Base
           prepend FileFilter
           extend AutoCorrector
+          include ASTUtils
           include CommentParser
           include RangeHelp
           include SourceCodeHelper
@@ -182,17 +183,6 @@ module RuboCop
               removal_range = range_with_surrounding_space(range: comment.loc.expression, side: :left, newlines: false)
               corrector.remove(removal_range)
             end
-          end
-
-          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: RuboCop::AST::DefNode
-          def method_parameter_list_end_line(node) #: Integer
-            args_node = case node.type
-                        when :def  then node.children[1]
-                        when :defs then node.children[2]
-                        else raise
-                        end
-            args_node.location.end&.line || node.location.line
           end
         end
       end

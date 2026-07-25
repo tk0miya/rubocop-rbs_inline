@@ -230,13 +230,6 @@ module RuboCop
           # @rbs node: RuboCop::AST::SendNode
           def check_attribute_method: (RuboCop::AST::SendNode node) -> void
 
-          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: RuboCop::AST::DefNode
-          def method_parameter_list_end_line: (RuboCop::AST::DefNode node) -> Integer
-
-          # @rbs node: RuboCop::AST::DefNode
-          def args_node_for: (RuboCop::AST::DefNode node) -> RuboCop::AST::Node
-
           # @rbs node: RuboCop::AST::DefNode
           def method_has_arguments?: (RuboCop::AST::DefNode node) -> bool
 

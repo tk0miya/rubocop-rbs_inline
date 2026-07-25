@@ -349,21 +349,6 @@ module RuboCop
             add_offense(node, message: ATTRIBUTE_METHOD_MESSAGE)
           end
 
-          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: RuboCop::AST::DefNode
-          def method_parameter_list_end_line(node) #: Integer
-            args_node = args_node_for(node)
-            end_line(args_node, default: node.location.line)
-          end
-
-          # @rbs node: RuboCop::AST::DefNode
-          def args_node_for(node) #: RuboCop::AST::Node
-            case node.type
-            when :defs then node.children[2]
-            else node.children[1]
-            end
-          end
-
           # @rbs node: RuboCop::AST::DefNode
           def method_has_arguments?(node) #: bool
             args_node_for(node).children.any?

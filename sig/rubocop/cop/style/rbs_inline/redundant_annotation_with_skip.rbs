@@ -59,6 +59,8 @@ module RuboCop
 
           extend AutoCorrector
 
+          include ASTUtils
+
           include CommentParser
 
           include RangeHelp
@@ -107,10 +109,6 @@ module RuboCop
 
           # @rbs param_list_end_line: Integer
           def check_trailing_return: (Integer param_list_end_line) -> void
-
-          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: RuboCop::AST::DefNode
-          def method_parameter_list_end_line: (RuboCop::AST::DefNode node) -> Integer
         end
       end
     end

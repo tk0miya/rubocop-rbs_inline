@@ -12,6 +12,22 @@ module RuboCop
             location.end&.line || default
           end
 
+          # Returns the arguments node of a method definition.
+          # @rbs node: RuboCop::AST::DefNode
+          def args_node_for(node) #: RuboCop::AST::Node
+            case node.type
+            when :def  then node.children[1]
+            when :defs then node.children[2]
+            else raise
+            end
+          end
+
+          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
+          # @rbs node: RuboCop::AST::DefNode
+          def method_parameter_list_end_line(node) #: Integer
+            end_line(args_node_for(node), default: node.location.line)
+          end
+
           # @rbs node: RuboCop::AST::Node
           def name_location(node) #: untyped
             location = node.location #: untyped

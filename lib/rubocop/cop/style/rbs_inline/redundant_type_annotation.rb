@@ -82,6 +82,7 @@ module RuboCop
         class RedundantTypeAnnotation < Base
           prepend FileFilter
           extend AutoCorrector
+          include ASTUtils
           include CommentParser
           include ConfigurableEnforcedStyle
           include RangeHelp
@@ -128,17 +129,6 @@ module RuboCop
             when :doc_style, :doc_style_and_return_annotation
               add_offense_for_method_type_signature(method_type_signature_comments)
             end
-          end
-
-          # Returns the last line of the method parameter list (the closing ) line, or the def line if no parens).
-          # @rbs node: RuboCop::AST::DefNode
-          def method_parameter_list_end_line(node) #: Integer
-            args_node = case node.type
-                        when :def  then node.children[1]
-                        when :defs then node.children[2]
-                        else raise
-                        end
-            args_node.location.end&.line || node.location.line
           end
 
           # @rbs def_line: Integer
