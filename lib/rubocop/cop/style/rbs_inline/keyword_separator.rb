@@ -17,13 +17,12 @@ module RuboCop
         class KeywordSeparator < Base
           prepend FileFilter
           extend AutoCorrector
+          include AnnotationKeywords
           include CommentParser
           include RangeHelp
 
           MSG = "Do not use `:` after the keyword."
 
-          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
           # `override` and `skip` are standalone markers that take no arguments.
           # Even before a method definition they may not be followed by `:` alone,
           # because `# @rbs override:` (no type) is not a valid parameter annotation.

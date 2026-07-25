@@ -21,10 +21,9 @@ module RuboCop
 
           extend AutoCorrector
 
-          MSG: ::String
+          include AnnotationKeywords
 
-          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS: Array[String]
+          MSG: ::String
 
           RBS_INLINE_KEYWORD_PATTERN: String
 

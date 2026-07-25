@@ -18,14 +18,13 @@ module RuboCop
 
           extend AutoCorrector
 
+          include AnnotationKeywords
+
           include CommentParser
 
           include RangeHelp
 
           MSG: ::String
-
-          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS: Array[String]
 
           # `override` and `skip` are standalone markers that take no arguments.
           # Even before a method definition they may not be followed by `:` alone,
