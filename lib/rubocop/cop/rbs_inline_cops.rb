@@ -3,6 +3,7 @@
 # Mixins first, in dependency order. Cops follow, alphabetically: `rake new_cop` sorts a
 # generated require only against the others in the same directory, so the two blocks have
 # to stay apart for it to land in the right place.
+require_relative "style/rbs_inline/mixin/annotation_keywords"
 require_relative "style/rbs_inline/mixin/ast_utils"
 require_relative "style/rbs_inline/mixin/source_code_helper"
 require_relative "style/rbs_inline/mixin/comment_parser"

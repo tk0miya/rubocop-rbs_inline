@@ -22,12 +22,11 @@ module RuboCop
         class ParametersSeparator < Base
           prepend FileFilter
           extend AutoCorrector
+          include AnnotationKeywords
           include RangeHelp
 
           MSG = "Use `:` as a separator between parameter name and type."
 
-          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
           RBS_INLINE_REGEXP_KEYWORDS = [/%a{(\w|-)+}/, /%a\((\w|-)+\)/, /%a\[(\w|-)+\]/].freeze #: Array[Regexp]
 
           def on_new_investigation #: void

@@ -22,11 +22,10 @@ module RuboCop
         class InvalidComment < Base
           prepend FileFilter
           extend AutoCorrector
+          include AnnotationKeywords
 
           MSG = "Invalid RBS annotation comment found."
 
-          # refs: https://github.com/soutaro/rbs-inline/blob/main/lib/rbs/inline/annotation_parser/tokenizer.rb
-          RBS_INLINE_KEYWORDS = %w[inherits override use module-self generic skip module class].freeze #: Array[String]
           RBS_INLINE_KEYWORD_PATTERN = RBS_INLINE_KEYWORDS.join("|") #: String
 
           SIGNATURE_PATTERN = '\(.*\)\s*(\??\s*{.*?}\s*)?->\s*.*'
