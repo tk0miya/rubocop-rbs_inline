@@ -106,7 +106,7 @@ module RuboCop
             insert_position = find_insert_position
             add_offense(first_line_range, message: MSG_MISSING) do |corrector|
               insert_range = Parser::Source::Range.new(processed_source.buffer, insert_position, insert_position)
-              corrector.insert_before(insert_range, "# rbs_inline: enabled\n")
+              corrector.insert_before(insert_range, insertion_text(insert_position))
             end
           end
 
@@ -125,7 +125,19 @@ module RuboCop
             return 0 unless first_comment&.source_range&.first_line == 1
 
             last_comment_in_block = find_last_comment_in_first_block
-            last_comment_in_block.source_range.end_pos + 1
+            # `end_pos` points at the newline terminating the comment, so `+ 1` moves past it.
+            # A file without a trailing newline has none, so clamp to the end of the buffer.
+            (last_comment_in_block.source_range.end_pos + 1).clamp(0, processed_source.buffer.source.length)
+          end
+
+          # The insert position lands at the end of the buffer when the file has no trailing
+          # newline. The magic comment then needs its own newline to stay on a separate line.
+          # @rbs insert_position: Integer
+          def insertion_text(insert_position) #: String
+            source = processed_source.buffer.source
+            return "# rbs_inline: enabled\n" if insert_position.zero? || source[insert_position - 1] == "\n"
+
+            "\n# rbs_inline: enabled\n"
           end
 
           def find_last_comment_in_first_block #: Parser::Source::Comment

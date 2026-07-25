@@ -92,6 +92,22 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
         end
       end
 
+      context "when the leading comment block ends without a trailing newline" do
+        it "registers an offense and inserts the magic comment on its own line" do
+          expect_offense(<<~RUBY.chomp)
+            # frozen_string_literal: true
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing `# rbs_inline:` magic comment.
+            # encoding: utf-8
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # frozen_string_literal: true
+            # encoding: utf-8
+            # rbs_inline: enabled
+          RUBY
+        end
+      end
+
       context "when the pragma has extra spaces (malformed)" do
         it "does not accept the malformed pragma and registers an offense" do
           expect_offense(<<~RUBY)

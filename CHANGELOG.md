@@ -10,6 +10,7 @@
 ### Bug fixes
 
 - **Style/RbsInline/UnmatchedAnnotations**: Fixed a crash on method definitions taking a destructuring argument (ex. `def foo((a, b))`). The crash also aborted the inspection of the method definition, causing false positives on its valid annotations.
+- **Style/RbsInline/RequireRbsInlineComment**: Fixed a crash (`IndexError`) on a file whose leading comment block ends without a trailing newline. The offense is now reported and the magic comment is inserted on its own line.
 
 ### Deprecations
 
