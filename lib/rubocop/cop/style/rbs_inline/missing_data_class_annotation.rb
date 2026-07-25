@@ -23,6 +23,7 @@ module RuboCop
         class MissingDataClassAnnotation < Base
           prepend FileFilter
           include MissingClassAnnotation
+          include DataClassMatcher
           extend AutoCorrector
 
           MSG = "Missing inline type annotation for Data attribute (e.g., `#: Type`)."
@@ -32,15 +33,6 @@ module RuboCop
             return unless struct_like_class?(node)
 
             check_missing_annotations(node)
-          end
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?(node) #: bool
-            return false unless node.method_name == :define
-
-            (r = node.receiver).is_a?(RuboCop::AST::ConstNode) && r.short_name == :Data
           end
         end
       end

@@ -29,15 +29,12 @@ module RuboCop
         class DataDefineWithBlock < Base
           prepend FileFilter
 
+          include DataClassMatcher
+
           MSG: ::String
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send: (RuboCop::AST::SendNode node) -> void
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?: (RuboCop::AST::SendNode node) -> bool
         end
       end
     end

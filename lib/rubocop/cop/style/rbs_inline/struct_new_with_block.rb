@@ -26,6 +26,7 @@ module RuboCop
         #
         class StructNewWithBlock < Base
           prepend FileFilter
+          include StructClassMatcher
 
           MSG = "Do not use `Struct.new` with a block. RBS::Inline does not parse block contents, " \
                 "so methods defined in the block will not be recognized. " \
@@ -39,15 +40,6 @@ module RuboCop
             return unless block_node&.block_type?
 
             add_offense(node)
-          end
-
-          private
-
-          # @rbs node: RuboCop::AST::SendNode
-          def struct_like_class?(node) #: bool
-            return false unless node.method_name == :new
-
-            (r = node.receiver).is_a?(RuboCop::AST::ConstNode) && r.short_name == :Struct
           end
         end
       end
