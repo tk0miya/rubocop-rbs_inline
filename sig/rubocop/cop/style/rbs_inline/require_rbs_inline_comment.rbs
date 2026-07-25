@@ -83,6 +83,11 @@ module RuboCop
 
           def find_insert_position: () -> Integer
 
+          # The insert position lands at the end of the buffer when the file has no trailing
+          # newline. The magic comment then needs its own newline to stay on a separate line.
+          # @rbs insert_position: Integer
+          def insertion_text: (Integer insert_position) -> String
+
           def find_last_comment_in_first_block: () -> Parser::Source::Comment
 
           def effective_mode: () -> FileFilter::mode
