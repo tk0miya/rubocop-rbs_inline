@@ -3,142 +3,164 @@
 RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :config do
   let(:config) { RuboCop::Config.new }
 
-  it "registers an offense and corrects an annotation that is too close" do
-    expect_offense(<<~RUBY)
-      MethodEntry = Data.define(
-        :name, #: Symbol
-               ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+  context "when an annotation is too close" do
+    it "registers an offense and corrects it" do
+      expect_offense(<<~RUBY)
+        MethodEntry = Data.define(
+          :name, #: Symbol
+                 ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,       #: Symbol
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,       #: Symbol
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
+    end
   end
 
-  it "registers an offense and corrects an annotation that is too far" do
-    expect_offense(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,           #: Symbol
-                         ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+  context "when an annotation is too far" do
+    it "registers an offense and corrects it" do
+      expect_offense(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,           #: Symbol
+                           ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,       #: Symbol
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,       #: Symbol
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
+    end
   end
 
-  it "registers offenses and corrects multiple misaligned annotations" do
-    expect_offense(<<~RUBY)
-      MethodEntry = Data.define(
-        :name, #: Symbol
-               ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        :node, #: Parser::AST::Node
-               ^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        :visibility #: Symbol
-                    ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-      )
-    RUBY
+  context "when multiple annotations are misaligned" do
+    it "registers offenses and corrects them" do
+      expect_offense(<<~RUBY)
+        MethodEntry = Data.define(
+          :name, #: Symbol
+                 ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          :node, #: Parser::AST::Node
+                 ^^^^^^^^^^^^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          :visibility #: Symbol
+                      ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,       #: Symbol
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,       #: Symbol
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense when all annotations are already aligned" do
-    expect_no_offenses(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,       #: Symbol
-        :node,       #: Parser::AST::Node
-        :visibility  #: Symbol
-      )
-    RUBY
+  context "when all annotations are already aligned" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,       #: Symbol
+          :node,       #: Parser::AST::Node
+          :visibility  #: Symbol
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense when there are no annotations" do
-    expect_no_offenses(<<~RUBY)
-      MethodEntry = Data.define(
-        :name,
-        :node,
-        :visibility
-      )
-    RUBY
+  context "when there are no annotations" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        MethodEntry = Data.define(
+          :name,
+          :node,
+          :visibility
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense when only one attribute has an annotation" do
-    expect_no_offenses(<<~RUBY)
-      AggregatedResult = Data.define(
-        :results,
-        :errors  #: Array[String]
-      )
-    RUBY
+  context "when only one attribute has an annotation" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        AggregatedResult = Data.define(
+          :results,
+          :errors  #: Array[String]
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense when there is only one attribute with an annotation" do
-    expect_no_offenses(<<~RUBY)
-      Foo = Data.define(
-        :bar  #: String
-      )
-    RUBY
+  context "when there is only one attribute with an annotation" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Foo = Data.define(
+          :bar  #: String
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense for folded Data.define" do
-    expect_no_offenses(<<~RUBY)
-      MethodEntry = Data.define(:name, :node, :visibility)
-    RUBY
+  context "with folded Data.define" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        MethodEntry = Data.define(:name, :node, :visibility)
+      RUBY
+    end
   end
 
-  it "does not register an offense for attributes folded inside parentheses" do
-    expect_no_offenses(<<~RUBY)
-      MethodEntry = Data.define(
-        :name, :node, :visibility
-      )
-    RUBY
+  context "with attributes folded inside parentheses" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        MethodEntry = Data.define(
+          :name, :node, :visibility
+        )
+      RUBY
+    end
   end
 
-  it "does not register an offense for other method calls named define" do
-    expect_no_offenses(<<~RUBY)
-      Foo.define(
-        :name, #: Symbol
-        :node, #: Parser::AST::Node
-      )
-    RUBY
+  context "with other method calls named define" do
+    it "does not register an offense" do
+      expect_no_offenses(<<~RUBY)
+        Foo.define(
+          :name, #: Symbol
+          :node, #: Parser::AST::Node
+        )
+      RUBY
+    end
   end
 
-  it "handles splat arguments correctly" do
-    expect_offense(<<~RUBY)
-      Data.define(
-        :foo, #: Integer
-              ^^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        :bar, #: String
-              ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
-        *QUX_QUUX
-      )
-    RUBY
+  context "with splat arguments" do
+    it "handles them correctly" do
+      expect_offense(<<~RUBY)
+        Data.define(
+          :foo, #: Integer
+                ^^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          :bar, #: String
+                ^^^^^^^^^ Style/RbsInline/DataClassCommentAlignment: Misaligned inline type annotation for Data attribute.
+          *QUX_QUUX
+        )
+      RUBY
 
-    expect_correction(<<~RUBY)
-      Data.define(
-        :foo,      #: Integer
-        :bar,      #: String
-        *QUX_QUUX
-      )
-    RUBY
+      expect_correction(<<~RUBY)
+        Data.define(
+          :foo,      #: Integer
+          :bar,      #: String
+          *QUX_QUUX
+        )
+      RUBY
+    end
   end
 end
