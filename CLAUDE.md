@@ -23,7 +23,7 @@ bundle exec rake rubocop:autocorrect_all   # all autocorrect
 bundle exec rake steep                     # runs steep check
 bundle exec rake rbs:validate              # validates RBS signatures
 
-# Default rake task (runs specs, rubocop, and type check)
+# Default rake task (rubocop, specs, steep, rbs:validate)
 bundle exec rake
 
 # Generate a new cop
@@ -34,31 +34,35 @@ bundle exec rake 'new_cop[Style/RbsInline/CopName]'
 
 ### Cop Structure
 
-All cops live under `RuboCop::Cop::Style::RbsInline` namespace in `lib/rubocop/cop/style/rbs_inline/`. Each cop validates a different aspect of RBS::Inline annotations:
+All cops live under the `RuboCop::Cop::Style::RbsInline` namespace in `lib/rubocop/cop/style/rbs_inline/`, one cop per file. `config/default.yml` lists every cop and its options; read it instead of a list kept here.
 
-- **InvalidComment** - Validates `#:` and `# @rbs` comment syntax
-- **InvalidTypes** - Validates RBS type syntax in annotations
-- **KeywordSeparator** - Ensures keywords like `module-self` aren't followed by `:`
-- **ParametersSeparator** - Ensures parameter annotations use `:` separator
-- **RedundantArgumentType** - Detects redundant argument type specs (configurable style)
-- **RedundantReturnType** - Detects redundant return type specs (3 style options)
-- **UnmatchedAnnotations** - Ensures annotation parameters match actual method parameters
+The other files in that directory are shared modules:
 
-### Shared CommentParser Module
+- **`ASTUtils`** - node-level helpers.
+- **`SourceCodeHelper`** - `processed_source` access, Prism-to-`Parser::Source::Range` conversion.
+- **`CommentParser`** - parses annotations and locates them relative to a method definition.
+- **`DataStructHelper`** - helpers over a matched `Data.define` / `Struct.new` node.
+- **`ClassCommentAlignment`**, **`MissingClassAnnotation`** - shared by the `Data` / `Struct` cop pairs.
+- **`FileFilter`** - the `Mode` (opt-in / opt-out) file filter.
 
-`comment_parser.rb` is a module mixed into cops that need to parse RBS::Inline annotations. It uses `RBS::Inline::AnnotationParser` and Prism to parse comments, and provides helpers for finding leading annotations, inline comments, and return annotations relative to method definitions.
+Conventions:
+
+- `FileFilter` is `prepend`ed, not included, so it can short-circuit before the cop parses. Every cop prepends it except `RequireRbsInlineComment`.
+- `Data.define` and `Struct.new` cops come in pairs sharing a base module. Behavior belongs in the module; only the node matcher and `MSG` in the cop.
 
 ### Plugin System
 
-The gem integrates with RuboCop via LintRoller (`lib/rubocop/rbs_inline/plugin.rb`). Default cop configuration is in `config/default.yml`.
+The gem integrates with RuboCop via LintRoller (`lib/rubocop/rbs_inline/plugin.rb`), which points RuboCop at `config/default.yml`.
 
 ### Type Signatures
 
-RBS type signatures for all source files are maintained in `sig/` directory. The project uses Steep for static type checking, configured via `Steepfile`.
+`sig/` is generated from `lib/` by the hooks in `.claude/hooks/`. Never write anything under `sig/`.
 
 ### Testing Pattern
 
 Tests use RuboCop's RSpec support helpers (`expect_offense` / `expect_no_offenses`). Test files mirror the cop file structure under `spec/rubocop/cop/style/rbs_inline/`.
+
+`:config` specs build a bare `RuboCop::Config`, so `config/default.yml` and RuboCop's department-to-cop defaults are not merged in. A spec that sets a value at the department level proves nothing about how it resolves in a real run.
 
 ## Code Style Notes
 
