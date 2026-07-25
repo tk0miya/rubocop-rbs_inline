@@ -1,0 +1,63 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/file_filter.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Filters files a cop reports offenses on, based on `Mode` configuration.
+        #
+        # When `Mode` is `opt_in`, offenses are only reported for files that contain
+        # a `# rbs_inline: enabled` magic comment. When `Mode` is `opt_out`, all files
+        # are checked unless they contain `# rbs_inline: disabled`. When `Mode` is not
+        # set, all files are checked (legacy behavior).
+        #
+        # This module is designed to be `prepend`ed to a cop so that it can short-circuit
+        # the cop's heavy work (annotation parsing via `parse_comments`) and suppress any
+        # residual offense reporting for files that should be skipped.
+        #
+        # @rbs module-self RuboCop::Cop::Base
+        module FileFilter : RuboCop::Cop::Base
+          type mode = :opt_in | :opt_out
+
+          MAGIC_COMMENT_ENABLED: Regexp
+
+          MAGIC_COMMENT_DISABLED: Regexp
+
+          SUPPORTED_MODES: Array[mode]
+
+          self.@warned_invalid_modes: Hash[String, bool]
+
+          # @rbs raw: untyped
+          def self.warn_invalid_mode: (untyped raw) -> void
+
+          @rbs_inline_skip_file: bool
+
+          def on_new_investigation: () -> void
+
+          # @rbs *args: untyped
+          # @rbs **kwargs: untyped
+          def add_offense: (*untyped args, **untyped kwargs) ?{ (?) -> untyped } -> void
+
+          # Exposes the FileFilter's per-file skip decision as a proper method so
+          # helper modules (e.g. `CommentParser`) can consult it explicitly instead
+          # of poking at `@rbs_inline_skip_file` directly.
+          def rbs_inline_file_skipped?: () -> bool
+
+          private
+
+          def skip_by_mode?: () -> bool
+
+          def configured_mode: () -> mode?
+
+          # Iterate the already-materialized `processed_source.comments` so this
+          # matches RequireRbsInlineComment's detection exactly (line endings,
+          # indented comments, heredoc/string content are all handled correctly
+          # by the parser).
+          def rbs_inline_enabled?: () -> bool
+
+          def rbs_inline_disabled?: () -> bool
+        end
+      end
+    end
+  end
+end

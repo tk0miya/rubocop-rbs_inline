@@ -52,6 +52,8 @@ module RuboCop
         #   private def method(x)
         #   end
         class MethodCommentSpacing < Base
+          prepend FileFilter
+
           extend AutoCorrector
 
           include RangeHelp

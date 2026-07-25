@@ -22,6 +22,8 @@ module RuboCop
         #   def method
         #   end
         class EmbeddedRbsSpacing < Base
+          prepend FileFilter
+
           extend AutoCorrector
 
           include SourceCodeHelper

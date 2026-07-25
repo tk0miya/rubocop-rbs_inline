@@ -64,7 +64,7 @@ Style/RbsInline/RedundantTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
 
 Style/RbsInline/RequireRbsInlineComment:
-  EnforcedStyle: never
+  Mode: opt_out
 
 # Style
 Style/AccessorGrouping:

@@ -22,6 +22,7 @@ module RuboCop
         #   )
         #
         class MissingStructClassAnnotation < Base
+          prepend FileFilter
           include MissingClassAnnotation
           extend AutoCorrector
 

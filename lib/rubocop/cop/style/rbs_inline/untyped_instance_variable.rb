@@ -59,6 +59,7 @@ module RuboCop
         #   end
         #
         class UntypedInstanceVariable < Base
+          prepend FileFilter
           include ASTUtils
           include CommentParser
           include RangeHelp

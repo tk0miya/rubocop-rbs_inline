@@ -113,6 +113,8 @@ module RuboCop
         #   # good - attr with trailing type
         #   attr_reader :name #: String
         class MissingTypeAnnotation < Base
+          prepend FileFilter
+
           include ASTUtils
 
           include CommentParser

@@ -80,6 +80,7 @@ module RuboCop
         #   end
         #
         class RedundantTypeAnnotation < Base
+          prepend FileFilter
           extend AutoCorrector
           include CommentParser
           include ConfigurableEnforcedStyle
