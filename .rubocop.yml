@@ -63,14 +63,14 @@ RSpec/SpecFilePathFormat:
     - "spec/rubocop/cop/style/rbs_inline/mixin/**/*_spec.rb"
 
 # RbsInline
+Style/RbsInline:
+  Mode: opt_out
+
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
 
 Style/RbsInline/RedundantTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
-
-Style/RbsInline/RequireRbsInlineComment:
-  Mode: opt_out
 
 # Style
 Style/AccessorGrouping:

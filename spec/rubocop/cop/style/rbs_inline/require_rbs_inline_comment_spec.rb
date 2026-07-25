@@ -6,9 +6,17 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
     allow(Kernel).to receive(:warn)
   end
 
-  shared_examples "opt_in behavior" do |base_config|
+  # `Mode` is a department-level setting; everything else belongs to the cop.
+  def config_for(mode, cop_params)
+    RuboCop::Config.new(
+      "Style/RbsInline" => mode ? { "Mode" => mode } : {},
+      "Style/RbsInline/RequireRbsInlineComment" => cop_params
+    )
+  end
+
+  shared_examples "opt_in behavior" do |mode, cop_params = {}|
     context "when AllowMissingComment is false (default)" do
-      let(:config) { RuboCop::Config.new("Style/RbsInline/RequireRbsInlineComment" => base_config) }
+      let(:config) { config_for(mode, cop_params) }
 
       context "when the file has `# rbs_inline: enabled`" do
         it "does not register an offense" do
@@ -146,11 +154,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
     end
 
     context "when AllowMissingComment is true" do
-      let(:config) do
-        RuboCop::Config.new(
-          "Style/RbsInline/RequireRbsInlineComment" => base_config.merge("AllowMissingComment" => true)
-        )
-      end
+      let(:config) { config_for(mode, cop_params.merge("AllowMissingComment" => true)) }
 
       context "when the file has `# rbs_inline: enabled`" do
         it "does not register an offense" do
@@ -183,8 +187,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
     end
   end
 
-  shared_examples "opt_out behavior" do |base_config|
-    let(:config) { RuboCop::Config.new("Style/RbsInline/RequireRbsInlineComment" => base_config) }
+  shared_examples "opt_out behavior" do |mode, cop_params = {}|
+    let(:config) { config_for(mode, cop_params) }
 
     context "when the file has `# rbs_inline: enabled`" do
       it "registers an offense and removes the magic comment" do
@@ -223,30 +227,28 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
   end
 
   context "when Mode is opt_in" do
-    it_behaves_like "opt_in behavior", { "Mode" => "opt_in" }
+    it_behaves_like "opt_in behavior", "opt_in"
   end
 
   context "when Mode is opt_out" do
-    it_behaves_like "opt_out behavior", { "Mode" => "opt_out" }
+    it_behaves_like "opt_out behavior", "opt_out"
   end
 
   context "when Mode is not set (legacy default)" do
-    it_behaves_like "opt_in behavior", {}
+    it_behaves_like "opt_in behavior", nil
   end
 
   context "when only legacy EnforcedStyle is set" do
     context "with EnforcedStyle: always" do
-      it_behaves_like "opt_in behavior", { "EnforcedStyle" => "always" }
+      it_behaves_like "opt_in behavior", nil, { "EnforcedStyle" => "always" }
     end
 
     context "with EnforcedStyle: never" do
-      it_behaves_like "opt_out behavior", { "EnforcedStyle" => "never" }
+      it_behaves_like "opt_out behavior", nil, { "EnforcedStyle" => "never" }
     end
 
     describe "deprecation warning" do
-      let(:config) do
-        RuboCop::Config.new("Style/RbsInline/RequireRbsInlineComment" => { "EnforcedStyle" => "always" })
-      end
+      let(:config) { config_for(nil, { "EnforcedStyle" => "always" }) }
 
       it "emits a deprecation warning for EnforcedStyle" do
         expect_no_offenses("# rbs_inline: enabled\nclass Foo\nend\n")
@@ -256,6 +258,6 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
   end
 
   context "when Mode overrides EnforcedStyle" do
-    it_behaves_like "opt_out behavior", { "Mode" => "opt_out", "EnforcedStyle" => "always" }
+    it_behaves_like "opt_out behavior", "opt_out", { "EnforcedStyle" => "always" }
   end
 end
