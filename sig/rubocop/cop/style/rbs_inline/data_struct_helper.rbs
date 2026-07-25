@@ -40,9 +40,14 @@ module RuboCop
           # @rbs line: Integer
           def find_regular_comment: (Integer line) -> Parser::Source::Comment?
 
+          # The column is determined by the attribute arguments only; non-attribute
+          # arguments (e.g. the `Struct.new` name or a `keyword_init:` keyword argument)
+          # never carry an annotation and so must not influence the alignment.
           # @rbs node: RuboCop::AST::SendNode
           def annotation_column: (RuboCop::AST::SendNode node) -> Integer
 
+          # Only attribute arguments are considered, for the same reason as
+          # {#annotation_column}.
           # @rbs node: RuboCop::AST::SendNode
           def longest_argname: (RuboCop::AST::SendNode node) -> String
 

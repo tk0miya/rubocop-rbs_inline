@@ -94,12 +94,48 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::StructClassCommentAlignment, :con
   end
 
   context "with a leading string argument (struct name)" do
-    it "aligns annotations accounting for it" do
+    context "when the annotations are aligned to the attributes" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          Point = Struct.new(
+            "Point",
+            :x,  #: Integer
+            :y   #: Integer
+          )
+        RUBY
+      end
+    end
+
+    context "when the annotations are aligned to the struct name" do
+      it "registers an offense and corrects it" do
+        expect_offense(<<~RUBY)
+          Point = Struct.new(
+            "Point",
+            :x,       #: Integer
+                      ^^^^^^^^^^ Style/RbsInline/StructClassCommentAlignment: Misaligned inline type annotation for Struct attribute.
+            :y        #: Integer
+                      ^^^^^^^^^^ Style/RbsInline/StructClassCommentAlignment: Misaligned inline type annotation for Struct attribute.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Point = Struct.new(
+            "Point",
+            :x,  #: Integer
+            :y   #: Integer
+          )
+        RUBY
+      end
+    end
+  end
+
+  context "with the keyword_init: keyword argument" do
+    it "does not register an offense" do
       expect_no_offenses(<<~RUBY)
         Point = Struct.new(
-          "Point",
-          :x,       #: Integer
-          :y        #: Integer
+          :x,  #: Integer
+          :y,  #: Integer
+          keyword_init: true
         )
       RUBY
     end
@@ -119,8 +155,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::StructClassCommentAlignment, :con
 
       expect_correction(<<~RUBY)
         Struct.new(
-          :foo,      #: Integer
-          :bar,      #: String
+          :foo,  #: Integer
+          :bar,  #: String
           *QUX_QUUX
         )
       RUBY

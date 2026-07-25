@@ -198,9 +198,9 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingDataClassAnnotation, :conf
 
       expect_correction(<<~RUBY)
         Data.define(
-          :foo,      #: untyped
-          :bar,      #: untyped
-          :baz,      #: untyped
+          :foo,  #: untyped
+          :bar,  #: untyped
+          :baz,  #: untyped
           *QUX_QUUX
         )
       RUBY

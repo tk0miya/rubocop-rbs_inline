@@ -57,10 +57,13 @@ module RuboCop
             comment unless comment&.text&.match?(/\A#:/)
           end
 
+          # The column is determined by the attribute arguments only; non-attribute
+          # arguments (e.g. the `Struct.new` name or a `keyword_init:` keyword argument)
+          # never carry an annotation and so must not influence the alignment.
           # @rbs node: RuboCop::AST::SendNode
           def annotation_column(node) #: Integer
             last_arg = node.arguments.last
-            max_end_col = node.arguments.map do |arg|
+            max_end_col = attr_arguments(node).map do |arg|
               comma_length = arg.equal?(last_arg) ? 0 : 1
               arg.location.column + source!(arg).length + comma_length
             end.max || 0
@@ -68,10 +71,12 @@ module RuboCop
             max_end_col + 2
           end
 
+          # Only attribute arguments are considered, for the same reason as
+          # {#annotation_column}.
           # @rbs node: RuboCop::AST::SendNode
           def longest_argname(node) #: String
-            last_index = node.arguments.size - 1
-            args = node.arguments.each_with_index.map { |a, i| i < last_index ? "#{a.source}," : a.source.to_s }
+            last_arg = node.arguments.last
+            args = attr_arguments(node).map { _1.equal?(last_arg) ? _1.source.to_s : "#{_1.source}," }
             args.max_by(&:length) || ""
           end
 
@@ -84,8 +89,12 @@ module RuboCop
             args_source = node.arguments.each_with_index.map do |arg, i|
               comma = i < last_index ? "," : ""
               prefix = "#{base_indent}  #{arg.source}#{comma}"
-              padding = " " * (longest.length - source!(arg).length - comma.length + 2)
-              attr_argument?(arg) ? "#{prefix}#{padding}#: untyped" : prefix
+              if attr_argument?(arg)
+                padding = " " * (longest.length - source!(arg).length - comma.length + 2)
+                "#{prefix}#{padding}#: untyped"
+              else
+                prefix
+              end
             end.join("\n")
 
             "(\n#{args_source}\n#{base_indent})"
