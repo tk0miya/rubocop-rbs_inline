@@ -56,6 +56,12 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Max: 5
 
+# Mixin specs mirror `lib/.../rbs_inline/mixin/`, but the modules keep the
+# `RuboCop::Cop::Style::RbsInline` namespace, so the path never matches the constant.
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - "spec/rubocop/cop/style/rbs_inline/mixin/**/*_spec.rb"
+
 # RbsInline
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation

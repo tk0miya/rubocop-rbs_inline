@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "style/rbs_inline/ast_utils"
-require_relative "style/rbs_inline/source_code_helper"
-require_relative "style/rbs_inline/comment_parser"
-require_relative "style/rbs_inline/data_struct_helper"
-require_relative "style/rbs_inline/missing_class_annotation"
-require_relative "style/rbs_inline/class_comment_alignment"
-require_relative "style/rbs_inline/file_filter"
+# Mixins first, in dependency order. Cops follow, alphabetically: `rake new_cop` sorts a
+# generated require only against the others in the same directory, so the two blocks have
+# to stay apart for it to land in the right place.
+require_relative "style/rbs_inline/mixin/ast_utils"
+require_relative "style/rbs_inline/mixin/source_code_helper"
+require_relative "style/rbs_inline/mixin/comment_parser"
+require_relative "style/rbs_inline/mixin/data_struct_helper"
+require_relative "style/rbs_inline/mixin/missing_class_annotation"
+require_relative "style/rbs_inline/mixin/class_comment_alignment"
+require_relative "style/rbs_inline/mixin/file_filter"
+
 require_relative "style/rbs_inline/data_class_comment_alignment"
 require_relative "style/rbs_inline/data_define_with_block"
 require_relative "style/rbs_inline/embedded_rbs_spacing"
