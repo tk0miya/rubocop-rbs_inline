@@ -28,6 +28,7 @@ module RuboCop
         #   attr_reader :foo
         #
         class RedundantInstanceVariableAnnotation < Base
+          prepend FileFilter
           extend AutoCorrector
           include ASTUtils
           include CommentParser

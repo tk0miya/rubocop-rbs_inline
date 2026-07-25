@@ -9,6 +9,10 @@ module RuboCop
         module CommentParser : RuboCop::Cop::Base
           attr_reader parsed_comments: Array[RBS::Inline::AnnotationParser::ParsingResult]
 
+          # Fallback for cops that include CommentParser without prepending FileFilter;
+          # `FileFilter` overrides this to return the real per-file decision.
+          def rbs_inline_file_skipped?: () -> bool
+
           # Parse comments from the source code
           def parse_comments: () -> Array[RBS::Inline::AnnotationParser::ParsingResult]
 

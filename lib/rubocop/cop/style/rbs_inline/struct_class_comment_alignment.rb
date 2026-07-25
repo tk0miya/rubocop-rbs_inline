@@ -24,6 +24,7 @@ module RuboCop
         #   )
         #
         class StructClassCommentAlignment < Base
+          prepend FileFilter
           include ClassCommentAlignment
           extend AutoCorrector
 

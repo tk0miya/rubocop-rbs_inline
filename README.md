@@ -27,6 +27,23 @@ plugins:
 
 rubocop-rbs_inline provides the following cops to validate [RBS::Inline](https://github.com/soutaro/rbs-inline) annotations:
 
+### Style/RbsInline (shared configuration)
+
+The `Style/RbsInline` department has a shared `Mode` setting that gates whether each `Style/RbsInline/*` cop reports offenses on a given file:
+
+- `Mode: opt_in` — cops only check files that carry `# rbs_inline: enabled`. Files with `# rbs_inline: disabled` or no magic comment are skipped. Matches RBS::Inline's opt-in mode.
+- `Mode: opt_out` — cops check every file except those with `# rbs_inline: disabled`. Matches RBS::Inline's opt-out mode.
+- unset — cops check every file (legacy behavior; the default will change to `opt_in` in the next major release).
+
+Declare it once at the department level in your `.rubocop.yml`:
+
+```yaml
+Style/RbsInline:
+  Mode: opt_in
+```
+
+Unknown `Mode` values (e.g. `Mode: opt-in`) emit a warning and disable filtering for the run.
+
 ### Style/RbsInline/DataClassCommentAlignment
 
 Checks that `#:` inline type annotations in a multiline `Data.define` call are aligned to the same column. The expected column is determined by the longest attribute name (plus its trailing comma). Folded `Data.define` calls (where multiple attributes share a line) are excluded.
@@ -466,15 +483,40 @@ end
 
 ### Style/RbsInline/RequireRbsInlineComment
 
-Enforces presence or absence of `# rbs_inline:` magic comment for consistency.
+Enforces the presence or absence of the `# rbs_inline:` magic comment, based on the shared [`Mode`](#stylerbsinline-shared-configuration) setting:
 
-**Configuration:** `EnforcedStyle` (default: `always`)
-- `always`: Requires `# rbs_inline: enabled` or `# rbs_inline: disabled`
-- `never`: Forbids `# rbs_inline: enabled` (allows `# rbs_inline: disabled`)
+- Under `Mode: opt_in`, files must carry `# rbs_inline: enabled` (or `# rbs_inline: disabled`).
+- Under `Mode: opt_out`, files must not carry `# rbs_inline: enabled`.
 
-**Examples (EnforcedStyle: always):**
+**Configuration:**
+
+- `AllowMissingComment` (default: `false`) — under `Mode: opt_in`, set to `true` to skip enforcement of the magic comment on individual files. Useful when only part of the project uses rbs-inline: the shared `Mode: opt_in` filter still applies to every other cop (they only report on files that opt in), but this cop stops requiring the magic comment on files that intentionally do not use rbs-inline.
+
+```yaml
+Style/RbsInline:
+  Mode: opt_in
+
+Style/RbsInline/RequireRbsInlineComment:
+  AllowMissingComment: true
+```
+
+The legacy `EnforcedStyle` parameter (`always` / `never`) is deprecated in favor of `Mode`; it will be removed in the next major release.
+
+**Examples (Mode: opt_in):**
 ```ruby
 # bad
+class Foo
+end
+
+# good
+# rbs_inline: enabled
+class Foo
+end
+```
+
+**Examples (Mode: opt_in, AllowMissingComment: true):**
+```ruby
+# good - the magic comment is not enforced per file
 class Foo
 end
 
@@ -612,6 +654,8 @@ Style/RbsInline/RedundantTypeAnnotation:
 Style/RbsInline/MissingTypeAnnotation:
   Visibility: public
 ```
+
+To restrict every cop to files that carry `# rbs_inline: enabled`, see [Style/RbsInline (shared configuration)](#stylerbsinline-shared-configuration).
 
 See [config/default.yml](config/default.yml) for all available configuration options.
 

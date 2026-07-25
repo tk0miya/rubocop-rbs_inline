@@ -55,6 +55,8 @@ module RuboCop
         #   def method(a)
         #   end
         class RedundantAnnotationWithSkip < Base
+          prepend FileFilter
+
           extend AutoCorrector
 
           include CommentParser

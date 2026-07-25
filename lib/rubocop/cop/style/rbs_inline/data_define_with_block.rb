@@ -28,6 +28,8 @@ module RuboCop
         #   end
         #
         class DataDefineWithBlock < Base
+          prepend FileFilter
+
           MSG = "Do not use `Data.define` with a block. RBS::Inline does not parse block contents, " \
                 "so methods defined in the block will not be recognized. " \
                 "Use a separate class definition instead."

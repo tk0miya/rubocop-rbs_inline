@@ -27,6 +27,8 @@ module RuboCop
         #   def method
         #   end
         class VariableCommentSpacing < Base
+          prepend FileFilter
+
           extend AutoCorrector
 
           include SourceCodeHelper

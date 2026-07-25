@@ -31,6 +31,7 @@ module RuboCop
         #   end
         #
         class VariableCommentSpacing < Base
+          prepend FileFilter
           extend AutoCorrector
           include SourceCodeHelper
           include CommentParser

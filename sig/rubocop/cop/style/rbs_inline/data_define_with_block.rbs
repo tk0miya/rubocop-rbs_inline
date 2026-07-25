@@ -27,6 +27,8 @@ module RuboCop
         #     def admin? = role == :admin #: bool
         #   end
         class DataDefineWithBlock < Base
+          prepend FileFilter
+
           MSG: ::String
 
           # @rbs node: RuboCop::AST::SendNode
