@@ -186,12 +186,21 @@ module RuboCop
           def collect_typed_ivars_for_scope(node) #: void
             class_start = node.location.line
             class_end = end_line(node, default: class_start)
-            ivar_type_annotations.reject! do |line, name|
-              current_scope[:typed_ivars] << name if line.between?(class_start, class_end)
-            end
-            civar_type_annotations.reject! do |line, name|
-              current_scope[:typed_class_ivars] << name if line.between?(class_start, class_end)
-            end
+            lines = class_start..class_end
+            move_annotations(ivar_type_annotations, current_scope[:typed_ivars], lines)
+            move_annotations(civar_type_annotations, current_scope[:typed_class_ivars], lines)
+          end
+
+          # Moves the annotations placed within +lines+ from +annotations+ into +typed+
+          # so that outer scopes no longer see them.
+          #
+          # @rbs annotations: Hash[Integer, Symbol]
+          # @rbs typed: Set[Symbol]
+          # @rbs lines: Range[Integer]
+          def move_annotations(annotations, typed, lines) #: void
+            inside, outside = annotations.partition { |line, _name| lines.cover?(line) }
+            typed.merge(inside.map { |_line, name| name })
+            annotations.replace(outside.to_h)
           end
 
           def collect_ivar_type_annotations #: [Hash[Integer, Symbol], Hash[Integer, Symbol]]
