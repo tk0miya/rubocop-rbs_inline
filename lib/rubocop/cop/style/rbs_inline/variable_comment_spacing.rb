@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "source_code_helper"
-require_relative "comment_parser"
+require_relative "mixin/source_code_helper"
+require_relative "mixin/comment_parser"
 
 module RuboCop
   module Cop

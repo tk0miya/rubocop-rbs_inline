@@ -34,20 +34,11 @@ bundle exec rake 'new_cop[Style/RbsInline/CopName]'
 
 ### Cop Structure
 
-All cops live under the `RuboCop::Cop::Style::RbsInline` namespace in `lib/rubocop/cop/style/rbs_inline/`, one cop per file. `config/default.yml` lists every cop and its options; read it instead of a list kept here.
-
-The other files in that directory are shared modules:
-
-- **`ASTUtils`** - node-level helpers.
-- **`SourceCodeHelper`** - `processed_source` access, Prism-to-`Parser::Source::Range` conversion.
-- **`CommentParser`** - parses annotations and locates them relative to a method definition.
-- **`DataStructHelper`** - helpers over a matched `Data.define` / `Struct.new` node.
-- **`ClassCommentAlignment`**, **`MissingClassAnnotation`** - shared by the `Data` / `Struct` cop pairs.
-- **`FileFilter`** - the `Mode` (opt-in / opt-out) file filter.
+Cops live in `lib/rubocop/cop/style/rbs_inline/`, one per file; the shared modules they mix in live in `lib/rubocop/cop/style/rbs_inline/mixin/`. Both are under the `RuboCop::Cop::Style::RbsInline` namespace — only the directory separates them, as in `rubocop`'s `cop/mixin/`. `config/default.yml` lists every cop and its options; read it instead of a list kept here.
 
 Conventions:
 
-- `FileFilter` is `prepend`ed, not included, so it can short-circuit before the cop parses. Every cop prepends it except `RequireRbsInlineComment`.
+- Every cop `prepend`s `FileFilter` except `RequireRbsInlineComment`.
 - `Data.define` and `Struct.new` cops come in pairs sharing a base module. Behavior belongs in the module; only the node matcher and `MSG` in the cop.
 
 ### Plugin System
@@ -56,7 +47,7 @@ The gem integrates with RuboCop via LintRoller (`lib/rubocop/rbs_inline/plugin.r
 
 ### Type Signatures
 
-`sig/` is generated from `lib/` by the hooks in `.claude/hooks/`. Never write anything under `sig/`.
+`sig/rubocop/` is generated from `lib/` by the hooks in `.claude/hooks/`. Never write anything there. `sig/gems/` is hand-written stubs for third-party gems and is *not* regenerated — do not delete it when refreshing signatures.
 
 ### Testing Pattern
 
