@@ -127,6 +127,14 @@ module RuboCop
           # @rbs node: RuboCop::AST::Node
           def collect_typed_ivars_for_scope: (RuboCop::AST::Node node) -> void
 
+          # Moves the annotations placed within +lines+ from +annotations+ into +typed+
+          # so that outer scopes no longer see them.
+          #
+          # @rbs annotations: Hash[Integer, Symbol]
+          # @rbs typed: Set[Symbol]
+          # @rbs lines: Range[Integer]
+          def move_annotations: (Hash[Integer, Symbol] annotations, Set[Symbol] typed, Range[Integer] lines) -> void
+
           def collect_ivar_type_annotations: () -> [ Hash[Integer, Symbol], Hash[Integer, Symbol] ]
 
           # @rbs ann: RBS::Inline::AST::Annotations::IvarType
