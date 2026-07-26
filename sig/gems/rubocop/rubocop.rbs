@@ -12,4 +12,8 @@ module RuboCop
       def no_acceptable_style!: () -> void
     end
   end
+
+  class ConfigObsoletion
+    def self.files: () -> Array[String]
+  end
 end

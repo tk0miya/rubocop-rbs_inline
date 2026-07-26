@@ -60,12 +60,6 @@ module RuboCop
 
           MSG_FORBIDDEN: ::String
 
-          self.@enforced_style_deprecation_warned: bool
-
-          def self.enforced_style_deprecation_warned?: () -> bool
-
-          def self.mark_enforced_style_deprecation_warned!: () -> void
-
           def on_new_investigation: () -> void
 
           private
@@ -93,8 +87,6 @@ module RuboCop
           def effective_mode: () -> FileFilter::mode
 
           def allow_missing_comment?: () -> bool
-
-          def warn_deprecated_enforced_style: () -> void
 
           def first_line_range: () -> Parser::Source::Range
         end

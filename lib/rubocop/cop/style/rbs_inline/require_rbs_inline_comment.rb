@@ -59,22 +59,8 @@ module RuboCop
           MSG_MISSING = "Missing `# rbs_inline:` magic comment."
           MSG_FORBIDDEN = "Remove `# rbs_inline:` magic comment."
 
-          # @rbs self.@enforced_style_deprecation_warned: bool
-
-          @enforced_style_deprecation_warned = false # rubocop:disable Style/RbsInline/UntypedInstanceVariable
-
-          def self.enforced_style_deprecation_warned? #: bool
-            @enforced_style_deprecation_warned == true
-          end
-
-          def self.mark_enforced_style_deprecation_warned! #: void
-            @enforced_style_deprecation_warned = true
-          end
-
           def on_new_investigation #: void
             return if processed_source.buffer.source.empty?
-
-            warn_deprecated_enforced_style
 
             magic_comment = find_rbs_inline_magic_comment
             return if disabled?(magic_comment)
@@ -169,19 +155,6 @@ module RuboCop
 
           def allow_missing_comment? #: bool
             cop_config["AllowMissingComment"] == true
-          end
-
-          def warn_deprecated_enforced_style #: void
-            return if self.class.enforced_style_deprecation_warned?
-            return if cop_config["EnforcedStyle"].nil?
-
-            self.class.mark_enforced_style_deprecation_warned!
-            Kernel.warn(
-              "[rubocop-rbs_inline] Style/RbsInline/RequireRbsInlineComment.EnforcedStyle is deprecated. " \
-              "Please migrate to `Style/RbsInline: Mode: opt_in` (was `EnforcedStyle: always`) or " \
-              "`Style/RbsInline: Mode: opt_out` (was `EnforcedStyle: never`). " \
-              "EnforcedStyle will be removed in the next major version."
-            )
           end
 
           def first_line_range #: Parser::Source::Range

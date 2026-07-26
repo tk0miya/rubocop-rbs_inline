@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config do
-  before do
-    described_class.instance_variable_set(:@enforced_style_deprecation_warned, false)
-    allow(Kernel).to receive(:warn)
-  end
-
   # `Mode` is a department-level setting; everything else belongs to the cop.
   def config_for(mode, cop_params)
     RuboCop::Config.new(
@@ -245,15 +240,6 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RequireRbsInlineComment, :config 
 
     context "with EnforcedStyle: never" do
       it_behaves_like "opt_out behavior", nil, { "EnforcedStyle" => "never" }
-    end
-
-    describe "deprecation warning" do
-      let(:config) { config_for(nil, { "EnforcedStyle" => "always" }) }
-
-      it "emits a deprecation warning for EnforcedStyle" do
-        expect_no_offenses("# rbs_inline: enabled\nclass Foo\nend\n")
-        expect(Kernel).to have_received(:warn).with(/EnforcedStyle is deprecated/)
-      end
     end
   end
 

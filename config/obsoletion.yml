@@ -1,0 +1,11 @@
+# Configuration parameters of this gem that are obsolete or deprecated.
+
+changed_parameters:
+  - cops: Style/RbsInline/RequireRbsInlineComment
+    parameters: EnforcedStyle
+    reason: >
+      `EnforcedStyle` is deprecated in favor of the department-level `Mode` setting.
+      Please migrate `EnforcedStyle: always` to `Style/RbsInline: Mode: opt_in`, and
+      `EnforcedStyle: never` to `Style/RbsInline: Mode: opt_out`.
+      `EnforcedStyle` still works, but it will be removed in the next major version.
+    severity: warning
