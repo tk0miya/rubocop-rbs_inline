@@ -25,6 +25,8 @@ module RuboCop
 
           MSG: ::String
 
+          attr_reader processed_comments: Set[RBS::Inline::AnnotationParser::ParsingResult]
+
           def on_new_investigation: () -> void
 
           # @rbs node: RuboCop::AST::DefNode
@@ -39,6 +41,15 @@ module RuboCop
 
           # @rbs node: RuboCop::AST::DefNode
           def process: (RuboCop::AST::DefNode node) -> void
+
+          # @rbs node: RuboCop::AST::DefNode
+          def leading_comment_for: (RuboCop::AST::DefNode node) -> RBS::Inline::AnnotationParser::ParsingResult?
+
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def mark_processed: (RBS::Inline::AnnotationParser::ParsingResult comment) -> void
+
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def processed?: (RBS::Inline::AnnotationParser::ParsingResult comment) -> bool
 
           # @rbs node: RuboCop::AST::DefNode
           def arguments_for: (RuboCop::AST::DefNode node) -> Array[String]

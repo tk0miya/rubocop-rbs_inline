@@ -25,8 +25,11 @@ module RuboCop
 
           MSG = "target parameter not found."
 
+          attr_reader :processed_comments #: Set[RBS::Inline::AnnotationParser::ParsingResult] -- matched to a def node
+
           def on_new_investigation #: void
             super
+            @processed_comments = Set.new
             parse_comments
           end
 
@@ -42,6 +45,8 @@ module RuboCop
 
           def on_investigation_end #: void
             parsed_comments.each do |comment|
+              next if processed?(comment)
+
               comment.each_annotation do |annotation|
                 case annotation
                 when RBS::Inline::AST::Annotations::BlockType,
@@ -58,15 +63,13 @@ module RuboCop
           private
 
           # @rbs node: RuboCop::AST::DefNode
-          def process(node) #: void # rubocop:disable Metrics/CyclomaticComplexity
+          def process(node) #: void
             arguments = arguments_for(node)
 
-            comment = parsed_comments.find do |r|
-              r.comments.map(&:location).map(&:start_line).include?(node.location.line - 1)
-            end
+            comment = leading_comment_for(node)
             return unless comment
 
-            parsed_comments.delete(comment)
+            mark_processed(comment)
             comment.each_annotation do |annotation|
               case annotation
               when RBS::Inline::AST::Annotations::IvarType
@@ -75,6 +78,25 @@ module RuboCop
                 add_offense_for(annotation) unless arguments.include?(annotation_name(annotation))
               end
             end
+          end
+
+          # @rbs node: RuboCop::AST::DefNode
+          def leading_comment_for(node) #: RBS::Inline::AnnotationParser::ParsingResult?
+            parsed_comments.find do |comment|
+              next if processed?(comment)
+
+              comment.comments.map(&:location).map(&:start_line).include?(node.location.line - 1)
+            end
+          end
+
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def mark_processed(comment) #: void
+            processed_comments << comment
+          end
+
+          # @rbs comment: RBS::Inline::AnnotationParser::ParsingResult
+          def processed?(comment) #: bool
+            processed_comments.include?(comment)
           end
 
           # @rbs node: RuboCop::AST::DefNode
