@@ -7,6 +7,12 @@ module Parser
 end
 
 module RuboCop
+  class Error < StandardError
+  end
+
+  class ValidationError < Error
+  end
+
   module Cop
     module ConfigurableEnforcedStyle
       def no_acceptable_style!: () -> void

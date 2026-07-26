@@ -53,33 +53,20 @@ module RuboCop
         #   end
         #
         class RequireRbsInlineComment < Base
+          include ModeConfig
           include RangeHelp
           extend AutoCorrector
 
           MSG_MISSING = "Missing `# rbs_inline:` magic comment."
           MSG_FORBIDDEN = "Remove `# rbs_inline:` magic comment."
 
-          # @rbs self.@enforced_style_deprecation_warned: bool
-
-          @enforced_style_deprecation_warned = false # rubocop:disable Style/RbsInline/UntypedInstanceVariable
-
-          def self.enforced_style_deprecation_warned? #: bool
-            @enforced_style_deprecation_warned == true
-          end
-
-          def self.mark_enforced_style_deprecation_warned! #: void
-            @enforced_style_deprecation_warned = true
-          end
-
           def on_new_investigation #: void
             return if processed_source.buffer.source.empty?
-
-            warn_deprecated_enforced_style
 
             magic_comment = find_rbs_inline_magic_comment
             return if disabled?(magic_comment)
 
-            case effective_mode
+            case configured_mode
             when :opt_in then check_opt_in(magic_comment)
             when :opt_out then check_opt_out(magic_comment)
             end
@@ -154,34 +141,8 @@ module RuboCop
             comments[last_idx] || raise
           end
 
-          def effective_mode #: FileFilter::mode
-            mode = cop_config["Mode"]
-            if mode
-              # `raw.to_s.to_sym` handles YAML-native Integer / Boolean safely.
-              sym = mode.to_s.to_sym
-              return sym if FileFilter::SUPPORTED_MODES.include?(sym)
-
-              FileFilter.warn_invalid_mode(mode)
-            end
-
-            cop_config["EnforcedStyle"]&.to_sym == :never ? :opt_out : :opt_in
-          end
-
           def allow_missing_comment? #: bool
             cop_config["AllowMissingComment"] == true
-          end
-
-          def warn_deprecated_enforced_style #: void
-            return if self.class.enforced_style_deprecation_warned?
-            return if cop_config["EnforcedStyle"].nil?
-
-            self.class.mark_enforced_style_deprecation_warned!
-            Kernel.warn(
-              "[rubocop-rbs_inline] Style/RbsInline/RequireRbsInlineComment.EnforcedStyle is deprecated. " \
-              "Please migrate to `Style/RbsInline: Mode: opt_in` (was `EnforcedStyle: always`) or " \
-              "`Style/RbsInline: Mode: opt_out` (was `EnforcedStyle: never`). " \
-              "EnforcedStyle will be removed in the next major version."
-            )
           end
 
           def first_line_range #: Parser::Source::Range

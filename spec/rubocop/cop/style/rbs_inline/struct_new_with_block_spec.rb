@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::StructNewWithBlock, :config do
-  let(:config) { RuboCop::Config.new }
+  let(:config) { rbs_inline_config }
 
   context "when Struct.new is called with a do...end block" do
     it "registers an offense" do

@@ -5,7 +5,7 @@ Style/RbsInline:
   Exclude:
     - 'spec/**/*'
     - 'test/**/*'
-  Mode: ~
+  Mode: opt_in
 
 Style/RbsInline/DataClassCommentAlignment:
   Description: "Checks that `#:` inline type annotations in `Data.define` blocks are aligned."
@@ -96,7 +96,6 @@ Style/RbsInline/RequireRbsInlineComment:
   Enabled: true
   VersionAdded: "1.5.0"
   AllowMissingComment: false
-  EnforcedStyle: ~
 
 Style/RbsInline/StructClassCommentAlignment:
   Description: "Checks that `#:` inline type annotations in `Struct.new` blocks are aligned."

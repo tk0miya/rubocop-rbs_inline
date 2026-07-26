@@ -4,6 +4,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when EnforcedStyle is method_type_signature" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "method_type_signature",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation],
@@ -185,6 +186,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when EnforcedStyle is doc_style" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "doc_style",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation],
@@ -486,6 +488,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when EnforcedStyle is doc_style_and_return_annotation" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "doc_style_and_return_annotation",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation],
@@ -816,6 +819,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when EnforcedStyle is method_type_signature_or_return_annotation" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "method_type_signature_or_return_annotation",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation
@@ -1013,6 +1017,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when Visibility is public" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "method_type_signature",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation],
@@ -1165,6 +1170,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingTypeAnnotation, :config do
   context "when Visibility is all" do
     let(:config) do
       RuboCop::Config.new(
+        "Style/RbsInline" => { "Mode" => "opt_out" },
         "Style/RbsInline/MissingTypeAnnotation" => {
           "EnforcedStyle" => "method_type_signature",
           "SupportedStyles" => %w[method_type_signature doc_style doc_style_and_return_annotation],

@@ -8,8 +8,7 @@ module RuboCop
         #
         # When `Mode` is `opt_in`, offenses are only reported for files that contain
         # a `# rbs_inline: enabled` magic comment. When `Mode` is `opt_out`, all files
-        # are checked unless they contain `# rbs_inline: disabled`. When `Mode` is not
-        # set, all files are checked (legacy behavior).
+        # are checked unless they contain `# rbs_inline: disabled`.
         #
         # This module is designed to be `prepend`ed to a cop so that it can short-circuit
         # the cop's heavy work (annotation parsing via `parse_comments`) and suppress any
@@ -17,31 +16,10 @@ module RuboCop
         #
         # @rbs module-self RuboCop::Cop::Base
         module FileFilter
-          # @rbs! type mode = :opt_in | :opt_out
+          include ModeConfig
 
           MAGIC_COMMENT_ENABLED  = /\A# rbs_inline: enabled\R?\z/ #: Regexp
           MAGIC_COMMENT_DISABLED = /\A# rbs_inline: disabled\R?\z/ #: Regexp
-
-          SUPPORTED_MODES = %i[opt_in opt_out].freeze #: Array[mode]
-
-          # Tracks Mode values that have already been reported as invalid, so we
-          # only emit one warning per typo across the whole rubocop run instead of
-          # one per (file × cop).
-          # @rbs self.@warned_invalid_modes: Hash[String, bool]
-
-          @warned_invalid_modes = {} # rubocop:disable Style/RbsInline/UntypedInstanceVariable
-
-          # @rbs raw: untyped
-          def self.warn_invalid_mode(raw) #: void
-            key = raw.to_s
-            return if @warned_invalid_modes[key]
-
-            @warned_invalid_modes[key] = true
-            Kernel.warn(
-              "[rubocop-rbs_inline] Style/RbsInline Mode #{raw.inspect} is not supported. " \
-              "Expected one of: #{SUPPORTED_MODES.join(", ")}. Filtering is disabled for this run."
-            )
-          end
 
           # @rbs @rbs_inline_skip_file: bool
 
@@ -68,28 +46,12 @@ module RuboCop
           private
 
           def skip_by_mode? #: bool
-            mode = configured_mode
-            return false if mode.nil?
-
             # `# rbs_inline: disabled` always opts a file out, regardless of Mode
             # (matches rbs-inline itself: rbs-inline skips disabled files in both
             # opt_in and opt_out modes).
             return true if rbs_inline_disabled?
 
-            mode == :opt_in && !rbs_inline_enabled?
-          end
-
-          def configured_mode #: mode?
-            raw = cop_config["Mode"]
-            return nil if raw.nil?
-
-            # `raw.to_s.to_sym` handles YAML-native Integer / Boolean without
-            # raising NoMethodError on the plain `to_sym`.
-            mode = raw.to_s.to_sym
-            return mode if SUPPORTED_MODES.include?(mode)
-
-            FileFilter.warn_invalid_mode(raw)
-            nil
+            configured_mode == :opt_in && !rbs_inline_enabled?
           end
 
           # Iterate the already-materialized `processed_source.comments` so this

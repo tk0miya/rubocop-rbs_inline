@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
-  let(:config) { RuboCop::Config.new }
+  let(:config) { rbs_inline_config }
 
   context "when an annotation comment found above the instance method definition" do
     context "when the comment annotates to unknown argument" do

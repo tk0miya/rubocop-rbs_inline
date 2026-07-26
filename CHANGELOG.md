@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Breaking Changes
+
+- **Style/RbsInline**: `Mode` now defaults to `opt_in`, and any value other than `opt_in` / `opt_out` fails the run.
+- **Style/RbsInline/RequireRbsInlineComment**: Removed the deprecated `EnforcedStyle`. Use `Style/RbsInline: Mode` instead: `always` → `opt_in`, `never` → `opt_out`.
+
 ## 1.8.0 (2026-07-26)
 
 ### Enhancements
