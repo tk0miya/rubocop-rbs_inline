@@ -12,11 +12,9 @@ module RuboCop
           # Convert byte offset to character offset
           # @rbs byte_offset: Integer
           def character_offset(byte_offset) #: Integer
-            source = processed_source.buffer.source.dup.force_encoding("ASCII")
-            text = source[...byte_offset] or raise
-            text.force_encoding(processed_source.buffer.source.encoding).size
-          rescue StandardError
-            byte_offset
+            source = processed_source.buffer.source
+            prefix = source.byteslice(0, byte_offset) or raise
+            prefix.size
           end
 
           # @rbs pos: Integer
