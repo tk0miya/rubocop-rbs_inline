@@ -11,6 +11,7 @@ require_relative "style/rbs_inline/mixin/data_struct_helper"
 require_relative "style/rbs_inline/mixin/missing_class_annotation"
 require_relative "style/rbs_inline/mixin/class_comment_alignment"
 require_relative "style/rbs_inline/mixin/data_class_matcher"
+require_relative "style/rbs_inline/mixin/mode_config"
 require_relative "style/rbs_inline/mixin/file_filter"
 require_relative "style/rbs_inline/mixin/struct_class_matcher"
 

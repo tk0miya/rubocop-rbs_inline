@@ -31,18 +31,17 @@ rubocop-rbs_inline provides the following cops to validate [RBS::Inline](https:/
 
 The `Style/RbsInline` department has a shared `Mode` setting that gates whether each `Style/RbsInline/*` cop reports offenses on a given file:
 
-- `Mode: opt_in` — cops only check files that carry `# rbs_inline: enabled`. Files with `# rbs_inline: disabled` or no magic comment are skipped. Matches RBS::Inline's opt-in mode.
+- `Mode: opt_in` (default) — cops only check files that carry `# rbs_inline: enabled`. Files with `# rbs_inline: disabled` or no magic comment are skipped. Matches RBS::Inline's opt-in mode.
 - `Mode: opt_out` — cops check every file except those with `# rbs_inline: disabled`. Matches RBS::Inline's opt-out mode.
-- unset — cops check every file (legacy behavior; the default will change to `opt_in` in the next major release).
 
 Declare it once at the department level in your `.rubocop.yml`:
 
 ```yaml
 Style/RbsInline:
-  Mode: opt_in
+  Mode: opt_out
 ```
 
-Unknown `Mode` values (e.g. `Mode: opt-in`) emit a warning and disable filtering for the run.
+Any other value (e.g. `Mode: opt-in`) fails the run with a configuration error.
 
 ### Style/RbsInline/DataClassCommentAlignment
 
@@ -504,8 +503,6 @@ Style/RbsInline/RequireRbsInlineComment:
   AllowMissingComment: true
 ```
 
-The legacy `EnforcedStyle` parameter (`always` / `never`) is deprecated in favor of `Mode`; it will be removed in the next major release.
-
 **Examples (Mode: opt_in):**
 ```ruby
 # bad
@@ -659,7 +656,7 @@ Style/RbsInline/MissingTypeAnnotation:
   Visibility: public
 ```
 
-To restrict every cop to files that carry `# rbs_inline: enabled`, see [Style/RbsInline (shared configuration)](#stylerbsinline-shared-configuration).
+To check every file rather than only those that carry `# rbs_inline: enabled`, see [Style/RbsInline (shared configuration)](#stylerbsinline-shared-configuration).
 
 See [config/default.yml](config/default.yml) for all available configuration options.
 

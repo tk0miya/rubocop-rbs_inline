@@ -2,7 +2,10 @@
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::MethodCommentSpacing, :config do
   let(:config) do
-    RuboCop::Config.new("Style/RbsInline/MethodCommentSpacing" => { "Enabled" => true })
+    RuboCop::Config.new(
+      "Style/RbsInline" => { "Mode" => "opt_out" },
+      "Style/RbsInline/MethodCommentSpacing" => { "Enabled" => true }
+    )
   end
 
   context "when method annotation has blank line before method definition" do

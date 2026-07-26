@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::UntypedInstanceVariable, :config do
-  let(:config) { RuboCop::Config.new }
+  let(:config) { rbs_inline_config }
 
   context "when instance variable has no type annotation" do
     context "with an ivar read (may be defined in parent class)" do

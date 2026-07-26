@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::DataClassCommentAlignment, :config do
-  let(:config) { RuboCop::Config.new }
+  let(:config) { rbs_inline_config }
 
   context "when an annotation is too close" do
     it "registers an offense and corrects it" do

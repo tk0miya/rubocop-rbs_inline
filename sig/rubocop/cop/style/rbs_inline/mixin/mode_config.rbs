@@ -1,0 +1,27 @@
+# Generated from lib/rubocop/cop/style/rbs_inline/mixin/mode_config.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module Style
+      module RbsInline
+        # Resolves the `Mode` setting shared by every cop in the `Style/RbsInline`
+        # department.
+        #
+        # @rbs module-self RuboCop::Cop::Base
+        module ModeConfig : RuboCop::Cop::Base
+          type mode = :opt_in | :opt_out
+
+          SUPPORTED_MODES: Array[mode]
+
+          # Hook RuboCop calls while mobilizing its cops, so an unsupported `Mode`
+          # fails the run as a config error instead of an error on every file.
+          def validate_config: () -> void
+
+          private
+
+          def configured_mode: () -> mode
+        end
+      end
+    end
+  end
+end

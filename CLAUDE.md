@@ -38,7 +38,7 @@ Cops live in `lib/rubocop/cop/style/rbs_inline/`, one per file; the shared modul
 
 Conventions:
 
-- Every cop `prepend`s `FileFilter` except `RequireRbsInlineComment`.
+- Every cop `prepend`s `FileFilter` except `RequireRbsInlineComment`, which reads `Mode` through `ModeConfig` instead — it has to run on the files the filter skips.
 - `Data.define` and `Struct.new` cops come in pairs sharing a base module. Behavior belongs in the module; only the node matcher and `MSG` in the cop.
 
 ### Plugin System
@@ -54,6 +54,8 @@ The gem integrates with RuboCop via LintRoller (`lib/rubocop/rbs_inline/plugin.r
 Tests use RuboCop's RSpec support helpers (`expect_offense` / `expect_no_offenses`). Test files mirror the cop file structure under `spec/rubocop/cop/style/rbs_inline/`.
 
 `:config` specs build a bare `RuboCop::Config`, so `config/default.yml` and RuboCop's department-to-cop defaults are not merged in. A spec that sets a value at the department level proves nothing about how it resolves in a real run.
+
+The department-level `Mode` is not merged in either, and the cops have no default for it, so `spec_helper.rb` declares `Mode: opt_out` for every `:config` spec, and `rbs_inline_config` for the specs written against the default configuration. A spec that builds its own config has to declare it itself.
 
 ## Code Style Notes
 

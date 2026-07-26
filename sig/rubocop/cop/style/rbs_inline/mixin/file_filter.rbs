@@ -8,8 +8,7 @@ module RuboCop
         #
         # When `Mode` is `opt_in`, offenses are only reported for files that contain
         # a `# rbs_inline: enabled` magic comment. When `Mode` is `opt_out`, all files
-        # are checked unless they contain `# rbs_inline: disabled`. When `Mode` is not
-        # set, all files are checked (legacy behavior).
+        # are checked unless they contain `# rbs_inline: disabled`.
         #
         # This module is designed to be `prepend`ed to a cop so that it can short-circuit
         # the cop's heavy work (annotation parsing via `parse_comments`) and suppress any
@@ -17,18 +16,11 @@ module RuboCop
         #
         # @rbs module-self RuboCop::Cop::Base
         module FileFilter : RuboCop::Cop::Base
-          type mode = :opt_in | :opt_out
+          include ModeConfig
 
           MAGIC_COMMENT_ENABLED: Regexp
 
           MAGIC_COMMENT_DISABLED: Regexp
-
-          SUPPORTED_MODES: Array[mode]
-
-          self.@warned_invalid_modes: Hash[String, bool]
-
-          # @rbs raw: untyped
-          def self.warn_invalid_mode: (untyped raw) -> void
 
           @rbs_inline_skip_file: bool
 
@@ -46,8 +38,6 @@ module RuboCop
           private
 
           def skip_by_mode?: () -> bool
-
-          def configured_mode: () -> mode?
 
           # Iterate the already-materialized `processed_source.comments` so this
           # matches RequireRbsInlineComment's detection exactly (line endings,

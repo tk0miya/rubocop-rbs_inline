@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :config do
-  let(:config) { RuboCop::Config.new }
+  let(:config) { rbs_inline_config }
 
   context "with attributes missing inline type annotations" do
     it "registers an offense and corrects each attribute" do

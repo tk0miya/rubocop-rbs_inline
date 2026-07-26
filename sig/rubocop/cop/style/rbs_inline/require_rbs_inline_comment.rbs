@@ -52,6 +52,8 @@ module RuboCop
         #   class Foo
         #   end
         class RequireRbsInlineComment < Base
+          include ModeConfig
+
           include RangeHelp
 
           extend AutoCorrector
@@ -59,12 +61,6 @@ module RuboCop
           MSG_MISSING: ::String
 
           MSG_FORBIDDEN: ::String
-
-          self.@enforced_style_deprecation_warned: bool
-
-          def self.enforced_style_deprecation_warned?: () -> bool
-
-          def self.mark_enforced_style_deprecation_warned!: () -> void
 
           def on_new_investigation: () -> void
 
@@ -90,11 +86,7 @@ module RuboCop
 
           def find_last_comment_in_first_block: () -> Parser::Source::Comment
 
-          def effective_mode: () -> FileFilter::mode
-
           def allow_missing_comment?: () -> bool
-
-          def warn_deprecated_enforced_style: () -> void
 
           def first_line_range: () -> Parser::Source::Range
         end
