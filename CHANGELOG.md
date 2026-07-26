@@ -1,14 +1,16 @@
 # Changelog
 
-## Unreleased
+## 1.8.0 (2026-07-26)
 
 ### Enhancements
 
 - **Style/RbsInline**: Added a shared `Mode` setting (`opt_in` / `opt_out`) at the department level to filter which files each cop checks based on the `# rbs_inline: enabled` / `disabled` magic comment.
 - **Style/RbsInline/RequireRbsInlineComment**: Added the `AllowMissingComment` option, which lets projects use rbs-inline on only some of their files while keeping the opt-in filter for the rest.
 
-### Bug fixes
+### Bug Fixes
 
+- **Style/RbsInline/DataClassCommentAlignment**, **Style/RbsInline/StructClassCommentAlignment**: Fixed the expected annotation column being derived from arguments that cannot carry an annotation (a splat, or for `Struct.new` a leading struct name or `keyword_init:`), which reported false positives on already aligned code and made autocorrect over-pad the annotations.
+- **Style/RbsInline/MissingDataClassAnnotation**, **Style/RbsInline/MissingStructClassAnnotation**: Fixed autocorrect padding the inserted annotations to the width of an argument that cannot carry one (a splat, or for `Struct.new` a leading struct name or `keyword_init:`).
 - **Style/RbsInline/UnmatchedAnnotations**: Fixed a crash on method definitions taking a destructuring argument (ex. `def foo((a, b))`). The crash also aborted the inspection of the method definition, causing false positives on its valid annotations.
 - **Style/RbsInline/RequireRbsInlineComment**: Fixed a crash (`IndexError`) on a file whose leading comment block ends without a trailing newline. The offense is now reported and the magic comment is inserted on its own line.
 - **Style/RbsInline/RedundantTypeAnnotation**: Fixed `--auto-gen-config` generating an `EnforcedStyle` that does not resolve the offenses (including the unsupported `return_type_annotation`, which made RuboCop fail to start on the generated `.rubocop_todo.yml`). No style can make redundant annotations offense-free, so the offending files are now excluded instead.
