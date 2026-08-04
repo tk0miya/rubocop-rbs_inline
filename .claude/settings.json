@@ -1,7 +1,4 @@
 {
-  "permissions": {
-    "allow": ["RemoteTrigger"]
-  },
   "hooks": {
     "SessionStart": [
       {
