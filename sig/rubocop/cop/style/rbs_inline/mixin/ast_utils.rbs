@@ -23,6 +23,11 @@ module RuboCop
           # @rbs node: RuboCop::AST::Node
           def source!: (RuboCop::AST::Node node) -> String
 
+          # Returns the name of the constant `node` is assigned to, or `nil` when the name
+          # is not statically determinable (e.g. `self::Foo = ...`).
+          # @rbs node: RuboCop::AST::Node
+          def assigned_constant_name: (RuboCop::AST::Node node) -> String?
+
           # : (RuboCop::AST::SymbolNode) -> Symbol
           # : (RuboCop::AST::StrNode) -> Symbol
           # : (RuboCop::AST::Node) -> Symbol?

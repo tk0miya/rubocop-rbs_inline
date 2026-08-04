@@ -7,6 +7,10 @@
 - **Style/RbsInline**: `Mode` now defaults to `opt_in`, and any value other than `opt_in` / `opt_out` fails the run.
 - **Style/RbsInline/RequireRbsInlineComment**: Removed the deprecated `EnforcedStyle`. Use `Style/RbsInline: Mode` instead: `always` → `opt_in`, `never` → `opt_out`.
 
+### Enhancements
+
+- **Style/RbsInline/DataDefineWithBlock**, **Style/RbsInline/StructNewWithBlock**: Clarified the offense message: it now says to keep the `Data.define` / `Struct.new` call and move the block's methods into a class that reopens it, and names that class when the definition is assigned to a constant.
+
 ## 1.8.0 (2026-07-26)
 
 ### Enhancements

@@ -39,6 +39,19 @@ module RuboCop
             node.source || raise
           end
 
+          # Returns the name of the constant `node` is assigned to, or `nil` when the name
+          # is not statically determinable (e.g. `self::Foo = ...`).
+          # @rbs node: RuboCop::AST::Node
+          def assigned_constant_name(node) #: String?
+            parent = node.parent
+            return nil unless parent.is_a?(RuboCop::AST::CasgnNode)
+            return nil unless parent.each_path.all? { _1.const_type? || _1.cbase_type? }
+
+            # `const_name` drops the leading `::`, which would name a different constant
+            # when the assignment appears inside a namespace.
+            parent.absolute? ? "::#{parent.const_name}" : parent.const_name
+          end
+
           #: (RuboCop::AST::SymbolNode) -> Symbol
           #: (RuboCop::AST::StrNode) -> Symbol
           #: (RuboCop::AST::Node) -> Symbol?

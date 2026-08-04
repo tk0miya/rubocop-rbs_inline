@@ -28,10 +28,18 @@ module RuboCop
 
           include StructClassMatcher
 
+          include ASTUtils
+
           MSG: ::String
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send: (RuboCop::AST::SendNode node) -> void
+
+          private
+
+          # The constant the definition is assigned to is the class to reopen.
+          # @rbs node: RuboCop::AST::Node
+          def destination: (RuboCop::AST::Node node) -> String
         end
       end
     end
