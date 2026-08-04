@@ -44,11 +44,11 @@ Naming/FileName:
 RSpec/ExampleLength:
   Enabled: false
 
-RSpec/MultipleMemoizedHelpers:
-  Max: 10
-
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
 
 RSpec/NamedSubject:
   Enabled: false
@@ -62,16 +62,6 @@ RSpec/SpecFilePathFormat:
   Exclude:
     - "spec/rubocop/cop/style/rbs_inline/mixin/**/*_spec.rb"
 
-# RbsInline
-Style/RbsInline:
-  Mode: opt_out
-
-Style/RbsInline/MissingTypeAnnotation:
-  EnforcedStyle: doc_style_and_return_annotation
-
-Style/RbsInline/RedundantTypeAnnotation:
-  EnforcedStyle: doc_style_and_return_annotation
-
 # Style
 Style/AccessorGrouping:
   Enabled: false
@@ -84,6 +74,15 @@ Style/Documentation:
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: always
+
+Style/RbsInline:
+  Mode: opt_out
+
+Style/RbsInline/MissingTypeAnnotation:
+  EnforcedStyle: doc_style_and_return_annotation
+
+Style/RbsInline/RedundantTypeAnnotation:
+  EnforcedStyle: doc_style_and_return_annotation
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes

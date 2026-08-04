@@ -7,6 +7,9 @@ on:
       - 'lib/rubocop/rbs_inline/version.rb'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   release:
     runs-on: ubuntu-latest
