@@ -27,10 +27,11 @@ module RuboCop
         class StructNewWithBlock < Base
           prepend FileFilter
           include StructClassMatcher
+          include ASTUtils
 
           MSG = "Do not use `Struct.new` with a block. RBS::Inline does not parse block contents, " \
-                "so methods defined in the block will not be recognized. " \
-                "Use a separate class definition instead."
+                "so methods defined in the block will not be recognized. Keep the `Struct.new` call " \
+                "and move the methods into %<destination>s."
 
           # @rbs node: RuboCop::AST::SendNode
           def on_send(node) #: void
@@ -39,7 +40,18 @@ module RuboCop
             block_node = node.parent
             return unless block_node&.block_type?
 
-            add_offense(node)
+            add_offense(node, message: format(MSG, destination: destination(block_node)))
+          end
+
+          private
+
+          # The constant the definition is assigned to is the class to reopen.
+          # @rbs node: RuboCop::AST::Node
+          def destination(node) #: String
+            class_name = assigned_constant_name(node)
+            return "a `class` that reopens it" unless class_name
+
+            "`class #{class_name} ... end` written after it"
           end
         end
       end
