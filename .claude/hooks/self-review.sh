@@ -76,7 +76,17 @@ about to be committed BEFORE running git commit again:
 - Otherwise, run the bundled `/code-review` skill on the working diff.
 
 If the review finds issues, fix them and review again. Once it is clean, run the same
-git commit command again to proceed — it will be allowed through.'
+git commit command again to proceed — it will be allowed through.
+
+The review runs in an isolated subagent with no memory of earlier rounds, so it cannot
+tell on its own whether it is repeating itself — only you, the caller, have that history.
+Before fixing a finding, check your own conversation: if it asks for the same change as
+a finding you already attempted to satisfy twice before (worded differently still counts),
+and it is still not resolved, do not attempt a third fix. Instead stop and ask the user
+(AskUserQuestion): what the finding wants, how the two prior attempts addressed it, why it
+still was not accepted, and the options (try a different fix, skip this finding and
+commit, or decide the review point does not apply here). Do not run git commit again until
+the user answers — another round of fixes would only repeat the same mismatch.'
 
 jq -n --arg reason "$review_prompt" '{
   "hookSpecificOutput": {
