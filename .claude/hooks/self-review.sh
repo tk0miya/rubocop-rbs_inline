@@ -75,18 +75,12 @@ about to be committed BEFORE running git commit again:
 - If the `self-review` skill is available, invoke it (Skill tool, skill "self-review").
 - Otherwise, run the bundled `/code-review` skill on the working diff.
 
-If the review finds issues, fix them and review again. Once it is clean, run the same
-git commit command again to proceed — it will be allowed through.
-
-The review runs in an isolated subagent with no memory of earlier rounds, so it cannot
-tell on its own whether it is repeating itself — only you, the caller, have that history.
-Before fixing a finding, check your own conversation: if it asks for the same change as
-a finding you already attempted to satisfy twice before (worded differently still counts),
-and it is still not resolved, do not attempt a third fix. Instead stop and ask the user
-(AskUserQuestion): what the finding wants, how the two prior attempts addressed it, why it
-still was not accepted, and the options (try a different fix, skip this finding and
-commit, or decide the review point does not apply here). Do not run git commit again until
-the user answers — another round of fixes would only repeat the same mismatch.'
+Judge each finding the review returns rather than fixing it on sight. Weigh what the review
+attached to it — how it graded the point, the basis it gave — and decide whether acting on it
+is worth it. Where you skip a finding, say so; do not drop it silently. Where the choice needs
+a requirement or an intent you do not have, leave it to the user. Once every fix you judged
+necessary is in, review again; when nothing you judged worth fixing is left, run the same git
+commit command again to proceed — it will be allowed through.'
 
 jq -n --arg reason "$review_prompt" '{
   "hookSpecificOutput": {
