@@ -12,4 +12,5 @@ gem "rubocop", "~> 1.89"
 gem "rubocop-numbered-params"
 gem "rubocop-rake", "~> 0.7"
 gem "rubocop-rspec", "~> 3.10"
+gem "rubocop-rspec-unused-let"
 gem "steep", require: false
