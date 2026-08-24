@@ -129,6 +129,10 @@ gems:
   version: 1.0.1
   source:
     type: rubygems
+- name: rubocop-rspec-unused-let
+  version: 1.3.0
+  source:
+    type: rubygems
 - name: strscan
   version: '0'
   source:
