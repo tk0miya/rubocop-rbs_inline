@@ -8,7 +8,7 @@ gemspec
 gem "rake", "~> 13.4"
 
 gem "rspec"
-gem "rubocop", "~> 1.89"
+gem "rubocop", "~> 1.90"
 gem "rubocop-numbered-params"
 gem "rubocop-rake", "~> 0.7"
 gem "rubocop-rspec", "~> 3.10"
