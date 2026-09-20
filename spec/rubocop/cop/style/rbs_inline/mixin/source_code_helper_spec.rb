@@ -42,6 +42,17 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::SourceCodeHelper do
 
     let(:location) { Prism.parse(source).value.statements.body.first.location }
 
+    context "when the source is ASCII only" do
+      let(:source) { <<~RUBY }
+        # comment
+        foo
+      RUBY
+
+      it "returns a range that points at the node" do
+        expect(subject.source).to eq("foo")
+      end
+    end
+
     context "when the source contains multibyte characters before the node" do
       let(:source) { <<~RUBY }
         # コメント
