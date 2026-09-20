@@ -188,6 +188,24 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantInstanceVariableAnnotati
         RUBY
       end
     end
+
+    context "when ivar annotation is in a different module from attr_*" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            attr_reader :foo #: Integer
+          end
+
+          module Bar
+            # @rbs @foo: Integer
+
+            def initialize
+              @foo = 1
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   context "when the same ivar is declared via attr_reader and attr_writer" do
