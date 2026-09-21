@@ -222,6 +222,25 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
           RUBY
         end
       end
+
+      context "when # @rbs param:, #:, and inline #: are present" do
+        it "registers offenses on both @rbs param and the inline #:" do
+          expect_offense(<<~RUBY)
+            # @rbs a: Integer
+            ^^^^^^^^^^^^^^^^^ Redundant `@rbs` parameter annotation.
+            #: (Integer) -> String
+            def method(a) #: String
+                          ^^^^^^^^^ Redundant trailing return type annotation.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #: (Integer) -> String
+            def method(a)
+            end
+          RUBY
+        end
+      end
     end
 
     context "with overload type signatures (2+ #: lines)" do
@@ -459,6 +478,25 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantTypeAnnotation, :config 
             #: (Integer) -> String
             ^^^^^^^^^^^^^^^^^^^^^^ Redundant method type signature.
             def method(a)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # @rbs a: Integer
+            # @rbs return: String
+            def method(a)
+            end
+          RUBY
+        end
+      end
+
+      context "when # @rbs param:, # @rbs return:, and inline #: are present" do
+        it "registers offense on the inline #:" do
+          expect_offense(<<~RUBY)
+            # @rbs a: Integer
+            # @rbs return: String
+            def method(a) #: String
+                          ^^^^^^^^^ Redundant trailing return type annotation.
             end
           RUBY
 
