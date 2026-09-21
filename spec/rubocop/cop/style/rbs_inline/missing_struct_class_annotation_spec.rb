@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingStructClassAnnotation, :co
   end
 
   context "with existing comments using -- syntax" do
-    it "preserves existing comments using -- syntax when correcting" do
+    it "preserves existing comments using -- syntax on correcting" do
       expect_offense(<<~RUBY)
         Point = Struct.new(
           :x,  # the x coordinate

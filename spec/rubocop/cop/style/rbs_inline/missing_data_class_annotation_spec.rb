@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::MissingDataClassAnnotation, :conf
   end
 
   context "when attributes have existing comments using -- syntax" do
-    it "preserves existing comments using -- syntax when correcting" do
+    it "preserves existing comments using -- syntax on correcting" do
       expect_offense(<<~RUBY)
         MethodEntry = Data.define(
           :name,       # the method name
