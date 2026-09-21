@@ -70,6 +70,9 @@ GEM
     rubocop-ast (1.50.0)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
+    rubocop-instance_variable_access (1.0.0)
+      lint_roller (~> 1.1)
+      rubocop (>= 1.72, < 2.0)
     rubocop-numbered-params (1.0.1)
       lint_roller (~> 1.0)
       rubocop (>= 1.72.1)
@@ -119,6 +122,7 @@ DEPENDENCIES
   rake (~> 13.4)
   rspec
   rubocop (~> 1.91)
+  rubocop-instance_variable_access
   rubocop-numbered-params
   rubocop-rake (~> 0.7)
   rubocop-rbs_inline!

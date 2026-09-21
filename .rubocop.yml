@@ -8,6 +8,7 @@ AllCops:
     - vendor/**/*
 
 plugins:
+  - rubocop-instance_variable_access
   - rubocop-numbered-params
   - rubocop-rake
   - rubocop-rbs_inline
