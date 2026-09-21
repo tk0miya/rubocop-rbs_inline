@@ -22,7 +22,7 @@ module RuboCop
 
           MAGIC_COMMENT_DISABLED: Regexp
 
-          @rbs_inline_skip_file: bool
+          @rbs_inline_file_skipped: bool
 
           def on_new_investigation: () -> void
 
@@ -32,7 +32,7 @@ module RuboCop
 
           # Exposes the FileFilter's per-file skip decision as a proper method so
           # helper modules (e.g. `CommentParser`) can consult it explicitly instead
-          # of poking at `@rbs_inline_skip_file` directly.
+          # of poking at `@rbs_inline_file_skipped` directly.
           def rbs_inline_file_skipped?: () -> bool
 
           private
