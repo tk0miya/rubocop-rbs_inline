@@ -65,6 +65,32 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantInstanceVariableAnnotati
         RUBY
       end
     end
+
+    context "when ivar type annotation is present with attr_writer but no inline annotation" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          # @rbs @foo: Integer
+
+          attr_writer :foo
+        RUBY
+      end
+    end
+
+    context "when only inline annotation is present without ivar type declaration" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          attr_writer :foo #: Integer
+        RUBY
+      end
+    end
+
+    context "when no annotations are present" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          attr_writer :foo
+        RUBY
+      end
+    end
   end
 
   context "with attr_accessor" do
@@ -79,6 +105,32 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::RedundantInstanceVariableAnnotati
 
         expect_correction(<<~RUBY)
           attr_accessor :foo #: Integer
+        RUBY
+      end
+    end
+
+    context "when ivar type annotation is present with attr_accessor but no inline annotation" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          # @rbs @foo: Integer
+
+          attr_accessor :foo
+        RUBY
+      end
+    end
+
+    context "when only inline annotation is present without ivar type declaration" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          attr_accessor :foo #: Integer
+        RUBY
+      end
+    end
+
+    context "when no annotations are present" do
+      it "does not register an offense" do
+        expect_no_offenses(<<~RUBY)
+          attr_accessor :foo
         RUBY
       end
     end
