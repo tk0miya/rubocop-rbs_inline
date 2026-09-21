@@ -31,7 +31,7 @@ module RuboCop
           # @rbs *args: untyped
           # @rbs **kwargs: untyped
           def add_offense(*args, **kwargs, &) #: void
-            return if @rbs_inline_skip_file
+            return if rbs_inline_file_skipped?
 
             super
           end

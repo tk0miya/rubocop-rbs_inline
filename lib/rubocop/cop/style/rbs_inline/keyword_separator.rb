@@ -29,8 +29,6 @@ module RuboCop
           # Only `# @rbs override: SomeType` (with a type) is valid as a parameter annotation.
           NO_ARGUMENT_KEYWORDS = %w[override skip].freeze #: Array[String]
 
-          # @rbs @method_annotation_lines: Set[Integer]
-
           def on_new_investigation #: void
             super
             parse_comments
@@ -63,13 +61,15 @@ module RuboCop
 
           private
 
+          attr_reader :method_annotation_lines #: Set[Integer]
+
           # Collect line numbers of leading annotation comments for a method definition
           # into @method_annotation_lines.
           # @rbs def_line: Integer
           def collect_method_annotation_comments(def_line) #: void
             result = find_leading_annotation(def_line) or return
             result.comments.each do |prism_comment|
-              @method_annotation_lines.add(prism_comment.location.start_line)
+              method_annotation_lines.add(prism_comment.location.start_line)
             end
           end
 
@@ -77,7 +77,7 @@ module RuboCop
           # is not a no-argument keyword (`override` or `skip`) followed by `:` without a type.
           # @rbs comment: Parser::Source::Comment
           def valid_method_annotation?(comment) #: bool
-            return false unless @method_annotation_lines.include?(comment.loc.line)
+            return false unless method_annotation_lines.include?(comment.loc.line)
 
             !no_argument_keyword_without_type?(comment)
           end

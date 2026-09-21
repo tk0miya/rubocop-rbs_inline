@@ -32,8 +32,6 @@ module RuboCop
           # Only `# @rbs override: SomeType` (with a type) is valid as a parameter annotation.
           NO_ARGUMENT_KEYWORDS: Array[String]
 
-          @method_annotation_lines: Set[Integer]
-
           def on_new_investigation: () -> void
 
           # @rbs node: RuboCop::AST::DefNode
@@ -45,6 +43,8 @@ module RuboCop
           def on_investigation_end: () -> void
 
           private
+
+          attr_reader method_annotation_lines: Set[Integer]
 
           # Collect line numbers of leading annotation comments for a method definition
           # into @method_annotation_lines.
