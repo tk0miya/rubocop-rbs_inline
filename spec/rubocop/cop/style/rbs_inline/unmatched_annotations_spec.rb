@@ -96,6 +96,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::UnmatchedAnnotations, :config do
     end
   end
 
+  # rubocop:disable-next RSpecStructure/AsymmetricContexts -- non-destructuring parameters are the
+  # implicit default already exercised by the "instance/singleton method definition" sections above.
   context "when the method definition takes a destructuring argument" do
     context "when the comment annotates to known arguments" do
       it "does not register an offense" do
