@@ -7,7 +7,7 @@ workflows:
         - 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510'
     '.github/workflows/ci.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a'
+        - 'ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f'
     '.github/workflows/dependabot-auto-label.yml':
         - 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510'
         - 'dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98'
@@ -15,10 +15,10 @@ workflows:
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510'
         - 'peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1'
-        - 'ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a'
+        - 'ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f'
     '.github/workflows/release.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a'
+        - 'ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f'
         - 'rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b'
     '.github/workflows/workflow-lint.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -49,9 +49,9 @@ dependencies:
         commit: 'sha1-5f6978faf089d4d20b00c7766989d076bb2fc7f1'
         owner_id: 18365890
         repo_id: 197176365
-    'ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a':
-        ref: 'v1.329.0'
-        commit: 'sha1-651ff0d62c5c79bed6d53ec518387aae20e72c1a'
+    'ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f':
+        ref: 'v1.335.0'
+        commit: 'sha1-7f797815d8adceb1c412e7abefdd1ab4abc47a5f'
         owner_id: 210414
         repo_id: 231208785
     'rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a':
