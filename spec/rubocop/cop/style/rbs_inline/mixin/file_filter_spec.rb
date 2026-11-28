@@ -63,6 +63,8 @@ RSpec.describe RuboCop::Cop::Style::RbsInline::FileFilter, :config do
       end
     end
 
+    # rubocop:disable-next RSpecStructure/AsymmetricContexts -- LF line endings are the implicit
+    # default used by every other example in this file, not a separately named context.
     context "when the file uses CRLF line endings" do
       it "recognizes the pragma" do
         source = "# rbs_inline: enabled\r\n# () -> void\r\n"
